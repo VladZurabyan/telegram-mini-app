@@ -71,6 +71,7 @@
       border-radius: 12px;
       color: white;
       font-size: 16px;
+      cursor: pointer;
     }
     footer {
       margin-top: 40px;
@@ -95,50 +96,44 @@
       background: #1D75FF;
       color: white;
     }
-  
-/* Блок ввода ставки с кнопками */
-.bet-container {
-  margin: 20px auto;
-  max-width: 300px;
-  font-size: 16px;
-  text-align: center;
-}
-.bet-box {
-  display: flex;
-  justify-content: space-between;
-  background: linear-gradient(90deg, #e6004c, #c20039);
-  color: white;
-  padding: 12px 10px;
-  border-radius: 16px;
-  margin: 10px 0;
-  font-weight: bold;
-}
-.bet-box button {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-.bet-box span {
-  width: 50px;
-  text-align: center;
-}
-.win-multiplier {
-  margin: 10px 0;
-}
-.play-btn {
-  background: linear-gradient(90deg, #e6004c, #c20039);
-  border: none;
-  border-radius: 12px;
-  padding: 12px 0;
-  width: 100%;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-}
 
-</style>
+    /* Блок ввода ставки с кнопками */
+    .bet-container {
+      margin: 20px auto;
+      max-width: 300px;
+      font-size: 16px;
+      text-align: center;
+    }
+    .bet-box {
+      display: flex;
+      justify-content: space-between;
+      background: linear-gradient(90deg, #e6004c, #c20039);
+      color: white;
+      padding: 12px 10px;
+      border-radius: 16px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .bet-box button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .bet-box span {
+      width: 50px;
+      text-align: center;
+    }
+    .win-multiplier {
+      margin: 10px 0;
+    }
+    .actions button.active {
+      background: #00ff99;
+      color: black;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <div id="main">
@@ -169,92 +164,50 @@
     </footer>
   </div>
 
+  <!-- Игра Орёл и решка -->
   <div id="game-coin" style="display:none; padding: 20px;">
-    <h2>Орёл и решка 🪙</h2>
-    
-    <br />
-    <button class="game-button" onclick="playCoin('heads')">ОРЁЛ</button>
-    <button class="game-button" onclick="playCoin('tails')">РЕШКА</button>
-    <div class="result-box" id="coinResult"></div>
-
-<div class="bet-container">
-  <label>Введите ставку</label>
-  <div class="bet-box">
-    <button onclick="setBet('min')">min</button>
-    <button onclick="changeBet(-10)">-</button>
-    <span id="betValue">100</span>
-    <button onclick="changeBet(10)">+</button>
-    <button onclick="setBet('max')">max</button>
-  </div>
-  <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
-</div>
-
-    <button class="btn" onclick="backToMain()">Назад</button>
-  </div>
-
-  <div id="game-boxes" style="display:none; padding: 20px;">
-    <h2>Три коробки 🎁</h2>
-    
-    <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
-      <img src="assets/box1.png" class="box" onclick="selectBox(0)" style="width: 60px;" />
-      <img src="assets/box2.png" class="box" onclick="selectBox(1)" style="width: 60px;" />
-      <img src="assets/box3.png" class="box" onclick="selectBox(2)" style="width: 60px;" />
+    <div class="balance">
+      <div><img src="assets/ton.png" /> <span>0.00</span></div>
+      <div><img src="assets/usdt.png" /> <span>0.00</span></div>
     </div>
-    <div class="result-box" id="boxResult"></div>
-
-<div class="bet-container">
-  <label>Введите ставку</label>
-  <div class="bet-box">
-    <button onclick="setBet('min')">min</button>
-    <button onclick="changeBet(-10)">-</button>
-    <span id="betValue">100</span>
-    <button onclick="changeBet(10)">+</button>
-    <button onclick="setBet('max')">max</button>
-  </div>
-  <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
-</div>
-
-    <button class="btn" onclick="backToMain()">Назад</button>
-  </div>
-
-  <div id="game-dice" style="display:none; padding: 20px;">
-    <h2>Кубики 🎲</h2>
+    <h2>COIN FLIP</h2>
+    <img id="coinImageMain" src="assets/coin-heads.png" style="width: 100px; height: 100px; margin: 20px auto;" />
     
-    <button class="game-button" onclick="rollDice()">Бросить</button>
-    <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
-      <img id="dice1" src="assets/dice1.png" class="dice" style="width: 60px;" />
-      <img id="dice2" src="assets/dice2.png" class="dice" style="width: 60px;" />
+    <div class="actions" style="margin-top: 20px;">
+      <button id="btn-heads" onclick="setCoinChoice('heads')">ОРЁЛ</button>
+      <button id="btn-tails" onclick="setCoinChoice('tails')">РЕШКА</button>
     </div>
-    <div class="result-box" id="diceResult"></div>
+    <button class="game-button" onclick="playCoin()">PLAY</button>
 
-<div class="bet-container">
-  <label>Введите ставку</label>
-  <div class="bet-box">
-    <button onclick="setBet('min')">min</button>
-    <button onclick="changeBet(-10)">-</button>
-    <span id="betValue">100</span>
-    <button onclick="changeBet(10)">+</button>
-    <button onclick="setBet('max')">max</button>
-  </div>
-  <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
-</div>
+    <div class="result-box" id="coinResult" style="margin-top: 20px;"></div>
+    <div class="prize-box" id="coinPrize" style="margin-top: 10px; font-size: 18px; color: #00ff99;"></div>
+
+    <div class="bet-container">
+      <label>Введите ставку</label>
+      <div class="bet-box">
+        <button onclick="setBet('min')">min</button>
+        <button onclick="changeBet(-10)">-</button>
+        <span id="betValue">100</span>
+        <button onclick="changeBet(10)">+</button>
+        <button onclick="setBet('max')">max</button>
+      </div>
+      <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
+    </div>
 
     <button class="btn" onclick="backToMain()">Назад</button>
   </div>
+
+  <!-- Другие игры тут... -->
 
   <div id="rules">
     <h3>ПРАВИЛА ИГРЫ</h3>
-    <p>
-      Здесь вы можете разместить любые правила — текст, ссылки, ограничения по возрасту, условия выплат, работу с криптовалютой и прочее.
-    </p>
+    <p>Здесь вы можете разместить любые правила…</p>
     <button onclick="goBack()">Назад</button>
   </div>
 
   <div id="partners">
     <h3>УСЛОВИЯ ДЛЯ ПАРТНЁРОВ</h3>
-    <p>
-      Здесь можно разместить информацию о реферальной программе, партнёрском проценте, условиях выплаты, способах продвижения, правилах сотрудничества и т.д.
-    </p>
+    <p>Информация о партнёрской программе…</p>
     <button onclick="goBack()">Назад</button>
   </div>
 
@@ -271,14 +224,12 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
       });
-
       fetch(`${apiUrl}/balance/${user.id}`)
         .then(res => res.json())
         .then(data => {
           document.querySelectorAll(".balance span")[0].textContent = data.ton.toFixed(2);
           document.querySelectorAll(".balance span")[1].textContent = data.usdt.toFixed(2);
-        })
-        .catch(() => console.log("Баланс не найден"));
+        });
     }
 
     function showRules() {
@@ -286,24 +237,21 @@
       document.getElementById('rules').style.display = 'block';
       document.getElementById('partners').style.display = 'none';
     }
-
     function showPartners() {
       document.getElementById('main').style.display = 'none';
       document.getElementById('rules').style.display = 'none';
       document.getElementById('partners').style.display = 'block';
     }
-
     function goBack() {
       document.getElementById('rules').style.display = 'none';
       document.getElementById('partners').style.display = 'none';
       document.getElementById('main').style.display = 'block';
     }
-
     function showGame(id) {
       document.getElementById('main').style.display = 'none';
       document.getElementById(id).style.display = 'block';
+      if (id === 'game-coin') updateBetUI();
     }
-
     function backToMain() {
       document.getElementById('main').style.display = 'block';
       ['game-coin','game-boxes','game-dice'].forEach(id => {
@@ -334,57 +282,44 @@
       });
     }
 
-    function playCoin(choice) {
-      const bet = parseFloat(document.getElementById("coinBet").value);
+    // Ставка
+    let bet = 100;
+    const minBet = 10;
+    const maxBet = 1000;
+    function updateBetUI() {
+      document.querySelectorAll("#betValue").forEach(span => span.innerText = bet);
+    }
+    function changeBet(delta) {
+      bet = Math.min(Math.max(bet + delta, minBet), maxBet);
+      updateBetUI();
+    }
+    function setBet(type) {
+      if (type === "min") bet = minBet;
+      else if (type === "max") bet = maxBet;
+      updateBetUI();
+    }
+
+    // Выбор стороны
+    let playerChoice = "";
+    function setCoinChoice(choice) {
+      playerChoice = choice;
+      document.getElementById("btn-heads").classList.remove("active");
+      document.getElementById("btn-tails").classList.remove("active");
+      document.getElementById("btn-" + choice).classList.add("active");
+    }
+
+    // Логика игры
+    function playCoin() {
       if (!bet || bet < 1) return alert("Минимум 1 TON");
+      if (!playerChoice) return alert("Выберите сторону");
       const result = Math.random() < 0.5 ? "heads" : "tails";
-      const win = result === choice;
-      document.getElementById("coinResult").innerText = `Выпало: ${result === "heads" ? "ОРЁЛ" : "РЕШКА"}\n` + (win ? "Победа!" : "Проигрыш");
+      const img = document.getElementById("coinImageMain");
+      img.src = "assets/coin-" + result + ".png";
+      const win = result === playerChoice;
+      document.getElementById("coinResult").innerText = 
+        `Выпало: ${result === "heads" ? "ОРЁЛ" : "РЕШКА"}\n${win ? "Победа!" : "Проигрыш"}`;
       recordGame("coin", bet, result, win);
     }
-
-    function selectBox(choice) {
-      const bet = parseFloat(document.getElementById("boxBet").value);
-      if (!bet || bet < 1) return alert("Минимум 1 TON");
-      const prize = Math.floor(Math.random() * 3);
-      const win = choice === prize;
-      const result = win ? "win" : "lose";
-      document.getElementById("boxResult").innerText = win ? "Приз найден! Победа!" : "Пусто. Проигрыш.";
-      recordGame("boxes", bet, result, win);
-    }
-
-    function rollDice() {
-      const bet = parseFloat(document.getElementById("diceBet").value);
-      if (!bet || bet < 1) return alert("Минимум 1 TON");
-      const d1 = Math.floor(Math.random() * 6) + 1;
-      const d2 = Math.floor(Math.random() * 6) + 1;
-      const total = d1 + d2;
-      const win = total >= 8;
-      document.getElementById("dice1").src = `assets/dice${d1}.png`;
-      document.getElementById("dice2").src = `assets/dice${d2}.png`;
-      document.getElementById("diceResult").innerText = `Сумма: ${total}\n` + (win ? "Победа!" : "Проигрыш");
-      recordGame("dice", bet, `${d1}+${d2}`, win);
-    }
-  
-let bet = 100;
-const minBet = 10;
-const maxBet = 1000;
-
-function updateBetUI() {
-  document.querySelectorAll("#betValue").forEach(span => span.innerText = bet);
-}
-
-function changeBet(delta) {
-  bet = Math.min(Math.max(bet + delta, minBet), maxBet);
-  updateBetUI();
-}
-
-function setBet(type) {
-  if (type === "min") bet = minBet;
-  else if (type === "max") bet = maxBet;
-  updateBetUI();
-}
-
-</script>
+  </script>
 </body>
 </html>
