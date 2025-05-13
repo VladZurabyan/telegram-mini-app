@@ -136,8 +136,8 @@ footer img {
 
 /* Анимация монеты */
 .coin-image {
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   margin: 20px auto;
   transform-style: preserve-3d;
 }
