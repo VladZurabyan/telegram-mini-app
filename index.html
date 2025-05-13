@@ -15,6 +15,62 @@
         document.getElementById(id).style.display = 'none';
       });
     }
+
+    function recordGame(game, bet, result, win) {
+      const user = tg.initDataUnsafe?.user;
+      if (!user) return;
+      fetch(apiUrl + "/game", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.id, game, bet, result, win })
+      });
+      const amount = win ? bet : -bet;
+      fetch(apiUrl + "/balance/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id, currency: "ton", amount })
+      }).then(() => {
+        fetch(`${apiUrl}/balance/${user.id}`)
+          .then(res => res.json())
+          .then(data => {
+            document.querySelectorAll(".balance span")[0].textContent = data.ton.toFixed(2);
+            document.querySelectorAll(".balance span")[1].textContent = data.usdt.toFixed(2);
+          });
+      });
+    }
+
+    function playCoin(choice) {
+      const bet = parseFloat(document.getElementById("coinBet").value);
+      if (!bet || bet < 1) return alert("Минимум 1 TON");
+      const result = Math.random() < 0.5 ? "heads" : "tails";
+      const win = result === choice;
+      document.getElementById("coinResult").innerText = `Выпало: ${result === "heads" ? "ОРЁЛ" : "РЕШКА"}\n` + (win ? "Победа!" : "Проигрыш");
+      recordGame("coin", bet, result, win);
+    }
+
+    function selectBox(choice) {
+      const bet = parseFloat(document.getElementById("boxBet").value);
+      if (!bet || bet < 1) return alert("Минимум 1 TON");
+      const prize = Math.floor(Math.random() * 3);
+      const win = choice === prize;
+      const result = win ? "win" : "lose";
+      document.getElementById("boxResult").innerText = win ? "Приз найден! Победа!" : "Пусто. Проигрыш.";
+      recordGame("boxes", bet, result, win);
+    }
+
+    function rollDice() {
+      const bet = parseFloat(document.getElementById("diceBet").value);
+      if (!bet || bet < 1) return alert("Минимум 1 TON");
+      const d1 = Math.floor(Math.random() * 6) + 1;
+      const d2 = Math.floor(Math.random() * 6) + 1;
+      const total = d1 + d2;
+      const win = total >= 8;
+      document.getElementById("dice1").src = `assets/dice${d1}.png`;
+      document.getElementById("dice2").src = `assets/dice${d2}.png`;
+      document.getElementById("diceResult").innerText = `Сумма: ${total}\n` + (win ? "Победа!" : "Проигрыш");
+      recordGame("dice", bet, `${d1}+${d2}`, win);
+    }
+
 </script>
 
   <style>
@@ -241,6 +297,62 @@
         document.getElementById(id).style.display = 'none';
       });
     }
+
+    function recordGame(game, bet, result, win) {
+      const user = tg.initDataUnsafe?.user;
+      if (!user) return;
+      fetch(apiUrl + "/game", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.id, game, bet, result, win })
+      });
+      const amount = win ? bet : -bet;
+      fetch(apiUrl + "/balance/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id, currency: "ton", amount })
+      }).then(() => {
+        fetch(`${apiUrl}/balance/${user.id}`)
+          .then(res => res.json())
+          .then(data => {
+            document.querySelectorAll(".balance span")[0].textContent = data.ton.toFixed(2);
+            document.querySelectorAll(".balance span")[1].textContent = data.usdt.toFixed(2);
+          });
+      });
+    }
+
+    function playCoin(choice) {
+      const bet = parseFloat(document.getElementById("coinBet").value);
+      if (!bet || bet < 1) return alert("Минимум 1 TON");
+      const result = Math.random() < 0.5 ? "heads" : "tails";
+      const win = result === choice;
+      document.getElementById("coinResult").innerText = `Выпало: ${result === "heads" ? "ОРЁЛ" : "РЕШКА"}\n` + (win ? "Победа!" : "Проигрыш");
+      recordGame("coin", bet, result, win);
+    }
+
+    function selectBox(choice) {
+      const bet = parseFloat(document.getElementById("boxBet").value);
+      if (!bet || bet < 1) return alert("Минимум 1 TON");
+      const prize = Math.floor(Math.random() * 3);
+      const win = choice === prize;
+      const result = win ? "win" : "lose";
+      document.getElementById("boxResult").innerText = win ? "Приз найден! Победа!" : "Пусто. Проигрыш.";
+      recordGame("boxes", bet, result, win);
+    }
+
+    function rollDice() {
+      const bet = parseFloat(document.getElementById("diceBet").value);
+      if (!bet || bet < 1) return alert("Минимум 1 TON");
+      const d1 = Math.floor(Math.random() * 6) + 1;
+      const d2 = Math.floor(Math.random() * 6) + 1;
+      const total = d1 + d2;
+      const win = total >= 8;
+      document.getElementById("dice1").src = `assets/dice${d1}.png`;
+      document.getElementById("dice2").src = `assets/dice${d2}.png`;
+      document.getElementById("diceResult").innerText = `Сумма: ${total}\n` + (win ? "Победа!" : "Проигрыш");
+      recordGame("dice", bet, `${d1}+${d2}`, win);
+    }
+
 </script>
 
 </body>
