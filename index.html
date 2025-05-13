@@ -4,7 +4,19 @@
   <meta charset="UTF-8" />
   <title>Mini App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js">
+    function showGame(id) {
+      document.getElementById('main').style.display = 'none';
+      document.getElementById(id).style.display = 'block';
+    }
+    function backToMain() {
+      document.getElementById('main').style.display = 'block';
+      ['game-coin','game-boxes','game-dice'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+    }
+</script>
+
   <style>
     body {
       margin: 0;
@@ -106,9 +118,9 @@
     <h2>ВЫБЕРИТЕ ИГРУ</h2>
     <img class="controller-icon" src="assets/controller.png" />
 
-    <button class="game-button"><img src="assets/coin.png" /> ОРЁЛ И РЕШКА</button>
-    <button class="game-button"><img src="assets/boxes.png" /> ТРИ КОРОБКИ</button>
-    <button class="game-button"><img src="assets/dice.png" /> КУБИКИ</button>
+    <button class="game-button" onclick="showGame('game-coin')"><img src="assets/coin.png" /> ОРЁЛ И РЕШКА</button>
+    <button class="game-button" onclick="showGame('game-boxes')"><img src="assets/boxes.png" /> ТРИ КОРОБКИ</button>
+    <button class="game-button" onclick="showGame('game-dice')"><img src="assets/dice.png" /> КУБИКИ</button>
 
     <div class="actions">
       <button>ПОПОЛНИТЬ</button>
@@ -123,6 +135,41 @@
       </p>
       <p>ВСЕ ПРАВА ЗАЩИЩЕНЫ</p>
     </footer>
+  </div>
+
+  
+  <div id="game-coin" style="display:none; padding: 20px;">
+    <h2>Орёл и решка 🪙</h2>
+    <input type="number" id="coinBet" placeholder="Введите ставку (TON)" min="1" />
+    <br />
+    <button class="game-button" onclick="playCoin('heads')">ОРЁЛ</button>
+    <button class="game-button" onclick="playCoin('tails')">РЕШКА</button>
+    <div class="result-box" id="coinResult"></div>
+    <button class="btn" onclick="backToMain()">Назад</button>
+  </div>
+
+  <div id="game-boxes" style="display:none; padding: 20px;">
+    <h2>Три коробки 🎁</h2>
+    <input type="number" id="boxBet" placeholder="Введите ставку (TON)" min="1" />
+    <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
+      <img src="assets/box1.png" class="box" onclick="selectBox(0)" style="width: 60px;" />
+      <img src="assets/box2.png" class="box" onclick="selectBox(1)" style="width: 60px;" />
+      <img src="assets/box3.png" class="box" onclick="selectBox(2)" style="width: 60px;" />
+    </div>
+    <div class="result-box" id="boxResult"></div>
+    <button class="btn" onclick="backToMain()">Назад</button>
+  </div>
+
+  <div id="game-dice" style="display:none; padding: 20px;">
+    <h2>Кубики 🎲</h2>
+    <input type="number" id="diceBet" placeholder="Введите ставку (TON)" min="1" />
+    <button class="game-button" onclick="rollDice()">Бросить</button>
+    <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
+      <img id="dice1" src="assets/dice1.png" class="dice" style="width: 60px;" />
+      <img id="dice2" src="assets/dice2.png" class="dice" style="width: 60px;" />
+    </div>
+    <div class="result-box" id="diceResult"></div>
+    <button class="btn" onclick="backToMain()">Назад</button>
   </div>
 
   <div id="rules">
@@ -183,6 +230,18 @@
       document.getElementById('partners').style.display = 'none';
       document.getElementById('main').style.display = 'block';
     }
-  </script>
+  
+    function showGame(id) {
+      document.getElementById('main').style.display = 'none';
+      document.getElementById(id).style.display = 'block';
+    }
+    function backToMain() {
+      document.getElementById('main').style.display = 'block';
+      ['game-coin','game-boxes','game-dice'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+    }
+</script>
+
 </body>
 </html>
