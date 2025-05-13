@@ -95,7 +95,50 @@
       background: #1D75FF;
       color: white;
     }
-  </style>
+  
+/* Блок ввода ставки с кнопками */
+.bet-container {
+  margin: 20px auto;
+  max-width: 300px;
+  font-size: 16px;
+  text-align: center;
+}
+.bet-box {
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(90deg, #e6004c, #c20039);
+  color: white;
+  padding: 12px 10px;
+  border-radius: 16px;
+  margin: 10px 0;
+  font-weight: bold;
+}
+.bet-box button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+.bet-box span {
+  width: 50px;
+  text-align: center;
+}
+.win-multiplier {
+  margin: 10px 0;
+}
+.play-btn {
+  background: linear-gradient(90deg, #e6004c, #c20039);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 0;
+  width: 100%;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+</style>
 </head>
 <body>
   <div id="main">
@@ -128,7 +171,19 @@
 
   <div id="game-coin" style="display:none; padding: 20px;">
     <h2>Орёл и решка 🪙</h2>
-    <input type="number" id="coinBet" placeholder="Введите ставку (TON)" min="1" />
+    
+<div class="bet-container">
+  <label>Введите ставку</label>
+  <div class="bet-box">
+    <button onclick="setBet('min')">min</button>
+    <button onclick="changeBet(-10)">-</button>
+    <span id="betValue">100</span>
+    <button onclick="changeBet(10)">+</button>
+    <button onclick="setBet('max')">max</button>
+  </div>
+  <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
+</div>
+
     <br />
     <button class="game-button" onclick="playCoin('heads')">ОРЁЛ</button>
     <button class="game-button" onclick="playCoin('tails')">РЕШКА</button>
@@ -138,7 +193,19 @@
 
   <div id="game-boxes" style="display:none; padding: 20px;">
     <h2>Три коробки 🎁</h2>
-    <input type="number" id="boxBet" placeholder="Введите ставку (TON)" min="1" />
+    
+<div class="bet-container">
+  <label>Введите ставку</label>
+  <div class="bet-box">
+    <button onclick="setBet('min')">min</button>
+    <button onclick="changeBet(-10)">-</button>
+    <span id="betValue">100</span>
+    <button onclick="changeBet(10)">+</button>
+    <button onclick="setBet('max')">max</button>
+  </div>
+  <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
+</div>
+
     <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
       <img src="assets/box1.png" class="box" onclick="selectBox(0)" style="width: 60px;" />
       <img src="assets/box2.png" class="box" onclick="selectBox(1)" style="width: 60px;" />
@@ -150,7 +217,19 @@
 
   <div id="game-dice" style="display:none; padding: 20px;">
     <h2>Кубики 🎲</h2>
-    <input type="number" id="diceBet" placeholder="Введите ставку (TON)" min="1" />
+    
+<div class="bet-container">
+  <label>Введите ставку</label>
+  <div class="bet-box">
+    <button onclick="setBet('min')">min</button>
+    <button onclick="changeBet(-10)">-</button>
+    <span id="betValue">100</span>
+    <button onclick="changeBet(10)">+</button>
+    <button onclick="setBet('max')">max</button>
+  </div>
+  <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
+</div>
+
     <button class="game-button" onclick="rollDice()">Бросить</button>
     <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
       <img id="dice1" src="assets/dice1.png" class="dice" style="width: 60px;" />
@@ -283,6 +362,26 @@
       document.getElementById("diceResult").innerText = `Сумма: ${total}\n` + (win ? "Победа!" : "Проигрыш");
       recordGame("dice", bet, `${d1}+${d2}`, win);
     }
-  </script>
+  
+let bet = 100;
+const minBet = 10;
+const maxBet = 1000;
+
+function updateBetUI() {
+  document.querySelectorAll("#betValue").forEach(span => span.innerText = bet);
+}
+
+function changeBet(delta) {
+  bet = Math.min(Math.max(bet + delta, minBet), maxBet);
+  updateBetUI();
+}
+
+function setBet(type) {
+  if (type === "min") bet = minBet;
+  else if (type === "max") bet = maxBet;
+  updateBetUI();
+}
+
+</script>
 </body>
 </html>
