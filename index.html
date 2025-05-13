@@ -14,6 +14,9 @@
       color: white;
       text-align: center;
     }
+    .balance, .actions, footer, .game-button, .controller-icon {
+      transition: all 0.3s ease;
+    }
     .balance {
       display: flex;
       justify-content: space-around;
@@ -58,7 +61,6 @@
     .actions {
       display: flex;
       justify-content: space-around;
-      
       margin-top: 20px;
     }
     .actions button {
@@ -79,29 +81,84 @@
       vertical-align: middle;
       margin-right: 6px;
     }
+    #rules, #partners {
+      display: none;
+      padding: 20px;
+    }
+    #rules button, #partners button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      background: #1D75FF;
+      color: white;
+    }
   </style>
 </head>
 <body>
-  <div class="balance">
-    <div><img src="assets/ton.png" /> <span>255455.00</span></div>
-    <div><img src="assets/usdt.png" /> <span>100000.00</span></div>
+  <div id="main">
+    <div class="balance">
+      <div><img src="assets/ton.png" /> <span>255455.00</span></div>
+      <div><img src="assets/usdt.png" /> <span>100000.00</span></div>
+    </div>
+
+    <h2>ВЫБЕРИТЕ ИГРУ</h2>
+    <img class="controller-icon" src="assets/controller.png" />
+
+    <button class="game-button"><img src="assets/coin.png" /> ОРЁЛ И РЕШКА</button>
+    <button class="game-button"><img src="assets/boxes.png" /> ТРИ КОРОБКИ</button>
+    <button class="game-button"><img src="assets/dice.png" /> КУБИКИ</button>
+
+    <div class="actions">
+      <button>ПОПОЛНИТЬ</button>
+      <button>ВЫВЕСТИ</button>
+    </div>
+
+    <footer>
+      <p><img src="assets/18plus.png" />
+        <span style="text-decoration: underline; cursor: pointer;" onclick="showRules()">ПРАВИЛА</span>
+          
+        <span style="text-decoration: underline; cursor: pointer;" onclick="showPartners()">ПАРТНЁРАМ</span>
+      </p>
+      <p>ВСЕ ПРАВА ЗАЩИЩЕНЫ</p>
+    </footer>
   </div>
 
-  <h2>ВЫБЕРИТЕ ИГРУ</h2>
-  <img class="controller-icon" src="assets/controller.png" />
-
-  <button class="game-button"><img src="assets/coin.png" /> ОРЁЛ И РЕШКА</button>
-  <button class="game-button"><img src="assets/boxes.png" /> ТРИ КОРОБКИ</button>
-  <button class="game-button"><img src="assets/dice.png" /> КУБИКИ</button>
-
-  <div class="actions">
-    <button>ПОПОЛНИТЬ</button>
-    <button>ВЫВЕСТИ</button>
+  <div id="rules">
+    <h3>ПРАВИЛА ИГРЫ</h3>
+    <p>
+      Здесь вы можете разместить любые правила — текст, ссылки, ограничения по возрасту, условия выплат, работу с криптовалютой и прочее.
+    </p>
+    <button onclick="goBack()">Назад</button>
   </div>
 
-  <footer>
-    <p><img src="assets/18plus.png" /> ПРАВИЛА  ПАРТНЁРАМ</p>
-    <p>ВСЕ ПРАВА ЗАЩИЩЕНЫ</p>
-  </footer>
+  <div id="partners">
+    <h3>УСЛОВИЯ ДЛЯ ПАРТНЁРОВ</h3>
+    <p>
+      Здесь можно разместить информацию о реферальной программе, партнёрском проценте, условиях выплаты, способах продвижения, правилах сотрудничества и т.д.
+    </p>
+    <button onclick="goBack()">Назад</button>
+  </div>
+
+  <script>
+    function showRules() {
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('rules').style.display = 'block';
+      document.getElementById('partners').style.display = 'none';
+    }
+
+    function showPartners() {
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('rules').style.display = 'none';
+      document.getElementById('partners').style.display = 'block';
+    }
+
+    function goBack() {
+      document.getElementById('rules').style.display = 'none';
+      document.getElementById('partners').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
