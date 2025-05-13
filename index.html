@@ -172,6 +172,11 @@
   <div id="game-coin" style="display:none; padding: 20px;">
     <h2>Орёл и решка 🪙</h2>
     
+    <br />
+    <button class="game-button" onclick="playCoin('heads')">ОРЁЛ</button>
+    <button class="game-button" onclick="playCoin('tails')">РЕШКА</button>
+    <div class="result-box" id="coinResult"></div>
+
 <div class="bet-container">
   <label>Введите ставку</label>
   <div class="bet-box">
@@ -184,40 +189,19 @@
   <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
 </div>
 
-    <br />
-    <button class="game-button" onclick="playCoin('heads')">ОРЁЛ</button>
-    <button class="game-button" onclick="playCoin('tails')">РЕШКА</button>
-    <div class="result-box" id="coinResult"></div>
     <button class="btn" onclick="backToMain()">Назад</button>
   </div>
 
   <div id="game-boxes" style="display:none; padding: 20px;">
     <h2>Три коробки 🎁</h2>
     
-<div class="bet-container">
-  <label>Введите ставку</label>
-  <div class="bet-box">
-    <button onclick="setBet('min')">min</button>
-    <button onclick="changeBet(-10)">-</button>
-    <span id="betValue">100</span>
-    <button onclick="changeBet(10)">+</button>
-    <button onclick="setBet('max')">max</button>
-  </div>
-  <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
-</div>
-
     <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
       <img src="assets/box1.png" class="box" onclick="selectBox(0)" style="width: 60px;" />
       <img src="assets/box2.png" class="box" onclick="selectBox(1)" style="width: 60px;" />
       <img src="assets/box3.png" class="box" onclick="selectBox(2)" style="width: 60px;" />
     </div>
     <div class="result-box" id="boxResult"></div>
-    <button class="btn" onclick="backToMain()">Назад</button>
-  </div>
 
-  <div id="game-dice" style="display:none; padding: 20px;">
-    <h2>Кубики 🎲</h2>
-    
 <div class="bet-container">
   <label>Введите ставку</label>
   <div class="bet-box">
@@ -230,12 +214,31 @@
   <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
 </div>
 
+    <button class="btn" onclick="backToMain()">Назад</button>
+  </div>
+
+  <div id="game-dice" style="display:none; padding: 20px;">
+    <h2>Кубики 🎲</h2>
+    
     <button class="game-button" onclick="rollDice()">Бросить</button>
     <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
       <img id="dice1" src="assets/dice1.png" class="dice" style="width: 60px;" />
       <img id="dice2" src="assets/dice2.png" class="dice" style="width: 60px;" />
     </div>
     <div class="result-box" id="diceResult"></div>
+
+<div class="bet-container">
+  <label>Введите ставку</label>
+  <div class="bet-box">
+    <button onclick="setBet('min')">min</button>
+    <button onclick="changeBet(-10)">-</button>
+    <span id="betValue">100</span>
+    <button onclick="changeBet(10)">+</button>
+    <button onclick="setBet('max')">max</button>
+  </div>
+  <div class="win-multiplier">Возможный выигрыш: <strong>6x</strong></div>
+</div>
+
     <button class="btn" onclick="backToMain()">Назад</button>
   </div>
 
