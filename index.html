@@ -159,6 +159,29 @@
       document.getElementById('partners').style.display = 'none';
       document.getElementById('main').style.display = 'block';
     }
+     const tg = window.Telegram.WebApp;
+  tg.ready();
+
+  const user = tg.initDataUnsafe?.user;
+  const apiUrl = "https://miniapp-backend.onrender.com";
+
+  if (user) {
+    // Регистрация пользователя
+    fetch(`${apiUrl}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+    });
+
+    // Загрузка баланса
+    fetch(`${apiUrl}/balance/${user.id}`)
+      .then(res => res.json())
+      .then(data => {
+        document.querySelectorAll(".balance span")[0].textContent = data.ton.toFixed(2);
+        document.querySelectorAll(".balance span")[1].textContent = data.usdt.toFixed(2);
+      })
+      .catch(() => console.log("Баланс не найден"));
+  }
   </script>
 </body>
 </html>
