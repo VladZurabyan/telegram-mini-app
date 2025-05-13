@@ -152,20 +152,39 @@
   </style>
 </head>
 <body>
+  <!-- ГЛАВНЫЙ ЭКРАН -->
   <div id="main">
     <div class="balance">
       <div><img src="assets/ton.png" /> <span>0.00</span></div>
       <div><img src="assets/usdt.png" /> <span>0.00</span></div>
     </div>
-
     <h2>ВЫБЕРИТЕ ИГРУ</h2>
     <img class="controller-icon" src="assets/controller.png" />
-
-    <button class="game-button" onclick="showGame('game-coin')"><img src="assets/coin.png" /> ОРЁЛ И РЕШКА</button>
-    <!-- ... другие игры ... -->
+    <button class="game-button" onclick="showGame('game-coin')">
+      <img src="assets/coin.png" /> ОРЁЛ И РЕШКА
+    </button>
+    <button class="game-button" onclick="showGame('game-boxes')">
+      <img src="assets/boxes.png" /> ТРИ КОРОБКИ
+    </button>
+    <button class="game-button" onclick="showGame('game-dice')">
+      <img src="assets/dice.png" /> КУБИКИ
+    </button>
+    <div class="actions">
+      <button>ПОПОЛНИТЬ</button>
+      <button>ВЫВЕСТИ</button>
+    </div>
+    <footer>
+      <p>
+        <img src="assets/18plus.png" />
+        <span style="text-decoration: underline; cursor: pointer;" onclick="showRules()">ПРАВИЛА</span>
+          
+        <span style="text-decoration: underline; cursor: pointer;" onclick="showPartners()">ПАРТНЁРАМ</span>
+      </p>
+      <p>ВСЕ ПРАВА ЗАЩИЩЕНЫ</p>
+    </footer>
   </div>
 
-  <!-- Игра Орёл и решка -->
+  <!-- ИГРА: ОРЁЛ И РЕШКА -->
   <div id="game-coin" style="display:none; padding: 20px;">
     <div class="balance">
       <div><img src="assets/ton.png" /> <span>0.00</span></div>
@@ -198,24 +217,71 @@
     <button class="btn" onclick="backToMain()">Назад</button>
   </div>
 
+  <!-- ДОПОЛНИТЕЛЬНЫЕ ЭКРАНЫ -->
+  <div id="rules">
+    <h3>ПРАВИЛА ИГРЫ</h3>
+    <p>Здесь вы можете разместить любые правила…</p>
+    <button onclick="goBack()">Назад</button>
+  </div>
+  <div id="partners">
+    <h3>УСЛОВИЯ ДЛЯ ПАРТНЁРОВ</h3>
+    <p>Информация о партнёрской программе…</p>
+    <button onclick="goBack()">Назад</button>
+  </div>
+
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
-    // ... остальной код и ф-ции showGame, recordGame и т.д.
+    const user = tg.initDataUnsafe?.user;
+    const apiUrl = "https://miniapp-backend.onrender.com";
 
-    // Ставка
+    if (user) {
+      fetch(`${apiUrl}/register`, { method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+      });
+      fetch(`${apiUrl}/balance/${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+          document.querySelectorAll(".balance span")[0].textContent = data.ton.toFixed(2);
+          document.querySelectorAll(".balance span")[1].textContent = data.usdt.toFixed(2);
+        });
+    }
+
+    // Навигация
+    function showRules() { document.getElementById('main').style.display='none'; document.getElementById('rules').style.display='block'; }
+    function showPartners() { document.getElementById('main').style.display='none'; document.getElementById('partners').style.display='block'; }
+    function goBack() { document.getElementById('rules').style.display='none'; document.getElementById('partners').style.display='none'; showMain(); }
+    function showMain() { document.getElementById('main').style.display='block'; }
+    function showGame(id) {
+      showMain(); document.getElementById('main').style.display='none';
+      document.getElementById(id).style.display='block';
+      if (id==='game-coin') updateBetUI();
+    }
+    function backToMain() {
+      ['game-coin','game-boxes','game-dice'].forEach(i=>document.getElementById(i).style.display='none');
+      showMain();
+    }
+
+    // Запись игры
+    function recordGame(game, bet, result, win) {
+      const u = tg.initDataUnsafe?.user; if (!u) return;
+      fetch(apiUrl+"/game",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({user_id:u.id,game,bet,result,win})
+      });
+      fetch(apiUrl+"/balance/update",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({id:u.id,currency:"ton",amount: win?bet:-bet})
+      }).then(_=>fetch(`${apiUrl}/balance/${u.id}`)).then(r=>r.json()).then(d=>{
+        document.querySelectorAll(".balance span")[0].textContent=d.ton.toFixed(2);
+        document.querySelectorAll(".balance span")[1].textContent=d.usdt.toFixed(2);
+      }).catch(()=>{});
+    }
+
+    // Ставки
     let bet = 100, minBet = 10, maxBet = 1000;
-    function updateBetUI() {
-      document.querySelectorAll('#betValue').forEach(s => s.innerText = bet);
-    }
-    function changeBet(delta) {
-      bet = Math.min(Math.max(bet + delta, minBet), maxBet);
-      updateBetUI();
-    }
-    function setBet(type) {
-      bet = (type === 'min') ? minBet : (type === 'max') ? maxBet : bet;
-      updateBetUI();
-    }
+    function updateBetUI() { document.querySelectorAll('#betValue').forEach(s=>s.innerText=bet); }
+    function changeBet(delta) { bet=Math.min(Math.max(bet+delta,minBet),maxBet); updateBetUI(); }
+    function setBet(type) { bet=(type==='min'?minBet:(type==='max'?maxBet:bet)); updateBetUI(); }
 
     // Выбор стороны
     let playerChoice = '';
@@ -225,19 +291,11 @@
       document.getElementById('btn-tails').classList.toggle('active', choice==='tails');
     }
 
-    // Ускоряем показ баланса при переходе
-    function showGame(id) {
-      document.getElementById('main').style.display = 'none';
-      document.getElementById(id).style.display = 'block';
-      if (id==='game-coin') updateBetUI();
-    }
-    function backToMain() { /* ... */ }
-
-    // Анимированный бросок
+    // Бросок монеты с анимацией 1.2c, смена изображения через 0.6c
     function playCoin() {
-      if (bet<minBet) return alert('Минимум 10 TON'); 
+      if (bet<minBet) return alert('Минимум '+minBet+' TON');
       if (!playerChoice) return alert('Выберите сторону');
-      const result = (Math.random()<0.5?'heads':'tails');
+      const result = Math.random()<0.5?'heads':'tails';
       const img = document.getElementById('coinImageMain');
       img.classList.remove('flip');
       void img.offsetWidth;
@@ -245,9 +303,9 @@
       setTimeout(()=>{
         img.src = 'assets/coin-'+result+'.png';
         const win = result===playerChoice;
-        document.getElementById('coinResult').innerText = 
+        document.getElementById('coinResult').innerText=
           `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
-        recordGame('coin', bet, result, win);
+        recordGame('coin',bet,result,win);
       }, 600);
     }
   </script>
