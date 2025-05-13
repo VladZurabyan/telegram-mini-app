@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js">
+    async function updateBalance() {
+      const userId = tg.initDataUnsafe?.user?.id || "guest";
+      const res = await fetch(`https://your-backend-url.replit.app/balance/${userId}`);
+      const data = await res.json();
+      document.getElementById("tonBalance").innerText = `TON: ${data.ton.toFixed(2)}`;
+      document.getElementById("usdtBalance").innerText = `USDT: ${data.usdt.toFixed(2)}`;
+    }
+
+    updateBalance();
+
+    function openStats() {
+      goBack();
+      document.getElementById("statsSection").style.display = "block";
+      loadStats();
+    }
+
+    async function loadStats() {
+      const userId = tg.initDataUnsafe?.user?.id || "guest";
+      const res = await fetch(`https://your-backend-url.replit.app/stats/${userId}`);
+      const stats = await res.json();
+      const html = `
+        👾 Игры: ${stats.games}<br>
+        ✅ Победы: ${stats.wins}<br>
+        ❌ Поражения: ${stats.losses}<br>
+        💰 Прибыль: ${stats.profit.toFixed(2)}
+      `;
+      document.getElementById("statsContent").innerHTML = html;
+    }
+
+  </script>
+
+  <style>
+    body {
+  background: linear-gradient(180deg, #0D2B4F 0%, #09213D 100%);
+  box-sizing: border-box;
+  min-height: 100vh;
+  overflow-x: hidden; color: white; font-family: sans-serif; text-align: center; }
+    .menu { display: none; padding: 20px; }
+    .play-button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.play-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+.play-button:active {
+  transform: scale(0.95);
+} background: #4C9DFF; padding: 10px 20px; margin: 5px; border-radius: 10px; color: white; border: none; cursor: pointer; }
+    .back-button { margin-top: 20px; background: #555; padding: 10px 20px; border-radius: 10px; color: white; border: none; cursor: pointer; }
+  
+    .coin {
+      font-size: 80px;
+      margin: 20px auto;
+      transition: transform 0.6s ease-in-out;
+    }
+    .coin.flip {
+      animation: flipCoin 0.6s ease-in-out;
+    }
+    @keyframes flipCoin {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    .dice-anim {
+      font-size: 50px;
+      animation: shakeDice 0.5s ease;
+    }
+    @keyframes shakeDice {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(15deg); }
+      50% { transform: rotate(-15deg); }
+      75% { transform: rotate(10deg); }
+    }
+
+    .box-anim {
+      animation: openBox 0.5s ease;
+    }
+    @keyframes openBox {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+</style>
+</head>
+<body>
+  <div id="preloader" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#0D2B4F; color:white; display:flex; align-items:center; justify-content:center; font-size:20px; z-index:1000;">
+    Загрузка...
+  </div>
+  <h1>Mini App</h1>
+<div style="margin: 10px 0;">
+  <div id="tonBalance">TON: 0.00</div>
+  <div id="usdtBalance">USDT: 0.00</div>
+</div>
+
+  <div class="menu" id="adminPanel">
+    <h2>Админ-панель</h2>
+    <button class="play-button" onclick="loadWithdraws()">📤 Заявки на вывод</button>
+    <button class="play-button" onclick="loadLogs()">📜 Логи</button>
+    <div id="adminContent" style="margin-top: 15px; text-align: left; font-size: 14px;"></div>
+    <button class="back-button" onclick="goBack()">⬅ Назад</button>
+  </div>
+
+  <button class="play-button" onclick="openStats()">📊 Статистика</button>
+<div id="adminBtnContainer"></div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    window.addEventListener("load", () => document.getElementById("preloader").style.display = "none");
+
+    const ADMIN_IDS = [123456789]; // Замените на свой Telegram user_id
+
+    function goBack() {
+      document.querySelectorAll(".menu").forEach(m => m.style.display = "none");
+    }
+
+    function openAdmin() {
+      goBack();
+      document.getElementById("adminPanel").style.display = "block";
+      document.getElementById("adminContent").innerText = "Выберите действие выше...";
+    }
+
+    async function loadWithdraws() {
+      const res = await fetch("https://your-backend-url.replit.app/withdraw-requests");
+      const data = await res.json();
+      const html = data.requests.map(r =>
+        `👤 ${r.user_id} → ${r.amount} ${r.currency} на ${r.address}`
+      ).join("<br>");
+      document.getElementById("adminContent").innerHTML = "<b>Заявки:</b><br>" + html;
+    }
+
+    async function loadLogs() {
+      const res = await fetch("https://your-backend-url.replit.app/logs");
+      const data = await res.json();
+      const html = data.logs.map(log => `🕒 ${log}`).join("<br>");
+      document.getElementById("adminContent").innerHTML = "<b>Логи:</b><br>" + html;
+    }
+
+    // Показываем кнопку только если user_id в списке админов
+    window.onload = () => {
+      const userId = tg.initDataUnsafe?.user?.id;
+      if (ADMIN_IDS.includes(userId)) {
+        const btn = document.createElement("button");
+        btn.innerText = "🔐 Админка";
+        btn.className = "play-button";
+        btn.onclick = openAdmin;
+        document.getElementById("adminBtnContainer").appendChild(btn);
+      }
+    };
+  
+    async function updateBalance() {
+      const userId = tg.initDataUnsafe?.user?.id || "guest";
+      const res = await fetch(`https://your-backend-url.replit.app/balance/${userId}`);
+      const data = await res.json();
+      document.getElementById("tonBalance").innerText = `TON: ${data.ton.toFixed(2)}`;
+      document.getElementById("usdtBalance").innerText = `USDT: ${data.usdt.toFixed(2)}`;
+    }
+
+    updateBalance();
+
+    function openStats() {
+      goBack();
+      document.getElementById("statsSection").style.display = "block";
+      loadStats();
+    }
+
+    async function loadStats() {
+      const userId = tg.initDataUnsafe?.user?.id || "guest";
+      const res = await fetch(`https://your-backend-url.replit.app/stats/${userId}`);
+      const stats = await res.json();
+      const html = `
+        👾 Игры: ${stats.games}<br>
+        ✅ Победы: ${stats.wins}<br>
+        ❌ Поражения: ${stats.losses}<br>
+        💰 Прибыль: ${stats.profit.toFixed(2)}
+      `;
+      document.getElementById("statsContent").innerHTML = html;
+    }
+
+  </script>
+
+
+  <div id="statsSection" class="menu hidden">
+    <h2>📊 Моя статистика</h2>
+    <div id="statsContent" style="font-size: 14px; text-align: left; margin-top: 10px;"></div>
+    <button class="back-button" onclick="goBack()">⬅ Назад</button>
+  </div>
+
+</body>
+</html>
