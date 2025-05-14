@@ -24,32 +24,12 @@ function hideAll() {
 }
 function showMain()    { hideAll(); document.getElementById('main').style.display = 'block'; }
 function showGame(id)  { hideAll(); document.getElementById(id).style.display = 'block'; if (id==='game-coin') updateBetUI(); }
-function showRules()   { hideAll(); document.getElementById('rules').style.display = 'block'; }
-function showPartners(){ hideAll(); document.getElementById('partners').style.display = 'block'; }
 function backToMain()  { showMain(); }
 
-function recordGame(game, bet, result, win) {
-  const u = tg.initDataUnsafe?.user; if (!u) return;
-  fetch(`${apiUrl}/game`, {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({ user_id:u.id, game, bet, result, win })
-  });
-  fetch(`${apiUrl}/balance/update`, {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({ id:u.id, currency:"ton", amount: win?bet:-bet })
-  })
-  .then(() => fetch(`${apiUrl}/balance/${u.id}`))
-  .then(r => r.json())
-  .then(d => {
-    document.querySelectorAll(".balance span")[0].textContent = d.ton.toFixed(2);
-    document.querySelectorAll(".balance span")[1].textContent = d.usdt.toFixed(2);
-  });
-}
-
 let bet = 100, minBet = 10, maxBet = 1000;
-function updateBetUI()    { document.querySelectorAll('#betValue').forEach(s => s.innerText = bet); }
+function updateBetUI()    { document.getElementById('betValue').innerText = bet; }
 function changeBet(delta) { bet = Math.min(Math.max(bet+delta,minBet),maxBet); updateBetUI(); }
-function setBet(type)     { bet = (type==='min'?minBet:type==='max'?maxBet:bet); updateBetUI(); }
+function setBet(type)     { bet = type==='min'?minBet:type==='max'?maxBet:bet; updateBetUI(); }
 
 let playerChoice = '';
 function setCoinChoice(choice) {
@@ -69,32 +49,33 @@ function playCoin(btn) {
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
 
-  // Запускаем простую flip-анимацию через CSS transform
+  // 1) Запускаем CSS-flip через класс
   img.classList.remove('flip');
   void img.offsetWidth;
   img.classList.add('flip');
 
-  img.addEventListener('animationend', function onAnimEnd() {
-    img.removeEventListener('animationend', onAnimEnd);
+  img.addEventListener('transitionend', function onFlipEnd(e) {
+    // ловим именно transform
+    if (e.propertyName !== 'transform') return;
+    img.removeEventListener('transitionend', onFlipEnd);
 
-    // 1) Fade out
+    // 2) Fade out
     img.style.opacity = '0';
-    img.addEventListener('transitionend', function onFadeOut(e) {
-      if (e.propertyName !== 'opacity') return;
+    img.addEventListener('transitionend', function onFadeOut(e2) {
+      if (e2.propertyName !== 'opacity') return;
       img.removeEventListener('transitionend', onFadeOut);
 
-      // 2) Меняем картинку
+      // 3) Меняем изображение
       img.src = `assets/coin-${result}.png`;
-      // перерисовка
       void img.offsetWidth;
 
-      // 3) Fade in
+      // 4) Fade in
       img.style.opacity = '1';
-      img.addEventListener('transitionend', function onFadeIn(e2) {
-        if (e2.propertyName !== 'opacity') return;
+      img.addEventListener('transitionend', function onFadeIn(e3) {
+        if (e3.propertyName !== 'opacity') return;
         img.removeEventListener('transitionend', onFadeIn);
 
-        // 4) Показываем результат и включаем кнопки
+        // 5) Выводим результат и разблокируем кнопки
         const win = result === playerChoice;
         document.getElementById('coinResult').innerText =
           `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
