@@ -28,7 +28,7 @@ function showRules()   { hideAll(); document.getElementById('rules').style.displ
 function showPartners(){ hideAll(); document.getElementById('partners').style.display = 'block'; }
 function backToMain()  { showMain(); }
 
-// Баланс / запись игр
+// Запись игр и баланс
 function recordGame(game, bet, result, win) {
   const u = tg.initDataUnsafe?.user; if (!u) return;
   fetch(`${apiUrl}/game`, {
@@ -66,39 +66,34 @@ function playCoin(btn) {
   if (!playerChoice) return alert('Выберите сторону');
 
   const backBtn = document.getElementById('btn-back-coin');
+
+  // Отключаем обе кнопки
   btn.disabled = true;
   backBtn.disabled = true;
 
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
+  
+  // Запускаем анимацию
   img.classList.remove('flip');
   void img.offsetWidth;
   img.classList.add('flip');
-
+  
+  // Ждём окончания анимации монеты
   img.addEventListener('animationend', function handler() {
-    img.removeEventListener('animationend', handler);
-
-    // Плавно скрываем
-    img.classList.add('fade-out');
-
-    img.addEventListener('transitionend', function onFade(e) {
-      if (e.propertyName !== 'opacity') return;
-      img.removeEventListener('transitionend', onFade);
-
-      // Меняем картинку и показываем обратно
-      img.src = `assets/coin-${result}.png`;
-      img.classList.remove('fade-out');
-
-      const win = result === playerChoice;
-      document.getElementById('coinResult').innerText =
-        `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
-      recordGame('coin', bet, result, win);
-
-      btn.disabled = false;
-      backBtn.disabled = false;
-    }, { once: true });
+    img.src = `assets/coin-${result}.png`;
+    const win = result === playerChoice;
+    document.getElementById('coinResult').innerText =
+      `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
+    recordGame('coin', bet, result, win);
+    
+    // Включаем кнопки обратно
+    btn.disabled = false;
+    backBtn.disabled = false;
   }, { once: true });
 }
+
+
 
 // Три коробки
 function selectBox(choice) {
