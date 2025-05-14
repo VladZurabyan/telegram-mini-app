@@ -237,23 +237,29 @@ button[disabled],
 
 /* === Кнопка Назад === */
 .back-btn {
-  background: transparent;
-  border: 2px solid #1D75FF;
-  border-radius: 25px;
-  padding: 10px 28px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #1D75FF;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 32px;
+  height: 32px;
+  background: url('assets/arrow-left.png') no-repeat center center;
+  background-size: contain;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  z-index: 10;
+  transition: opacity 0.2s;
 }
 .back-btn:hover {
+opacity: 0.7;
   background: #1D75FF;
   color: white;
 }
 .back-btn:active {
   background: #155ecb;
   border-color: #155ecb;
+}
+.game-screen {
+  position: relative;
+  padding-top: 48px;
 }
 
 /* Специфичные стили для коробок и кубиков */
@@ -368,3 +374,4 @@ button[disabled],
   opacity: 0.5 !important;
   pointer-events: none !important;
 }
+
