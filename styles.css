@@ -131,29 +131,36 @@ footer img {
 }
 
 /* === Монета с тенями и фиксированным размером === */
-/* === Селектор для плавного fade и 3D === */
 #game-coin .coin-image,
 #coinImageMain {
-  width: 120px;
-  height: 120px;
+  width: 120px !important;
+  height: 120px !important;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  transition: opacity 0.2s ease, transform 1s linear;
-  opacity: 1;
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
 
-/* Простая flip-анимация (через класс .flip) */
+/* Анимация флипа */
 #game-coin .coin-image.flip {
-  transform: rotateY(360deg);
+  animation: flipBonus 1s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
-/* Стили для disabled-кнопок */
-button[disabled] {
-  background-color: #777 !important;
-  border-color:     #777 !important;
-  color:            #ccc !important;
-  cursor:           not-allowed !important;
-  opacity:          0.6 !important;
+@keyframes flipBonus {
+  0% {
+    transform: perspective(800px) rotateY(0deg) translateY(0) scale(1);
+  }
+  25% {
+    transform: perspective(800px) rotateY(90deg) translateY(-15px) scale(1.1);
+  }
+  50% {
+    transform: perspective(800px) rotateY(180deg) translateY(0) scale(1);
+  }
+  75% {
+    transform: perspective(800px) rotateY(270deg) translateY(-15px) scale(1.1);
+  }
+  100% {
+    transform: perspective(800px) rotateY(360deg) translateY(0) scale(1);
+  }
 }
 
 /* === Градиент для ОРЁЛ/РЕШКА === */
