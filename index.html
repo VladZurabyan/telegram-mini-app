@@ -50,7 +50,7 @@
       <div><img src="assets/usdt.png" /><span>0.00</span></div>
     </div>
 
-    <h2>COIN FLIP</h2>
+    <h2>ОРЁЛ И РЕШКА</h2>
     <img id="coinImageMain" class="coin-image" src="assets/coin-heads.png" />
 
     <div class="actions coin-choice">
@@ -58,18 +58,39 @@
       <button id="btn-tails" onclick="setCoinChoice('tails')">РЕШКА</button>
     </div>
 
-    <button class="game-button play-btn" onclick="playCoin(this)">PLAY</button>
+    <button class="game-button play-btn" onclick="playCoin(this)">Играть</button>
 
     <div class="result-box" id="coinResult"></div>
     <div class="prize-box" id="coinPrize"></div>
+
+
+<div class="currency-selector">
+  <button id="btn-currency-ton"
+          class="currency-btn active"
+          onclick="setCurrency('ton')">
+    TON (<span id="bal-ton">0.00</span>)
+  </button>
+  <button id="btn-currency-usdt"
+          class="currency-btn"
+          onclick="setCurrency('usdt')">
+    USDT (<span id="bal-usdt">0.00</span>)
+  </button>
+</div>
+
+
+
+
+
+
+
 
     <div class="bet-container">
       <label>Введите ставку</label>
       <div class="bet-box">
         <button onclick="setBet('min')">min</button>
-        <button onclick="changeBet(-10)">-</button>
-        <span id="betValue">100</span>
-        <button onclick="changeBet(10)">+</button>
+        <button onclick="changeBet(-1)">-</button>
+        <span id="betValue">10</span>
+        <button onclick="changeBet(1)">+</button>
         <button onclick="setBet('max')">max</button>
       </div>
       <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
@@ -91,9 +112,9 @@
       <label>Введите ставку</label>
       <div class="bet-box">
         <button onclick="setBet('min')">min</button>
-        <button onclick="changeBet(-10)">-</button>
-        <span id="betValue">100</span>
-        <button onclick="changeBet(10)">+</button>
+        <button onclick="changeBet(-1)">-</button>
+        <span id="betValue">10</span>
+        <button onclick="changeBet(1)">+</button>
         <button onclick="setBet('max')">max</button>
       </div>
       <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
