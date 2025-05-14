@@ -140,6 +140,14 @@ footer img {
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
 
+/* Плавный переход opacity и сохранение 3D */
+#game-coin .coin-image,
+#coinImageMain {
+  transition: opacity 0.2s ease, transform 1s linear;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
 /* Анимация флипа 
 #game-coin .coin-image.flip {
   animation: flipBonus 1s cubic-bezier(0.23, 1, 0.32, 1) both;
