@@ -60,20 +60,33 @@ function setCoinChoice(choice) {
   document.getElementById('btn-heads').classList.toggle('active', choice==='heads');
   document.getElementById('btn-tails').classList.toggle('active', choice==='tails');
 }
-function playCoin() {
+
+function playCoin(btn) {
   if (bet < minBet) return alert(`Минимум ${minBet} TON`);
   if (!playerChoice) return alert('Выберите сторону');
+  
+  // Отключаем кнопку
+  btn.disabled = true;
+  
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
-  img.classList.remove('flip'); void img.offsetWidth; img.classList.add('flip');
-  setTimeout(() => {
+  
+  // Запускаем анимацию
+  img.classList.remove('flip');
+  void img.offsetWidth; // сброс перерисовки
+  img.classList.add('flip');
+  
+  // После завершения анимации показываем результат и включаем кнопку
+  img.addEventListener('animationend', function handler() {
     img.src = `assets/coin-${result}.png`;
-    const win = result===playerChoice;
+    const win = result === playerChoice;
     document.getElementById('coinResult').innerText =
       `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
     recordGame('coin', bet, result, win);
-  }, 600);
+    btn.disabled = false;
+  }, { once: true });
 }
+
 
 // Три коробки
 function selectBox(choice) {
