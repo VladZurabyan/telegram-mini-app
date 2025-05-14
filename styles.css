@@ -127,8 +127,8 @@ footer img {
 
 /* === Анимация монеты === */
 .coin-image {
-  width: 100px;
-  height: 100px;
+  width: 180px;
+  height: 180px;
   margin: 20px auto;
   transform-style: preserve-3d;
 }
@@ -198,7 +198,7 @@ footer img {
   margin: 20px auto;     /* автосмещение по горизонтали */
   padding: 8px 16px;     /* более мелкие отступы */
   font-size: 20px;       /* меньший шрифт */
-  width: auto;           /* убираем фиксированную ширину */
+  width: 150px;           /* убираем фиксированную ширину */
   min-width: 0;          /* отменяем минимальную ширину из старых стилей */
 }
 
