@@ -133,16 +133,15 @@ footer img {
 /* === Монета с тенями и фиксированным размером === */
 #game-coin .coin-image,
 #coinImageMain {
-  width: 120px !important;
-  height: 120px !important;
+  width: 120px;
+  height: 120px;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
+  transition: transform 0.8s ease, opacity 0.3s ease;
+  opacity: 1;
 }
-
-/* Анимация флипа */
 #game-coin .coin-image.flip {
-  animation: flipBonus 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+  transform: rotateY(360deg);
 }
 
 @keyframes flipBonus {
