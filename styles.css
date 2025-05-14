@@ -202,6 +202,14 @@ footer img {
   min-width: 0;          /* отменяем минимальную ширину из старых стилей */
 }
 
+.play-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.play-btn:disabled {
+  pointer-events: none;
+}
+
 
 /* === Кнопка Назад === */
 .back-btn {
