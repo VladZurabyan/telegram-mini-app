@@ -195,6 +195,10 @@ footer img {
 #game-coin .actions.coin-choice button.active {
   box-shadow: 0 0 0 3px rgba(255,255,255,0.8);
 }
+#game-coin .coin-image {
+  width: 120px !important;
+  height: 120px !important;
+}
 
 /* === PLAY-кнопка === */
 .play-btn {
@@ -279,7 +283,4 @@ button[disabled] {
   width: 60px;
   margin: 0 10px;
 }
-#game-coin .coin-image {
-  width: 120px !important;
-  height: 120px !important;
-}
+
