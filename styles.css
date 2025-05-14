@@ -140,33 +140,25 @@ footer img {
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
 
-/* Новая, более живописная 3D-анимация монеты */
-#game-coin .coin-image.flip {
-  animation: coinFlip2 1.2s cubic-bezier(0.4, 0.0, 0.2, 1) both;
+/* === Простая анимация флипа === */
+#game-coin .coin-image {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
-@keyframes coinFlip2 {
-  0% {
-    transform: perspective(800px) rotateY(0deg) rotateX(0deg);
-    opacity: 1;
+#game-coin .coin-image.flip {
+  animation: simpleFlip 1s linear forwards;
+}
+
+@keyframes simpleFlip {
+  from {
+    transform: rotateY(0deg);
   }
-  15% {
-    transform: perspective(800px) rotateY(180deg) rotateX(15deg);
-    opacity: 1;
-  }
-  30% {
-    transform: perspective(800px) rotateY(360deg) rotateX(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: perspective(800px) rotateY(720deg) rotateX(25deg);
-    opacity: 1;
-  }
-  100% {
-    transform: perspective(800px) rotateY(1080deg) rotateX(0deg);
-    opacity: 1;
+  to {
+    transform: rotateY(360deg);
   }
 }
+
 
 /* === Градиент для ОРЁЛ/РЕШКА === */
 #game-coin .actions.coin-choice button {
