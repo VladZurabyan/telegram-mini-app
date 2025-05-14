@@ -28,17 +28,13 @@ function showRules() { hideAll(); document.getElementById('rules').style.display
 function showPartners() { hideAll(); document.getElementById('partners').style.display='block'; }
 function backToMain() { showMain(); }
 
-// Запись игры и обновление баланса
+// Запись игры и баланс
 function recordGame(game, bet, result, win) {
   const u = tg.initDataUnsafe?.user; if(!u) return;
-  fetch(`${apiUrl}/game`, {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({user_id:u.id,game,bet,result,win})
-  });
-  fetch(`${apiUrl}/balance/update`, {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({id:u.id,currency:"ton",amount: win?bet:-bet})
-  })
+  fetch(`${apiUrl}/game`,{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({user_id:u.id,game,bet,result,win})});
+  fetch(`${apiUrl}/balance/update`,{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({id:u.id,currency:"ton",amount: win?bet:-bet})})
   .then(()=>fetch(`${apiUrl}/balance/${u.id}`))
   .then(r=>r.json()).then(d=>{
     document.querySelectorAll(".balance span")[0].textContent=d.ton.toFixed(2);
@@ -62,12 +58,12 @@ function setCoinChoice(choice){
 function playCoin(){
   if(bet<minBet) return alert(`Минимум ${minBet} TON`);
   if(!playerChoice) return alert('Выберите сторону');
-  const result=Math.random()<0.5?'heads':'tails';
-  const img=document.getElementById('coinImageMain');
+  const result = Math.random()<0.5 ? 'heads' : 'tails';
+  const img = document.getElementById('coinImageMain');
   img.classList.remove('flip'); void img.offsetWidth; img.classList.add('flip');
   setTimeout(()=>{
-    img.src=`assets/coin-${result}.png`;
-    const win=result===playerChoice;
+    img.src = `assets/coin-${result}.png`;
+    const win = result===playerChoice;
     document.getElementById('coinResult').innerText=
       `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
     recordGame('coin',bet,result,win);
