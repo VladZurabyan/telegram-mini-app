@@ -139,19 +139,19 @@ footer img {
 
 @keyframes flipBonus {
   0% {
-    transform: perspective(800px) rotateY(0deg) translateY(0) scale(1);
+    transform: perspective(180px) rotateY(0deg) translateY(0) scale(1);
   }
   25% {
-    transform: perspective(800px) rotateY(90deg) translateY(-15px) scale(1.1);
+    transform: perspective(180px) rotateY(90deg) translateY(-15px) scale(1.1);
   }
   50% {
-    transform: perspective(800px) rotateY(180deg) translateY(0) scale(1);
+    transform: perspective(180px) rotateY(180deg) translateY(0) scale(1);
   }
   75% {
-    transform: perspective(800px) rotateY(270deg) translateY(-15px) scale(1.1);
+    transform: perspective(180px) rotateY(270deg) translateY(-15px) scale(1.1);
   }
   100% {
-    transform: perspective(800px) rotateY(360deg) translateY(0) scale(1);
+    transform: perspective(180px) rotateY(360deg) translateY(0) scale(1);
   }
 }
 
