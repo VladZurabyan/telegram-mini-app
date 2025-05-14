@@ -265,3 +265,10 @@ button[disabled],
   width: 60px;
   margin: 0 10px;
 }
+/* ===== Жёсткий оверрайд размеров монеты ===== */
+#coinImageMain,
+#game-coin .coin-image {
+  width: 120px !important;
+  height: 120px !important;
+}
+
