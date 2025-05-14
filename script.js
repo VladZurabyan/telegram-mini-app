@@ -89,14 +89,28 @@ function playCoin(btn) {
   if (bet < minBet) return alert(`Минимум ${minBet} TON`);
   if (!playerChoice) return alert('Выберите сторону');
 
-  const backBtn      = document.getElementById('btn-back-coin');
-  const tonBtn       = document.getElementById('btn-currency-ton');
-  const usdtBtn      = document.getElementById('btn-currency-usdt');
-  const resultBox    = document.getElementById('coinResult');
-  const prizeBox     = document.getElementById('coinPrize');
+ const backBtn         = document.getElementById('btn-back-coin');
+  const headsBtn        = document.getElementById('btn-heads');
+  const tailsBtn        = document.getElementById('btn-tails');
+  const tonBtn          = document.getElementById('btn-currency-ton');
+  const usdtBtn         = document.getElementById('btn-currency-usdt');
+  const currencyWrapper = document.querySelector('#game-coin .currency-selector');
+  const betBoxWrapper   = document.querySelector('#game-coin .bet-box');
+  const betBtns         = Array.from(betBoxWrapper.querySelectorAll('button'));
+  const resultBox       = document.getElementById('coinResult');
+  const prizeBox        = document.getElementById('coinPrize');
+
+
   resultBox.innerText = '';
   prizeBox.innerText  = '';
-[btn, backBtn, tonBtn, usdtBtn].forEach(el => el.disabled = true);
+
+// Собираем все интерактивные элементы
+  const allBtns = [btn, backBtn, headsBtn, tailsBtn, tonBtn, usdtBtn, betBtns, currencyWrapper, betBoxWrapper, resultBox, prizeBox];
+
+allBtns.forEach(el => el.disabled = true);
+currencyWrapper.classList.add('disabled');
+  betBoxWrapper.classList.add('disabled');
+
 
   //btn.disabled = backBtn.disabled = true;
 
@@ -140,7 +154,10 @@ function playCoin(btn) {
         }
 
         recordGame('coin', bet, result, isWin);
-        [btn, backBtn, tonBtn, usdtBtn].forEach(el => el.disabled = false);
+        // Разблокируем кнопки
+        allBtns.forEach(el => el.disabled = false);
+currencyWrapper.classList.remove('disabled');
+  betBoxWrapper.classList.remove('disabled');
       }, { once: true });
     }, { once: true });
   }, { once: true });
