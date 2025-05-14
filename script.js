@@ -17,20 +17,43 @@ if (user) {
     });
 }
 
+// Навигация
 function hideAll() {
-  ['main','game-coin','game-boxes','game-dice','rules','partners'].forEach(id =>
-    document.getElementById(id).style.display = 'none'
-  );
+  ['main','game-coin','game-boxes','game-dice','rules','partners']
+    .forEach(id => document.getElementById(id).style.display = 'none');
 }
 function showMain()    { hideAll(); document.getElementById('main').style.display = 'block'; }
 function showGame(id)  { hideAll(); document.getElementById(id).style.display = 'block'; if (id==='game-coin') updateBetUI(); }
+function showRules()   { hideAll(); document.getElementById('rules').style.display = 'block'; }
+function showPartners(){ hideAll(); document.getElementById('partners').style.display = 'block'; }
 function backToMain()  { showMain(); }
 
-let bet = 100, minBet = 10, maxBet = 1000;
-function updateBetUI()    { document.getElementById('betValue').innerText = bet; }
-function changeBet(delta) { bet = Math.min(Math.max(bet+delta,minBet),maxBet); updateBetUI(); }
-function setBet(type)     { bet = type==='min'?minBet:type==='max'?maxBet:bet; updateBetUI(); }
+// Запись игр и баланс
+function recordGame(game, bet, result, win) {
+  const u = tg.initDataUnsafe?.user; if (!u) return;
+  fetch(`${apiUrl}/game`, {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ user_id:u.id, game, bet, result, win })
+  });
+  fetch(`${apiUrl}/balance/update`, {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ id:u.id, currency:"ton", amount: win?bet:-bet })
+  })
+  .then(() => fetch(`${apiUrl}/balance/${u.id}`))
+  .then(r => r.json())
+  .then(d => {
+    document.querySelectorAll(".balance span")[0].textContent = d.ton.toFixed(2);
+    document.querySelectorAll(".balance span")[1].textContent = d.usdt.toFixed(2);
+  });
+}
 
+// Ставки
+let bet = 100, minBet = 10, maxBet = 1000;
+function updateBetUI()    { document.querySelectorAll('#betValue').forEach(s => s.innerText = bet); }
+function changeBet(delta) { bet = Math.min(Math.max(bet+delta,minBet),maxBet); updateBetUI(); }
+function setBet(type)     { bet = (type==='min'?minBet:type==='max'?maxBet:bet); updateBetUI(); }
+
+// Орёл и решка
 let playerChoice = '';
 function setCoinChoice(choice) {
   playerChoice = choice;
@@ -43,52 +66,36 @@ function playCoin(btn) {
   if (!playerChoice) return alert('Выберите сторону');
 
   const backBtn = document.getElementById('btn-back-coin');
+
+  // Отключаем обе кнопки
   btn.disabled = true;
   backBtn.disabled = true;
 
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
-
-  // 1) Запускаем CSS-flip через класс
+  
+  // Запускаем анимацию
   img.classList.remove('flip');
   void img.offsetWidth;
   img.classList.add('flip');
-
-  img.addEventListener('transitionend', function onFlipEnd(e) {
-    // ловим именно transform
-    if (e.propertyName !== 'transform') return;
-    img.removeEventListener('transitionend', onFlipEnd);
-
-    // 2) Fade out
-    img.style.opacity = '0';
-    img.addEventListener('transitionend', function onFadeOut(e2) {
-      if (e2.propertyName !== 'opacity') return;
-      img.removeEventListener('transitionend', onFadeOut);
-
-      // 3) Меняем изображение
-      img.src = `assets/coin-${result}.png`;
-      void img.offsetWidth;
-
-      // 4) Fade in
-      img.style.opacity = '1';
-      img.addEventListener('transitionend', function onFadeIn(e3) {
-        if (e3.propertyName !== 'opacity') return;
-        img.removeEventListener('transitionend', onFadeIn);
-
-        // 5) Выводим результат и разблокируем кнопки
-        const win = result === playerChoice;
-        document.getElementById('coinResult').innerText =
-          `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
-        recordGame('coin', bet, result, win);
-
-        btn.disabled = false;
-        backBtn.disabled = false;
-      }, { once: true });
-    }, { once: true });
+  
+  // Ждём окончания анимации монеты
+  img.addEventListener('animationend', function handler() {
+    img.src = `assets/coin-${result}.png`;
+    const win = result === playerChoice;
+    document.getElementById('coinResult').innerText =
+      `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
+    recordGame('coin', bet, result, win);
+    
+    // Включаем кнопки обратно
+    btn.disabled = false;
+    backBtn.disabled = false;
   }, { once: true });
 }
 
 
+
+// Три коробки
 function selectBox(choice) {
   if (bet < minBet) return alert(`Минимум ${minBet} TON`);
   const prize = Math.floor(Math.random()*3), win = choice===prize;
@@ -97,6 +104,7 @@ function selectBox(choice) {
   recordGame('boxes', bet, win?'win':'lose', win);
 }
 
+// Кубики
 function rollDice() {
   if (bet < minBet) return alert(`Минимум ${minBet} TON`);
   const d1 = Math.floor(Math.random()*6)+1,
