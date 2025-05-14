@@ -135,9 +135,6 @@ footer img {
 
 
 /* Размер монеты */
-#game-coin .coin-image {
-  width: 120px;
-  height: 120px;
   /* Сохраняем прежнюю 3D-подготовку */
   transform-style: preserve-3d;
   backface-visibility: hidden;
@@ -281,4 +278,8 @@ button[disabled] {
 .dice-row img {
   width: 60px;
   margin: 0 10px;
+}
+#game-coin .coin-image {
+  width: 120px !important;
+  height: 120px !important;
 }
