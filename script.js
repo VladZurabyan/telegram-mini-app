@@ -2,7 +2,7 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 
 // В начале файла, рядом с остальными константами
-const winsCount  = 0;   // сколько «выигрышей» из totalCount
+const winsCount  = 10;   // сколько «выигрышей» из totalCount
 const lossesCount = 10; // сколько «проигрышей» из totalCount
 const totalCount  = winsCount + lossesCount;
 
