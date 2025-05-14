@@ -133,8 +133,8 @@ footer img {
 /* === Монета с тенями и фиксированным размером === */
 #game-coin .coin-image,
 #coinImageMain {
-  width: 120px !important;
-  height: 120px !important;
+  width: 180px !important;
+  height: 180px !important;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
