@@ -357,4 +357,14 @@ button[disabled],
   color: #1a1a1a;
 }
 
+.currency-selector.disabled,
+.currency-selector.disabled * {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+}
 
+.bet-box.disabled,
+.bet-box.disabled * {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+}
