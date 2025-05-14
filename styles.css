@@ -133,8 +133,8 @@ footer img {
 /* === Монета с тенями и фиксированным размером === */
 #game-coin .coin-image,
 #coinImageMain {
-  width: 180px !important;
-  height: 180px !important;
+  width: 120px !important;
+  height: 120px !important;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
@@ -264,4 +264,27 @@ button[disabled],
 .dice-row img {
   width: 60px;
   margin: 0 10px;
+}
+
+/* === Flip-head and Flip-tail animations === */
+#game-coin .coin-image,
+#coinImageMain {
+  transition: opacity 0.2s ease !important;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+@keyframes flip-head {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+@keyframes flip-tail {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(720deg); }
+}
+.coin-image.flip-head {
+  animation: flip-head 0.6s ease-out forwards !important;
+}
+.coin-image.flip-tail {
+  animation: flip-tail 1.2s ease-out forwards !important;
 }
