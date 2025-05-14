@@ -68,35 +68,33 @@ function playCoin(btn) {
 
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
-  const duration = 1200;
-  const rotations = 2;
-  const totalDeg = 360 * rotations;
-  const start = performance.now();
 
-  function animate(time) {
-    const elapsed = time - start;
-    const prog = Math.min(elapsed / duration, 1);
-    const ease = 1 - Math.pow(1 - prog, 3);
-    const angle = ease * totalDeg;
-    const scale = 1 + 0.1 * Math.sin(Math.PI * ease);
-    const y = -20 * Math.sin(Math.PI * ease);
+  // Запускаем простую flip-анимацию через CSS transform
+  img.classList.remove('flip');
+  void img.offsetWidth;
+  img.classList.add('flip');
 
-    img.style.transform = `perspective(800px) rotateY(${angle}deg) translateY(${y}px) scale(${scale})`;
+  img.addEventListener('animationend', function onAnimEnd() {
+    img.removeEventListener('animationend', onAnimEnd);
 
-    if (prog < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      img.style.transition = 'opacity 0.15s ease';
-      img.style.opacity = '0';
-      img.addEventListener('transitionend', function handler(e) {
-        if (e.propertyName !== 'opacity') return;
-        img.removeEventListener('transitionend', handler);
+    // 1) Fade out
+    img.style.opacity = '0';
+    img.addEventListener('transitionend', function onFadeOut(e) {
+      if (e.propertyName !== 'opacity') return;
+      img.removeEventListener('transitionend', onFadeOut);
 
-        img.src = `assets/coin-${result}.png`;
-        img.style.opacity = '1';
-        img.style.transition = '';
-        img.style.transform = 'perspective(800px) rotateY(0deg)';
+      // 2) Меняем картинку
+      img.src = `assets/coin-${result}.png`;
+      // перерисовка
+      void img.offsetWidth;
 
+      // 3) Fade in
+      img.style.opacity = '1';
+      img.addEventListener('transitionend', function onFadeIn(e2) {
+        if (e2.propertyName !== 'opacity') return;
+        img.removeEventListener('transitionend', onFadeIn);
+
+        // 4) Показываем результат и включаем кнопки
         const win = result === playerChoice;
         document.getElementById('coinResult').innerText =
           `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
@@ -105,11 +103,10 @@ function playCoin(btn) {
         btn.disabled = false;
         backBtn.disabled = false;
       }, { once: true });
-    }
-  }
-
-  requestAnimationFrame(animate);
+    }, { once: true });
+  }, { once: true });
 }
+
 
 function selectBox(choice) {
   if (bet < minBet) return alert(`Минимум ${minBet} TON`);
