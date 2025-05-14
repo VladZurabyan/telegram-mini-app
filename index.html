@@ -47,13 +47,19 @@
     </div>
     <h2>COIN FLIP</h2>
     <img id="coinImageMain" class="coin-image" src="assets/coin-heads.png" />
+
+    <!-- Оставляем эти кнопки в базовом стиле -->
     <div class="actions">
       <button id="btn-heads" onclick="setCoinChoice('heads')">ОРЁЛ</button>
       <button id="btn-tails" onclick="setCoinChoice('tails')">РЕШКА</button>
     </div>
-    <button class="game-button" onclick="playCoin()">PLAY</button>
+
+    <!-- PLAY в новом стиле -->
+    <button class="game-button play-btn" onclick="playCoin()">PLAY</button>
+
     <div class="result-box" id="coinResult"></div>
     <div class="prize-box" id="coinPrize"></div>
+
     <div class="bet-container">
       <label>Введите ставку</label>
       <div class="bet-box">
@@ -65,10 +71,12 @@
       </div>
       <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
     </div>
-    <button class="btn" onclick="backToMain()">Назад</button>
+
+    <!-- Назад в новом стиле -->
+    <button class="btn back-btn" onclick="backToMain()">Назад</button>
   </div>
 
-  <!-- ИГРА: ТРИ КОРОБКИ -->
+  <!-- ТРИ КОРОБКИ -->
   <div id="game-boxes" class="game-screen">
     <h2>ТРИ КОРОБКИ 🎁</h2>
     <div class="boxes">
@@ -78,52 +86,36 @@
     </div>
     <div class="result-box" id="boxResult"></div>
     <div class="bet-container">
-      <label>Введите ставку</label>
-      <div class="bet-box">
-        <button onclick="setBet('min')">min</button>
-        <button onclick="changeBet(-10)">-</button>
-        <span id="betValue">100</span>
-        <button onclick="changeBet(10)">+</button>
-        <button onclick="setBet('max')">max</button>
-      </div>
-      <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
+      <!-- ... ставки ... -->
     </div>
-    <button class="btn" onclick="backToMain()">Назад</button>
+    <button class="btn back-btn" onclick="backToMain()">Назад</button>
   </div>
 
-  <!-- ИГРА: КУБИКИ -->
+  <!-- КУБИКИ -->
   <div id="game-dice" class="game-screen">
     <h2>КУБИКИ 🎲</h2>
-    <button class="game-button" onclick="rollDice()">Бросить</button>
+    <button class="game-button play-btn" onclick="rollDice()">PLAY</button>
     <div class="dice-row">
       <img id="dice1" src="assets/dice1.png" />
       <img id="dice2" src="assets/dice2.png" />
     </div>
     <div class="result-box" id="diceResult"></div>
     <div class="bet-container">
-      <label>Введите ставку</label>
-      <div class="bet-box">
-        <button onclick="setBet('min')">min</button>
-        <button onclick="changeBet(-10)">-</button>
-        <span id="betValue">100</span>
-        <button onclick="changeBet(10)">+</button>
-        <button onclick="setBet('max')">max</button>
-      </div>
-      <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
+      <!-- ... ставки ... -->
     </div>
-    <button class="btn" onclick="backToMain()">Назад</button>
+    <button class="btn back-btn" onclick="backToMain()">Назад</button>
   </div>
 
   <!-- ПРАВИЛА И ПАРТНЁРЫ -->
   <div id="rules" class="game-screen">
     <h3>ПРАВИЛА ИГРЫ</h3>
     <p>…</p>
-    <button onclick="backToMain()">Назад</button>
+    <button class="btn back-btn" onclick="backToMain()">Назад</button>
   </div>
   <div id="partners" class="game-screen">
     <h3>УСЛОВИЯ ДЛЯ ПАРТНЁРОВ</h3>
     <p>…</p>
-    <button onclick="backToMain()">Назад</button>
+    <button class="btn back-btn" onclick="backToMain()">Назад</button>
   </div>
 
   <script src="script.js"></script>
