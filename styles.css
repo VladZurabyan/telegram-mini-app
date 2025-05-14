@@ -48,16 +48,18 @@ footer img {
 /* Скрыть игровые экраны */
 .game-screen { display: none; padding: 20px; }
 
-/* === Двухсторонняя монета === */
+/* === 3D-контекст для монеты === */
+.coin-scene {
+  perspective: 800px;
+}
 .coin-container {
-  width: 100px; height: 100px;
+  width: 120px; height: 120px;
   margin: 20px auto;
   position: relative;
   transform-style: preserve-3d;
 }
 .coin-face {
-  position: absolute;
-  width: 100%; height: 100%;
+  position: absolute; width: 100%; height: 100%;
   backface-visibility: hidden;
 }
 .coin-face.tails {
@@ -65,14 +67,11 @@ footer img {
 }
 
 /* Анимации */
-@keyframes flipHeads {
-  from { transform: rotateY(0deg); }
-  to   { transform: rotateY(720deg); }
-}
-@keyframes flipTails {
-  from { transform: rotateY(0deg); }
-  to   { transform: rotateY(540deg); } /* 360 + 180 */
-}
+@keyframes flipHeads { to { transform: rotateY(360deg); } }
+@keyframes flipTails { to { transform: rotateY(180deg); } }
+
+.flip-heads { animation: flipHeads 1s ease-in-out forwards; }
+.flip-tails { animation: flipTails 1s ease-in-out forwards; }
 
 /* === Кнопки ОРЁЛ/РЕШКА === */
 #game-coin .actions.coin-choice button {
@@ -83,9 +82,7 @@ footer img {
   cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;
   min-width: 120px;
 }
-#game-coin .actions.coin-choice button + button {
-  margin-left: 16px;
-}
+#game-coin .actions.coin-choice button + button { margin-left: 16px; }
 #game-coin .actions.coin-choice button:hover {
   transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.35);
 }
@@ -97,22 +94,11 @@ footer img {
 }
 
 /* === PLAY-кнопка === */
-.play-btn {
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  border: none; border-radius: 25px;
-  padding: 12px 30px; font-size: 18px; font-weight: bold;
-  color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.play-btn.disabled { opacity: 0.5; cursor: not-allowed; }
-.play-btn:hover:not(.disabled) {
-  transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.35);
-}
-.play-btn:active:not(.disabled) {
-  transform: translateY(0); box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+.play-btn.disabled {
+  opacity: 0.5; cursor: not-allowed;
 }
 
-/* === Кнопка Назад === */
+/* === Back-кнопка === */
 .back-btn {
   background: transparent; border: 2px solid #1D75FF;
   border-radius: 25px; padding: 10px 28px;
@@ -122,5 +108,7 @@ footer img {
 .back-btn:hover { background: #1D75FF; color: white; }
 .back-btn:active { background: #155ecb; border-color: #155ecb; }
 
-/* === Ставки / Остальное === */
-/* … ваши стили для ставок, коробок и кубиков остаются без изменений … */
+/* === Ставки, коробки и кубики остаются по вашим прошлым стилям === */
+.boxes img, .dice-row img {
+  width: 60px; cursor: pointer; margin: 0 10px;
+}
