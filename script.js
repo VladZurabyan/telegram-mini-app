@@ -61,35 +61,53 @@ function setCoinChoice(choice) {
   document.getElementById('btn-tails').classList.toggle('active', choice==='tails');
 }
 
+
 function playCoin(btn) {
   if (bet < minBet) return alert(`Минимум ${minBet} TON`);
   if (!playerChoice) return alert('Выберите сторону');
 
   const backBtn = document.getElementById('btn-back-coin');
-
-  // Отключаем обе кнопки
   btn.disabled = true;
   backBtn.disabled = true;
 
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
-  
-  // Запускаем анимацию
-  img.classList.remove('flip');
+
+  // Remove previous flip classes
+  img.classList.remove('flip-head', 'flip-tail');
+
+  // Choose flip animation based on result
+  const flipClass = result === 'heads' ? 'flip-head' : 'flip-tail';
+  // Trigger reflow
   void img.offsetWidth;
-  img.classList.add('flip');
-  
-  // Ждём окончания анимации монеты
+  // Start flip animation
+  img.classList.add(flipClass);
+
   img.addEventListener('animationend', function handler() {
-    img.src = `assets/coin-${result}.png`;
-    const win = result === playerChoice;
-    document.getElementById('coinResult').innerText =
-      `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
-    recordGame('coin', bet, result, win);
-    
-    // Включаем кнопки обратно
-    btn.disabled = false;
-    backBtn.disabled = false;
+    img.removeEventListener('animationend', handler);
+    // Fade out
+    img.style.opacity = '0';
+    img.addEventListener('transitionend', function fadeOutEnd(e) {
+      if (e.propertyName !== 'opacity') return;
+      img.removeEventListener('transitionend', fadeOutEnd);
+      // Change image
+      img.src = `assets/coin-${result}.png`;
+      // Trigger reflow
+      void img.offsetWidth;
+      // Fade in
+      img.style.opacity = '1';
+      img.addEventListener('transitionend', function fadeInEnd(e2) {
+        if (e2.propertyName !== 'opacity') return;
+        img.removeEventListener('transitionend', fadeInEnd);
+        // Show result
+        const win = result === playerChoice;
+        document.getElementById('coinResult').innerText =
+          `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
+        recordGame('coin', bet, result, win);
+        btn.disabled = false;
+        backBtn.disabled = false;
+      }, { once: true });
+    }, { once: true });
   }, { once: true });
 }
 
