@@ -73,32 +73,26 @@ function playCoin(btn) {
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
 
-  // Remove previous flip classes
-  img.classList.remove('flip-head', 'flip-tail');
-
-  // Choose flip animation based on result
-  const flipClass = result === 'heads' ? 'flip-head' : 'flip-tail';
-  // Trigger reflow
+  // Start flip animation via CSS class
+  img.classList.remove('flip');
   void img.offsetWidth;
-  // Start flip animation
-  img.classList.add(flipClass);
+  img.classList.add('flip');
 
-  img.addEventListener('animationend', function handler() {
-    img.removeEventListener('animationend', handler);
+  img.addEventListener('animationend', function onFlipEnd() {
+    img.removeEventListener('animationend', onFlipEnd);
     // Fade out
     img.style.opacity = '0';
-    img.addEventListener('transitionend', function fadeOutEnd(e) {
+    img.addEventListener('transitionend', function onFade(e) {
       if (e.propertyName !== 'opacity') return;
-      img.removeEventListener('transitionend', fadeOutEnd);
-      // Change image
+      img.removeEventListener('transitionend', onFade);
+      // Change image src
       img.src = `assets/coin-${result}.png`;
-      // Trigger reflow
+      // Trigger reflow and fade in
       void img.offsetWidth;
-      // Fade in
       img.style.opacity = '1';
-      img.addEventListener('transitionend', function fadeInEnd(e2) {
+      img.addEventListener('transitionend', function onFadeIn(e2) {
         if (e2.propertyName !== 'opacity') return;
-        img.removeEventListener('transitionend', fadeInEnd);
+        img.removeEventListener('transitionend', onFadeIn);
         // Show result
         const win = result === playerChoice;
         document.getElementById('coinResult').innerText =
@@ -110,7 +104,6 @@ function playCoin(btn) {
     }, { once: true });
   }, { once: true });
 }
-
 
 
 // Три коробки
