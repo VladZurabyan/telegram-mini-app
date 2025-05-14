@@ -202,39 +202,6 @@ footer img {
   min-width: 0;          /* отменяем минимальную ширину из старых стилей */
 }
 
-/* Стили для неактивной (disabled) кнопки PLAY */
-.game-button:disabled {
-  background-color: #777 !important;      /* серый фон */
-  border-color: #777 !important;
-  color: #ccc !important;                /* более светлый текст */
-  cursor: not-allowed !important;        /* не-разрешающий курсор */
-  opacity: 0.6;                          /* чуть полупрозрачный */
-}
-
-/* === Более красивая 3D-анимация монеты === */
-/* Убедитесь, что у элемента <img> стоит класс "coin-image" */
-#game-coin .coin-image {
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-}
-
-#game-coin .coin-image.flip {
-  animation: flipCoin 1s ease-in-out;
-}
-
-@keyframes flipCoin {
-  0% {
-    transform: perspective(600px) rotateY(0deg) scale(1);
-  }
-  40% {
-    transform: perspective(600px) rotateY(180deg) scale(1.1);
-  }
-  100% {
-    transform: perspective(600px) rotateY(360deg) scale(1);
-  }
-}
-
-
 
 /* === Кнопка Назад === */
 .back-btn {
