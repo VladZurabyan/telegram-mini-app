@@ -130,8 +130,9 @@ footer img {
   font-weight: bold;
 }
 
-/* Монета с тенями и нужным размером */
-#game-coin .coin-image {
+/* === Монета с тенями и фиксированным размером === */
+#game-coin .coin-image,
+#coinImageMain {
   width: 120px !important;
   height: 120px !important;
   transform-style: preserve-3d;
@@ -212,15 +213,14 @@ footer img {
   transform: translateY(0);
   box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
-
 /* Уменьшаем и центрируем Play */
 .play-btn {
-  display: block;       /* блочный элемент */
-  margin: 20px auto;    /* центр по горизонтали */
-  padding: 8px 16px;    /* более мелкие отступы */
-  font-size: 20px;      /* меньший шрифт */
-  width: 150px;         /* фиксированная ширина */
-  min-width: 0;         /* отменяем минимальную ширину */
+  display: block;
+  margin: 20px auto;
+  padding: 8px 16px;
+  font-size: 20px;
+  width: 150px;
+  min-width: 0;
 }
 
 /* Стили для неактивных кнопок */
@@ -265,4 +265,3 @@ button[disabled],
   width: 60px;
   margin: 0 10px;
 }
-
