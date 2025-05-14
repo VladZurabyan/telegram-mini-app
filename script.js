@@ -17,7 +17,7 @@ if (user) {
     });
 }
 
-// Навигация
+// Навигация + автопилотный флип при входе в coin
 function hideAll() {
   ['main','game-coin','game-boxes','game-dice','rules','partners']
     .forEach(id => document.getElementById(id).style.display = 'none');
@@ -31,12 +31,12 @@ function showGame(id) {
   document.getElementById(id).style.display = 'block';
   if (id === 'game-coin') {
     updateBetUI();
-    // пилотная анимация
-    const cont = document.getElementById('coinContainer');
-    cont.classList.remove('flip-heads','flip-tails');
-    void cont.offsetWidth;
-    cont.classList.add('flip-heads');
-    cont.addEventListener('animationend', () => cont.classList.remove('flip-heads'), { once: true });
+    const img = document.getElementById('coinImageMain');
+    img.src = 'assets/coin-heads.png';
+    img.classList.remove('flip');
+    void img.offsetWidth;
+    img.classList.add('flip');
+    img.addEventListener('animationend', () => img.classList.remove('flip'), { once: true });
   }
 }
 function showRules()   { hideAll(); document.getElementById('rules').style.display = 'block'; }
@@ -47,13 +47,11 @@ function backToMain()  { showMain(); }
 function recordGame(game, bet, result, win) {
   const u = tg.initDataUnsafe?.user; if (!u) return;
   fetch(`${apiUrl}/game`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ user_id: u.id, game, bet, result, win })
   });
   fetch(`${apiUrl}/balance/update`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: u.id, currency: "ton", amount: win ? bet : -bet })
   })
   .then(() => fetch(`${apiUrl}/balance/${u.id}`))
@@ -78,37 +76,23 @@ function setCoinChoice(choice) {
   document.getElementById('btn-tails').classList.toggle('active', choice==='tails');
 }
 function playCoin() {
-  const btn = document.getElementById('playCoinBtn');
-  btn.disabled = true;
-  btn.classList.add('disabled');
-
-  if (!playerChoice) {
-    alert('Выберите сторону');
-    btn.disabled = false;
-    btn.classList.remove('disabled');
-    return;
-  }
-
+  if (bet < minBet) return alert(`Минимум ${minBet} TON`);
+  if (!playerChoice) return alert('Выберите сторону');
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
-  const cont = document.getElementById('coinContainer');
-  cont.classList.remove('flip-heads','flip-tails');
-  void cont.offsetWidth;
-  cont.classList.add(result==='heads' ? 'flip-heads' : 'flip-tails');
-
-  cont.addEventListener('animationend', function onEnd() {
-    cont.removeEventListener('animationend', onEnd);
-    const win = (result === playerChoice);
+  const img = document.getElementById('coinImageMain');
+  img.classList.remove('flip'); void img.offsetWidth; img.classList.add('flip');
+  setTimeout(() => {
+    img.src = `assets/coin-${result}.png`;
+    const win = result === playerChoice;
     document.getElementById('coinResult').innerText =
       `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
     recordGame('coin', bet, result, win);
-    btn.disabled = false;
-    btn.classList.remove('disabled');
-  }, { once: true });
+  }, 600);
 }
 
 // Три коробки
 function selectBox(choice) {
-  if (bet < minBet) { alert(`Минимум ${minBet} TON`); return; }
+  if (bet < minBet) return alert(`Минимум ${minBet} TON`);
   const prize = Math.floor(Math.random()*3), win = (choice===prize);
   document.getElementById('boxResult').innerText =
     win ? 'Приз найден! Победа!' : 'Пусто. Проигрыш.';
@@ -117,7 +101,7 @@ function selectBox(choice) {
 
 // Кубики
 function rollDice() {
-  if (bet < minBet) { alert(`Минимум ${minBet} TON`); return; }
+  if (bet < minBet) return alert(`Минимум ${minBet} TON`);
   const d1 = Math.floor(Math.random()*6)+1,
         d2 = Math.floor(Math.random()*6)+1,
         total = d1 + d2,
