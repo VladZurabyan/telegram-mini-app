@@ -31,12 +31,12 @@ function showGame(id) {
   document.getElementById(id).style.display = 'block';
   if (id === 'game-coin') {
     updateBetUI();
-    const img = document.getElementById('coinImageMain');
-    img.src = 'assets/coin-heads.png';
-    img.classList.remove('flip');
-    void img.offsetWidth;
-    img.classList.add('flip');
-    img.addEventListener('animationend', () => img.classList.remove('flip'), { once: true });
+    // старт «пилотного» флипа
+    const cont = document.getElementById('coinContainer');
+    cont.classList.remove('flip-heads', 'flip-tails');
+    void cont.offsetWidth;
+    cont.classList.add('flip-heads');
+    cont.addEventListener('animationend', () => cont.classList.remove('flip-heads'), { once: true });
   }
 }
 function showRules()   { hideAll(); document.getElementById('rules').style.display = 'block'; }
@@ -68,68 +68,52 @@ function updateBetUI()    { document.querySelectorAll('#betValue').forEach(s => 
 function changeBet(delta) { bet = Math.min(Math.max(bet + delta, minBet), maxBet); updateBetUI(); }
 function setBet(type)     { bet = (type==='min'?minBet:(type==='max'?maxBet:bet)); updateBetUI(); }
 
-// Орёл и решка
+// Орёл и решка с плавным двухсторонним флипом
 let playerChoice = '';
 function setCoinChoice(choice) {
   playerChoice = choice;
-  document.getElementById('btn-heads').classList.toggle('active', choice==='heads');
-  document.getElementById('btn-tails').classList.toggle('active', choice==='tails');
+  document.getElementById('btn-heads').classList.toggle('active', choice === 'heads');
+  document.getElementById('btn-tails').classList.toggle('active', choice === 'tails');
 }
 function playCoin() {
   const playBtn = document.getElementById('playCoinBtn');
-  // 1) блокируем кнопку
   playBtn.disabled = true;
   playBtn.classList.add('disabled');
 
   if (bet < minBet) {
     alert(`Минимум ${minBet} TON`);
-    playBtn.disabled = false;
-    playBtn.classList.remove('disabled');
+    playBtn.disabled = false; playBtn.classList.remove('disabled');
     return;
   }
   if (!playerChoice) {
     alert('Выберите сторону');
-    playBtn.disabled = false;
-    playBtn.classList.remove('disabled');
+    playBtn.disabled = false; playBtn.classList.remove('disabled');
     return;
   }
 
-  // Определяем результат заранее
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
-  const img = document.getElementById('coinImageMain');
+  const cont = document.getElementById('coinContainer');
+  cont.classList.remove('flip-heads', 'flip-tails');
+  void cont.offsetWidth;
+  cont.classList.add(result === 'heads' ? 'flip-heads' : 'flip-tails');
 
-  // Сбрасываем и запускаем анимацию
-  img.classList.remove('flip');
-  void img.offsetWidth;
-  img.classList.add('flip');
-
-  // По окончании анимации:
-  function onAnimEnd() {
-    img.removeEventListener('animationend', onAnimEnd);
-    img.classList.remove('flip');
-
-    // Показываем картинку и текст результата
-    img.src = `assets/coin-${result}.png`;
+  cont.addEventListener('animationend', function onEnd() {
+    cont.removeEventListener('animationend', onEnd);
+    // показать результат
     const win = result === playerChoice;
     document.getElementById('coinResult').innerText =
       `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${win ? 'Победа!' : 'Проигрыш'}`;
-
-    // Записываем игру и обновляем баланс
     recordGame('coin', bet, result, win);
 
-    // 3) разблокируем кнопку
     playBtn.disabled = false;
     playBtn.classList.remove('disabled');
-  }
-
-  img.addEventListener('animationend', onAnimEnd);
+  }, { once: true });
 }
-
 
 // Три коробки
 function selectBox(choice) {
-  if (bet < minBet) return alert(`Минимум ${minBet} TON`);
-  const prize = Math.floor(Math.random()*3), win = (choice===prize);
+  if (bet < minBet) { alert(`Минимум ${minBet} TON`); return; }
+  const prize = Math.floor(Math.random()*3), win = choice===prize;
   document.getElementById('boxResult').innerText =
     win ? 'Приз найден! Победа!' : 'Пусто. Проигрыш.';
   recordGame('boxes', bet, win?'win':'lose', win);
@@ -137,14 +121,13 @@ function selectBox(choice) {
 
 // Кубики
 function rollDice() {
-  if (bet < minBet) return alert(`Минимум ${minBet} TON`);
+  if (bet < minBet) { alert(`Минимум ${minBet} TON`); return; }
   const d1 = Math.floor(Math.random()*6)+1,
         d2 = Math.floor(Math.random()*6)+1,
-        total = d1 + d2,
-        win = total >= 8;
+        total = d1 + d2, win = total >= 8;
   document.getElementById('dice1').src = `assets/dice${d1}.png`;
   document.getElementById('dice2').src = `assets/dice${d2}.png`;
   document.getElementById('diceResult').innerText =
-    `Сумма: ${total}\n${win?'Победа!':'Проигрыш'}`;
+    `Сумма: ${total}\n${win ? 'Победа!' : 'Проигрыш'}`;
   recordGame('dice', bet, `${d1}+${d2}`, win);
 }
