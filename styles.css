@@ -150,9 +150,9 @@ footer img {
   opacity: 0;
 }
 
-#game-coin .coin-image.flip {
+/* #game-coin .coin-image.flip {
   animation: simpleFlip 1s linear forwards;
-}
+}*/
 
 @keyframes simpleFlip {
   from {
