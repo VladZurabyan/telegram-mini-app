@@ -7,7 +7,11 @@ body {
   color: white;
   text-align: center;
 }
-.balance, .actions, footer, .game-button, .controller-icon {
+.balance,
+.actions,
+footer,
+.game-button,
+.controller-icon {
   transition: all 0.3s ease;
 }
 .balance {
@@ -75,7 +79,8 @@ footer img {
   vertical-align: middle;
   margin-right: 6px;
 }
-#rules, #partners {
+#rules,
+#partners {
   display: none;
   padding: 20px;
 }
@@ -125,22 +130,14 @@ footer img {
   font-weight: bold;
 }
 
-/* Монета с тенями */
- #game-coin .coin-image {
+/* Монета с тенями и нужным размером */
+#game-coin .coin-image {
+  width: 120px !important;
+  height: 120px !important;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
-
-
-
-/* Размер монеты */
-  /* Сохраняем прежнюю 3D-подготовку */
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
-}
-
 
 /* Анимация флипа */
 #game-coin .coin-image.flip {
@@ -149,23 +146,21 @@ footer img {
 
 @keyframes flipBonus {
   0% {
-    transform: perspective(180px) rotateY(0deg) translateY(0) scale(1);
+    transform: perspective(800px) rotateY(0deg) translateY(0) scale(1);
   }
   25% {
-    transform: perspective(180px) rotateY(90deg) translateY(-15px) scale(1.1);
+    transform: perspective(800px) rotateY(90deg) translateY(-15px) scale(1.1);
   }
   50% {
-    transform: perspective(180px) rotateY(180deg) translateY(0) scale(1);
+    transform: perspective(800px) rotateY(180deg) translateY(0) scale(1);
   }
   75% {
-    transform: perspective(180px) rotateY(270deg) translateY(-15px) scale(1.1);
+    transform: perspective(800px) rotateY(270deg) translateY(-15px) scale(1.1);
   }
   100% {
-    transform: perspective(180px) rotateY(360deg) translateY(0) scale(1);
+    transform: perspective(800px) rotateY(360deg) translateY(0) scale(1);
   }
 }
-
-
 
 /* === Градиент для ОРЁЛ/РЕШКА === */
 #game-coin .actions.coin-choice button {
@@ -195,10 +190,6 @@ footer img {
 #game-coin .actions.coin-choice button.active {
   box-shadow: 0 0 0 3px rgba(255,255,255,0.8);
 }
-#game-coin .coin-image {
-  width: 120px !important;
-  height: 120px !important;
-}
 
 /* === PLAY-кнопка === */
 .play-btn {
@@ -224,24 +215,24 @@ footer img {
 
 /* Уменьшаем и центрируем Play */
 .play-btn {
-  display: block;        /* превращаем кнопку в блочный элемент */
-  margin: 20px auto;     /* автосмещение по горизонтали */
-  padding: 8px 16px;     /* более мелкие отступы */
-  font-size: 20px;       /* меньший шрифт */
-  width: 150px;           /* убираем фиксированную ширину */
-  min-width: 0;          /* отменяем минимальную ширину из старых стилей */
+  display: block;       /* блочный элемент */
+  margin: 20px auto;    /* центр по горизонтали */
+  padding: 8px 16px;    /* более мелкие отступы */
+  font-size: 20px;      /* меньший шрифт */
+  width: 150px;         /* фиксированная ширина */
+  min-width: 0;         /* отменяем минимальную ширину */
 }
 
-/* Стили для неактивной кнопки PLAY */
+/* Стили для неактивных кнопок */
+button[disabled],
 .game-button:disabled {
-  background-color: #777;    /* серый фон */
-  border-color: #777;        /* серый бордер */
-  color: #ccc;               /* светло-серый текст */
-  cursor: not-allowed;       /* курсор «запрещено» */
-  opacity: 0.6;              /* полупрозрачность */
+  background-color: #777 !important;
+  border-color:     #777 !important;
+  color:            #ccc !important;
+  cursor:           not-allowed !important;
+  opacity:          0.6 !important;
+  pointer-events:   none !important;
 }
-
-
 
 /* === Кнопка Назад === */
 .back-btn {
@@ -264,15 +255,6 @@ footer img {
   border-color: #155ecb;
 }
 
-button[disabled] {
-  background-color: #777 !important;
-  border-color:     #777 !important;
-  color:            #ccc !important;
-  cursor:           not-allowed !important;
-  opacity:          0.6 !important;
-}
-
-
 /* Специфичные стили для коробок и кубиков */
 .boxes img {
   width: 60px;
@@ -283,4 +265,3 @@ button[disabled] {
   width: 60px;
   margin: 0 10px;
 }
-
