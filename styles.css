@@ -140,7 +140,7 @@ footer img {
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
 
-/* Анимация флипа */
+/* Анимация флипа 
 #game-coin .coin-image.flip {
   animation: flipBonus 1s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
@@ -161,7 +161,7 @@ footer img {
   100% {
     transform: perspective(800px) rotateY(360deg) translateY(0) scale(1);
   }
-}
+} */
 
 /* === Градиент для ОРЁЛ/РЕШКА === */
 #game-coin .actions.coin-choice button {
