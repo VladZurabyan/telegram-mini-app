@@ -16,7 +16,6 @@
     </div>
     <h2>ВЫБЕРИТЕ ИГРУ</h2>
     <img class="controller-icon" src="assets/controller.png" />
-
     <button class="game-button" onclick="showGame('game-coin')">
       <img src="assets/coin.png" /> ОРЁЛ И РЕШКА
     </button>
@@ -26,12 +25,10 @@
     <button class="game-button" onclick="showGame('game-dice')">
       <img src="assets/dice.png" /> КУБИКИ
     </button>
-
     <div class="actions">
       <button>ПОПОЛНИТЬ</button>
       <button>ВЫВЕСТИ</button>
     </div>
-
     <footer>
       <p>
         <img src="assets/18plus.png" />
@@ -49,23 +46,19 @@
       <div><img src="assets/usdt.png" /><span>0.00</span></div>
     </div>
     <h2>COIN FLIP</h2>
-    <div class="coin-scene">
-      <div id="coinContainer" class="coin-container">
-        <img class="coin-face heads" src="assets/coin-heads.png" alt="Орёл" />
-        <img class="coin-face tails" src="assets/coin-tails.png" alt="Решка" />
-      </div>
-    </div>
+    <img id="coinImageMain" class="coin-image" src="assets/coin-heads.png" />
     <div class="actions coin-choice">
       <button id="btn-heads" onclick="setCoinChoice('heads')">ОРЁЛ</button>
       <button id="btn-tails" onclick="setCoinChoice('tails')">РЕШКА</button>
     </div>
-    <button id="playCoinBtn" class="game-button play-btn" onclick="playCoin()">PLAY</button>
+    <button class="game-button play-btn" onclick="playCoin()">PLAY</button>
     <div class="result-box" id="coinResult"></div>
+    <div class="prize-box" id="coinPrize"></div>
     <div class="bet-container">
       <label>Введите ставку</label>
       <div class="bet-box">
         <button onclick="setBet('min')">min</button>
-        <button onclick="changeBet(-10)">−</button>
+        <button onclick="changeBet(-10)">-</button>
         <span id="betValue">100</span>
         <button onclick="changeBet(10)">+</button>
         <button onclick="setBet('max')">max</button>
@@ -84,17 +77,7 @@
       <img src="assets/box3.png" onclick="selectBox(2)" />
     </div>
     <div class="result-box" id="boxResult"></div>
-    <div class="bet-container">
-      <label>Введите ставку</label>
-      <div class="bet-box">
-        <button onclick="setBet('min')">min</button>
-        <button onclick="changeBet(-10)">−</button>
-        <span id="betValue">100</span>
-        <button onclick="changeBet(10)">+</button>
-        <button onclick="setBet('max')">max</button>
-      </div>
-      <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
-    </div>
+    <div class="bet-container">…ставки как выше…</div>
     <button class="btn back-btn" onclick="backToMain()">Назад</button>
   </div>
 
@@ -107,17 +90,7 @@
       <img id="dice2" src="assets/dice2.png" />
     </div>
     <div class="result-box" id="diceResult"></div>
-    <div class="bet-container">
-      <label>Введите ставку</label>
-      <div class="bet-box">
-        <button onclick="setBet('min')">min</button>
-        <button onclick="changeBet(-10)">−</button>
-        <span id="betValue">100</span>
-        <button onclick="changeBet(10)">+</button>
-        <button onclick="setBet('max')">max</button>
-      </div>
-      <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
-    </div>
+    <div class="bet-container">…ставки как выше…</div>
     <button class="btn back-btn" onclick="backToMain()">Назад</button>
   </div>
 
