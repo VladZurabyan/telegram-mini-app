@@ -140,26 +140,31 @@ footer img {
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
 
-/* Анимация флипа */
+/* Новая, более живописная 3D-анимация монеты */
 #game-coin .coin-image.flip {
-  animation: flipBonus 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation: coinFlip2 1.2s cubic-bezier(0.4, 0.0, 0.2, 1) both;
 }
 
-@keyframes flipBonus {
+@keyframes coinFlip2 {
   0% {
-    transform: perspective(800px) rotateY(0deg) translateY(0) scale(1);
+    transform: perspective(800px) rotateY(0deg) rotateX(0deg);
+    opacity: 1;
   }
-  25% {
-    transform: perspective(800px) rotateY(90deg) translateY(-15px) scale(1.1);
+  15% {
+    transform: perspective(800px) rotateY(180deg) rotateX(15deg);
+    opacity: 1;
+  }
+  30% {
+    transform: perspective(800px) rotateY(360deg) rotateX(0deg);
+    opacity: 1;
   }
   50% {
-    transform: perspective(800px) rotateY(180deg) translateY(0) scale(1);
-  }
-  75% {
-    transform: perspective(800px) rotateY(270deg) translateY(-15px) scale(1.1);
+    transform: perspective(800px) rotateY(720deg) rotateX(25deg);
+    opacity: 1;
   }
   100% {
-    transform: perspective(800px) rotateY(360deg) translateY(0) scale(1);
+    transform: perspective(800px) rotateY(1080deg) rotateX(0deg);
+    opacity: 1;
   }
 }
 
