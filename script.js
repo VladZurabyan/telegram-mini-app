@@ -28,7 +28,7 @@ function showRules()   { hideAll(); document.getElementById('rules').style.displ
 function showPartners(){ hideAll(); document.getElementById('partners').style.display = 'block'; }
 function backToMain()  { showMain(); }
 
-// Запись игр и баланс
+// Баланс / запись игр
 function recordGame(game, bet, result, win) {
   const u = tg.initDataUnsafe?.user; if (!u) return;
   fetch(`${apiUrl}/game`, {
@@ -78,20 +78,17 @@ function playCoin(btn) {
   img.addEventListener('animationend', function handler() {
     img.removeEventListener('animationend', handler);
 
-    // 1) Фейдим картинку
+    // Плавно скрываем
     img.classList.add('fade-out');
 
     img.addEventListener('transitionend', function onFade(e) {
       if (e.propertyName !== 'opacity') return;
       img.removeEventListener('transitionend', onFade);
 
-      // 2) Меняем src
+      // Меняем картинку и показываем обратно
       img.src = `assets/coin-${result}.png`;
-
-      // 3) Фейдим обратно
       img.classList.remove('fade-out');
 
-      // 4) Показываем результат и включаем кнопки
       const win = result === playerChoice;
       document.getElementById('coinResult').innerText =
         `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
@@ -102,9 +99,6 @@ function playCoin(btn) {
     }, { once: true });
   }, { once: true });
 }
-
-
-
 
 // Три коробки
 function selectBox(choice) {
