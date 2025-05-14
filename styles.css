@@ -133,8 +133,8 @@ footer img {
 /* === Монета с тенями и фиксированным размером === */
 #game-coin .coin-image,
 #coinImageMain {
-  width: 120px !important;
-  height: 120px !important;
+  width: 180px !important;
+  height: 180px !important;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
@@ -287,31 +287,4 @@ button[disabled],
 }
 .coin-image.flip-tail {
   animation: flip-tail 1.2s ease-out forwards !important;
-}
-
-/* Smooth flip animations with subtle scale and vertical move */
-#game-coin .coin-image,
-#coinImageMain {
-  transition: opacity 0.2s ease, transform 0.8s ease-in-out;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-}
-
-/* Updated keyframes for smoothness */
-@keyframes flip-head {
-  0%   { transform: rotateY(0deg) scale(1) translateY(0); }
-  50%  { transform: rotateY(180deg) scale(1.05) translateY(-8px); }
-  100% { transform: rotateY(360deg) scale(1) translateY(0); }
-}
-@keyframes flip-tail {
-  0%   { transform: rotateY(0deg) scale(1) translateY(0); }
-  50%  { transform: rotateY(360deg) scale(1.05) translateY(-8px); }
-  100% { transform: rotateY(720deg) scale(1) translateY(0); }
-}
-/* Apply animations */
-.coin-image.flip-head {
-  animation: flip-head 0.8s ease-in-out forwards !important;
-}
-.coin-image.flip-tail {
-  animation: flip-tail 1.2s ease-in-out forwards !important;
 }
