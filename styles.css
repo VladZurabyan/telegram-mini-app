@@ -133,6 +133,14 @@ footer img {
 }
 
 /* Анимация флипа */
+
+.coin-image {
+  width: 180px;
+  height: 180px;
+  margin: 20px auto;
+  transform-style: preserve-3d;
+}
+
 #game-coin .coin-image.flip {
   animation: flipBonus 1s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
