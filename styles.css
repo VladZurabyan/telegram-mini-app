@@ -289,3 +289,72 @@ button[disabled],
 .coin-image.flip-tail {
   animation: flip-tail 1.2s ease-out forwards !important;
 }
+
+/* === Золотой градиент только для экрана «Орёл и Решка» === */
+
+/* Градиентный текст для заголовка */
+#game-coin h2 {
+  font-weight: 700;
+  background: linear-gradient(45deg, #f9d423, #ff4e50);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
+/* Градиентный фон для блока выбора ставки */
+#game-coin .bet-box {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(45deg, #f9d423, #ff4e50);
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+/* Прозрачный фон для кнопок и цифры, тёмный текст */
+#game-coin .bet-box button,
+#game-coin .bet-box span {
+  background: transparent;
+  color: #1a1a1a;
+  padding: 0 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Стили для вывода суммы выигрыша */
+#game-coin .prize-box {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f9d423;           /* золотистый */
+  text-shadow: 0 0 4px rgba(249, 212, 35, 0.8);
+  white-space: pre-line;    /* чтобы переносы \n работали */
+}
+
+
+
+/* Селектор валют */
+.currency-selector {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.currency-btn {
+  padding: 6px 14px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  background: transparent;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.currency-btn.active {
+  background: linear-gradient(45deg, #f9d423, #ff4e50);
+  color: #1a1a1a;
+}
+
+
