@@ -1,6 +1,12 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 
+// В начале файла, рядом с остальными константами
+const winsCount  = 0;   // сколько «выигрышей» из totalCount
+const lossesCount = 10; // сколько «проигрышей» из totalCount
+const totalCount  = winsCount + lossesCount;
+
+
 const user = tg.initDataUnsafe?.user;
 const apiUrl = "https://miniapp-backend.onrender.com";
 if (user) {
@@ -16,6 +22,23 @@ if (user) {
       document.querySelectorAll(".balance span")[1].textContent = d.usdt.toFixed(2);
     });
 }
+
+
+
+// текущая выбранная валюта
+let selectedCurrency = 'ton';
+
+function setCurrency(cur) {
+  selectedCurrency = cur;
+  document.getElementById('btn-currency-ton')
+          .classList.toggle('active', cur === 'ton');
+  document.getElementById('btn-currency-usdt')
+          .classList.toggle('active', cur === 'usdt');
+}
+
+
+
+
 
 // Навигация
 function hideAll() {
@@ -48,7 +71,7 @@ function recordGame(game, bet, result, win) {
 }
 
 // Ставки
-let bet = 100, minBet = 10, maxBet = 1000;
+let bet = 1, minBet = 1, maxBet = 100;
 function updateBetUI()    { document.querySelectorAll('#betValue').forEach(s => s.innerText = bet); }
 function changeBet(delta) { bet = Math.min(Math.max(bet+delta,minBet),maxBet); updateBetUI(); }
 function setBet(type)     { bet = (type==='min'?minBet:type==='max'?maxBet:bet); updateBetUI(); }
@@ -66,44 +89,142 @@ function playCoin(btn) {
   if (bet < minBet) return alert(`Минимум ${minBet} TON`);
   if (!playerChoice) return alert('Выберите сторону');
 
-  const backBtn = document.getElementById('btn-back-coin');
-  btn.disabled = true;
-  backBtn.disabled = true;
+  const backBtn      = document.getElementById('btn-back-coin');
+  const tonBtn       = document.getElementById('btn-currency-ton');
+  const usdtBtn      = document.getElementById('btn-currency-usdt');
+  const resultBox    = document.getElementById('coinResult');
+  const prizeBox     = document.getElementById('coinPrize');
+  resultBox.innerText = '';
+  prizeBox.innerText  = '';
+[btn, backBtn, tonBtn, usdtBtn].forEach(el => el.disabled = true);
 
-  const result = Math.random() < 0.5 ? 'heads' : 'tails';
+  //btn.disabled = backBtn.disabled = true;
+
+  // Случайным образом выбираем win/lose в нужном соотношении
+  const isWin = Math.random() * totalCount < winsCount;
+  // Если выиграли — результат = выбор игрока, иначе — противоположная сторона
+  const result = isWin
+    ? playerChoice
+    : (playerChoice === 'heads' ? 'tails' : 'heads');
+
   const img = document.getElementById('coinImageMain');
+  const animClass = result === 'heads' ? 'flip-head' : 'flip-tail';
 
-  // Start flip animation via CSS class
-  img.classList.remove('flip');
+  img.classList.remove('flip-head','flip-tail');
   void img.offsetWidth;
-  img.classList.add('flip');
+  img.classList.add(animClass);
 
   img.addEventListener('animationend', function onFlipEnd() {
     img.removeEventListener('animationend', onFlipEnd);
-    // Fade out
     img.style.opacity = '0';
+
     img.addEventListener('transitionend', function onFade(e) {
       if (e.propertyName !== 'opacity') return;
       img.removeEventListener('transitionend', onFade);
-      // Change image src
+
       img.src = `assets/coin-${result}.png`;
-      // Trigger reflow and fade in
       void img.offsetWidth;
       img.style.opacity = '1';
+
       img.addEventListener('transitionend', function onFadeIn(e2) {
         if (e2.propertyName !== 'opacity') return;
         img.removeEventListener('transitionend', onFadeIn);
-        // Show result
-        const win = result === playerChoice;
-        document.getElementById('coinResult').innerText =
-          `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
-        recordGame('coin', bet, result, win);
-        btn.disabled = false;
-        backBtn.disabled = false;
+
+        // Выводим исход
+        resultBox.innerText =
+          `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${isWin?'Победа!':'Проигрыш'}`;
+
+        // При выигрыше показываем сумму, при проигрыше можно не отображать
+        if (isWin) {
+          prizeBox.innerText = `Вы выиграли: ${bet * 2} TON`;
+        }
+
+        recordGame('coin', bet, result, isWin);
+        [btn, backBtn, tonBtn, usdtBtn].forEach(el => el.disabled = false);
       }, { once: true });
     }, { once: true });
   }, { once: true });
 }
+
+function showGame(id) {
+  hideAll();
+  document.getElementById(id).style.display = 'block';
+
+  if (id === 'game-coin') {
+    updateBetUI();
+
+    // Включаем один прокрут монеты при входе
+    const img = document.getElementById('coinImageMain');
+    img.classList.remove('flip-head', 'flip-tail');  // сбрасываем классы
+    void img.offsetWidth;                            // принудительный релоад
+    img.classList.add('flip-head');                  // 1 оборот (flip-head)
+
+    // После окончания анимации уберём класс, чтобы следующий вход работал
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      // оставляем изображение «орёл», чтобы игра началась с головы
+      img.src = 'assets/coin-heads.png';
+      img.style.opacity = '1';
+    }, { once: true });
+
+    // Сразу сбросим прозрачность, чтобы было плавно
+    img.style.opacity = '1';
+  }
+}
+
+// Добавляем в начало файла или рядом с другими вспомогательными
+function resetCoinScreen() {
+  const img       = document.getElementById('coinImageMain');
+  const resultBox = document.getElementById('coinResult');
+  const prizeBox  = document.getElementById('coinPrize');
+
+  // Сбрасываем класс анимации
+  img.classList.remove('flip-head', 'flip-tail');
+  // Возвращаем начальное изображение (орёл)
+  img.src = 'assets/coin-heads.png';
+  // Гарантируем видимость
+  img.style.opacity = '1';
+
+  // Очищаем текст результата и приза
+  resultBox.innerText = '';
+  prizeBox.innerText  = '';
+
+  // Сбрасываем выбор пользователя
+  playerChoice = '';
+  document.getElementById('btn-heads').classList.remove('active');
+  document.getElementById('btn-tails').classList.remove('active');
+}
+
+// Переписываем showGame и backToMain
+function showGame(id) {
+  hideAll();
+  document.getElementById(id).style.display = 'block';
+
+  if (id === 'game-coin') {
+    // Сбрасываем экран монеты при каждом входе
+    resetCoinScreen();
+    updateBetUI();
+
+    // Запускаем единичный флип-орёл
+    const img = document.getElementById('coinImageMain');
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+  }
+}
+
+function backToMain() {
+  // Если вы выходите с экрана «Орёл и Решка», сбрасываем его
+  resetCoinScreen();
+  showMain();
+}
+
 
 
 // Три коробки
