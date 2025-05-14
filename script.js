@@ -66,32 +66,43 @@ function playCoin(btn) {
   if (!playerChoice) return alert('Выберите сторону');
 
   const backBtn = document.getElementById('btn-back-coin');
-
-  // Отключаем обе кнопки
   btn.disabled = true;
   backBtn.disabled = true;
 
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
-  
-  // Запускаем анимацию
   img.classList.remove('flip');
   void img.offsetWidth;
   img.classList.add('flip');
-  
-  // Ждём окончания анимации монеты
+
   img.addEventListener('animationend', function handler() {
-    img.src = `assets/coin-${result}.png`;
-    const win = result === playerChoice;
-    document.getElementById('coinResult').innerText =
-      `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
-    recordGame('coin', bet, result, win);
-    
-    // Включаем кнопки обратно
-    btn.disabled = false;
-    backBtn.disabled = false;
+    img.removeEventListener('animationend', handler);
+
+    // 1) Фейдим картинку
+    img.classList.add('fade-out');
+
+    img.addEventListener('transitionend', function onFade(e) {
+      if (e.propertyName !== 'opacity') return;
+      img.removeEventListener('transitionend', onFade);
+
+      // 2) Меняем src
+      img.src = `assets/coin-${result}.png`;
+
+      // 3) Фейдим обратно
+      img.classList.remove('fade-out');
+
+      // 4) Показываем результат и включаем кнопки
+      const win = result === playerChoice;
+      document.getElementById('coinResult').innerText =
+        `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
+      recordGame('coin', bet, result, win);
+
+      btn.disabled = false;
+      backBtn.disabled = false;
+    }, { once: true });
   }, { once: true });
 }
+
 
 
 
