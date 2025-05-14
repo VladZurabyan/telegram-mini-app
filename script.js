@@ -77,13 +77,12 @@ function setCoinChoice(choice) {
 }
 function playCoin() {
   const playBtn = document.getElementById('playCoinBtn');
-  // 1) Деактивируем кнопку
+  // 1) блокируем кнопку
   playBtn.disabled = true;
   playBtn.classList.add('disabled');
 
   if (bet < minBet) {
     alert(`Минимум ${minBet} TON`);
-    // вернуть кнопку, если рано вышли
     playBtn.disabled = false;
     playBtn.classList.remove('disabled');
     return;
@@ -95,24 +94,35 @@ function playCoin() {
     return;
   }
 
+  // Определяем результат заранее
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
+
+  // Сбрасываем и запускаем анимацию
   img.classList.remove('flip');
   void img.offsetWidth;
   img.classList.add('flip');
 
-  setTimeout(() => {
-    // 2) Меняем картинку и показываем результат
+  // По окончании анимации:
+  function onAnimEnd() {
+    img.removeEventListener('animationend', onAnimEnd);
+    img.classList.remove('flip');
+
+    // Показываем картинку и текст результата
     img.src = `assets/coin-${result}.png`;
     const win = result === playerChoice;
     document.getElementById('coinResult').innerText =
       `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${win ? 'Победа!' : 'Проигрыш'}`;
+
+    // Записываем игру и обновляем баланс
     recordGame('coin', bet, result, win);
 
-    // 3) И только здесь — обратно активируем Play
+    // 3) разблокируем кнопку
     playBtn.disabled = false;
     playBtn.classList.remove('disabled');
-  }, 600);
+  }
+
+  img.addEventListener('animationend', onAnimEnd);
 }
 
 
