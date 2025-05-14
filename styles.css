@@ -234,6 +234,16 @@ footer img {
   border-color: #155ecb;
 }
 
+/* Стили для неактивной кнопки Назад */
+.back-btn:disabled {
+  background-color: #777;    /* серый фон */
+  border-color:     #777;    /* серый бордер */
+  color:            #ccc;    /* светло-серый текст */
+  cursor:           not-allowed; /* курсор «запрещено» */
+  opacity:          0.6;     /* полупрозрачность */
+}
+
+
 /* Специфичные стили для коробок и кубиков */
 .boxes img {
   width: 60px;
