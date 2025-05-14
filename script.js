@@ -76,19 +76,45 @@ function setCoinChoice(choice) {
   document.getElementById('btn-tails').classList.toggle('active', choice==='tails');
 }
 function playCoin() {
-  if (bet < minBet) return alert(`Минимум ${minBet} TON`);
-  if (!playerChoice) return alert('Выберите сторону');
+  const playBtn = document.getElementById('playCoinBtn');
+  // 1) Деактивируем кнопку
+  playBtn.disabled = true;
+  playBtn.classList.add('disabled');
+
+  if (bet < minBet) {
+    alert(`Минимум ${minBet} TON`);
+    // вернуть кнопку, если рано вышли
+    playBtn.disabled = false;
+    playBtn.classList.remove('disabled');
+    return;
+  }
+  if (!playerChoice) {
+    alert('Выберите сторону');
+    playBtn.disabled = false;
+    playBtn.classList.remove('disabled');
+    return;
+  }
+
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
-  img.classList.remove('flip'); void img.offsetWidth; img.classList.add('flip');
+  img.classList.remove('flip');
+  void img.offsetWidth;
+  img.classList.add('flip');
+
   setTimeout(() => {
+    // 2) Меняем картинку и показываем результат
     img.src = `assets/coin-${result}.png`;
     const win = result === playerChoice;
     document.getElementById('coinResult').innerText =
-      `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
+      `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${win ? 'Победа!' : 'Проигрыш'}`;
     recordGame('coin', bet, result, win);
+
+    // 3) И только здесь — обратно активируем Play
+    playBtn.disabled = false;
+    playBtn.classList.remove('disabled');
   }, 600);
 }
+
 
 // Три коробки
 function selectBox(choice) {
