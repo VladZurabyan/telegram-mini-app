@@ -133,41 +133,35 @@ footer img {
 /* === Монета с тенями и фиксированным размером === */
 #game-coin .coin-image,
 #coinImageMain {
-  width: 180px !important;
-  height: 180px !important;
+  width: 120px !important;
+  height: 120px !important;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
 
-/* Новая, более живописная 3D-анимация монеты */
+/* Анимация флипа */
 #game-coin .coin-image.flip {
-  animation: coinFlip2 1.2s cubic-bezier(0.4, 0.0, 0.2, 1) both;
+  animation: flipBonus 1s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
-@keyframes coinFlip2 {
+@keyframes flipBonus {
   0% {
-    transform: perspective(800px) rotateY(0deg) rotateX(0deg);
-    opacity: 1;
+    transform: perspective(800px) rotateY(0deg) translateY(0) scale(1);
   }
-  15% {
-    transform: perspective(800px) rotateY(180deg) rotateX(15deg);
-    opacity: 1;
-  }
-  30% {
-    transform: perspective(800px) rotateY(360deg) rotateX(0deg);
-    opacity: 1;
+  25% {
+    transform: perspective(800px) rotateY(90deg) translateY(-15px) scale(1.1);
   }
   50% {
-    transform: perspective(800px) rotateY(720deg) rotateX(25deg);
-    opacity: 1;
+    transform: perspective(800px) rotateY(180deg) translateY(0) scale(1);
+  }
+  75% {
+    transform: perspective(800px) rotateY(270deg) translateY(-15px) scale(1.1);
   }
   100% {
-    transform: perspective(800px) rotateY(1080deg) rotateX(0deg);
-    opacity: 1;
+    transform: perspective(800px) rotateY(360deg) translateY(0) scale(1);
   }
 }
-
 
 /* === Градиент для ОРЁЛ/РЕШКА === */
 #game-coin .actions.coin-choice button {
