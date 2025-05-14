@@ -132,15 +132,20 @@ footer img {
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
 
-/* Анимация флипа */
 
-.coin-image {
-  width: 180px;
-  height: 180px;
-  margin: 20px auto;
+
+/* Размер монеты */
+#game-coin .coin-image {
+  width: 120px;
+  height: 120px;
+  /* Сохраняем прежнюю 3D-подготовку */
   transform-style: preserve-3d;
+  backface-visibility: hidden;
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
 }
 
+
+/* Анимация флипа */
 #game-coin .coin-image.flip {
   animation: flipBonus 1s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
