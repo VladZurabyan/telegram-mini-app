@@ -133,7 +133,7 @@ footer img {
   transform-style: preserve-3d;
 }
 .coin-image.flip {
-  animation: flipCoin 1.2s ease-in-out;
+  animation: flipCoin 1.0s ease-in-out;
 }
 @keyframes flipCoin {
   0%   { transform: rotateY(0deg); }
