@@ -66,31 +66,53 @@ function playCoin(btn) {
   if (!playerChoice) return alert('Выберите сторону');
 
   const backBtn = document.getElementById('btn-back-coin');
-
-  // Отключаем обе кнопки
   btn.disabled = true;
   backBtn.disabled = true;
 
   const result = Math.random() < 0.5 ? 'heads' : 'tails';
   const img = document.getElementById('coinImageMain');
-  
-  // Запускаем анимацию
+
+  // Запускаем flip
   img.classList.remove('flip');
   void img.offsetWidth;
   img.classList.add('flip');
-  
-  // Ждём окончания анимации монеты
-  img.addEventListener('animationend', function handler() {
+
+  // После поворота
+  function onRotate(e) {
+    if (e.propertyName !== 'transform') return;
+    img.removeEventListener('transitionend', onRotate);
+
+    // Fade out
+    img.style.opacity = '0';
+    img.addEventListener('transitionend', onFadeOut);
+  }
+  function onFadeOut(e) {
+    if (e.propertyName !== 'opacity') return;
+    img.removeEventListener('transitionend', onFadeOut);
+
+    // Меняем изображение
     img.src = `assets/coin-${result}.png`;
+    void img.offsetWidth;
+
+    // Fade in
+    img.style.opacity = '1';
+    img.addEventListener('transitionend', onFadeIn);
+  }
+  function onFadeIn(e) {
+    if (e.propertyName !== 'opacity') return;
+    img.removeEventListener('transitionend', onFadeIn);
+
+    // Завершаем
     const win = result === playerChoice;
     document.getElementById('coinResult').innerText =
       `Выпало: ${result==='heads'?'ОРЁЛ':'РЕШКА'}\n${win?'Победа!':'Проигрыш'}`;
     recordGame('coin', bet, result, win);
-    
-    // Включаем кнопки обратно
+
     btn.disabled = false;
     backBtn.disabled = false;
-  }, { once: true });
+  }
+
+  img.addEventListener('transitionend', onRotate);
 }
 
 
