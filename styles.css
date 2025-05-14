@@ -126,11 +126,11 @@ footer img {
 }
 
 /* Монета с тенями */
-#game-coin .coin-image {
+/* #game-coin .coin-image {
   transform-style: preserve-3d;
   backface-visibility: hidden;
   filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
-}
+}*/
 
 
 
