@@ -1,6 +1,13 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 
+const fakeBalance = {
+    ton: 10,
+    usdt: 100
+};
+
+
+
 const winsCount = 10;
 const lossesCount = 10;
 const totalCount = winsCount + lossesCount;
@@ -85,6 +92,14 @@ function setCoinChoice(choice) {
 }
 
 function playCoin(btn) {
+
+// Проверка: достаточно ли средств
+const balanceAvailable = selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
+if (bet > balanceAvailable) {
+    alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
+    return;
+}
+
     if (bet < minBet) return alert(`Минимум ${minBet} TON`);
     if (!playerChoice) return alert('Выберите сторону');
 
@@ -133,8 +148,24 @@ function playCoin(btn) {
                 if (e2.propertyName !== 'opacity') return;
                 img.removeEventListener('transitionend', onFadeIn);
 
-                resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
-                if (isWin) prizeBox.innerText = `Вы выиграли: ${bet * 2} TON`;
+                const currencyLabel = selectedCurrency.toUpperCase(); // 'TON' или 'USDT'
+resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
+
+if (isWin) {
+    prizeBox.innerText = `Вы выиграли: ${bet * 2} ${currencyLabel}`;
+} else {
+    prizeBox.innerText = `Желаем дальнейщий успехов`;
+}
+
+
+
+                if (selectedCurrency === 'ton') {
+    fakeBalance.ton += isWin ? bet : -bet;
+} else {
+    fakeBalance.usdt += isWin ? bet : -bet;
+}
+updateBalanceUI();
+
 
                 recordGame('coin', bet, result, isWin);
                 allBtns.forEach(el => el.disabled = false);
@@ -226,6 +257,11 @@ function loadGame(gameId) {
                 screen.style.display = 'block';
             }
 
+
+            updateBalanceUI();
+
+
+
             // Назначаем события
             if (gameId === 'game-coin') {
                 document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
@@ -291,3 +327,17 @@ function loadGame(gameId) {
         });
 }
 
+                    function updateBalanceUI() {
+    // Главный баланс сверху
+    document.querySelectorAll(".balance span")[0].textContent = fakeBalance.ton.toFixed(2);
+    document.querySelectorAll(".balance span")[1].textContent = fakeBalance.usdt.toFixed(2);
+
+    // В селекторе валют
+    const tonBtn  = document.getElementById('btn-currency-ton');
+    const usdtBtn = document.getElementById('btn-currency-usdt');
+
+    if (tonBtn)  tonBtn.textContent  = `TON (${fakeBalance.ton.toFixed(2)})`;
+    if (usdtBtn) usdtBtn.textContent = `USDT (${fakeBalance.usdt.toFixed(2)})`;
+}
+
+updateBalanceUI();
