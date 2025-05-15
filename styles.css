@@ -340,10 +340,11 @@ opacity: 0.7;
 
 
 /* Селектор валют */
-#game-coin .currency-selector {
-  margin: 0 !important;
-  padding: 0 !important;
+.currency-selector {
+  display: flex;
   justify-content: center;
+  gap: 8px;
+  margin: 12px 0;
 }
 
 .currency-btn {
