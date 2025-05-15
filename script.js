@@ -278,14 +278,22 @@ function loadGame(gameId) {
 
   if (!path) return;
 
-  hideAll(); // скрываем всё
+  hideAll();
   const container = document.getElementById('game-container');
   container.innerHTML = '<p>Загрузка...</p>';
 
   fetch(path)
-    .then(r => r.text())
+    .then(r => {
+      if (!r.ok) throw new Error("Ошибка загрузки: " + r.status);
+      return r.text();
+    })
     .then(html => {
       container.innerHTML = html;
+      console.log("Загружено:", gameId);
       if (gameId === 'game-coin') updateBetUI();
+    })
+    .catch(err => {
+      container.innerHTML = '<p style="color:red;">Ошибка загрузки игры</p>';
+      console.error(err);
     });
 }
