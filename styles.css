@@ -237,25 +237,29 @@ button[disabled],
 
 /* === Кнопка Назад === */
 .back-btn {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  width: 32px;
-  height: 32px;
-  background: url('assets/arrow-left.png') no-repeat center center;
-  background-size: contain;
-  cursor: pointer;
-  z-index: 10;
-  transition: opacity 0.2s;
-}
-.back-btn:hover {
-opacity: 0.7;
-  background: #1D75FF;
+  background: linear-gradient(135deg, #00c6ff, #0072ff); /* как у .play-btn */
+  border: none;
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-size: 18px;
+  font-weight: bold;
   color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  margin: 20px auto;
+  width: 150px;
+}
+
+/* Поведение при наведении и клике */
+.back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 .back-btn:active {
-  background: #155ecb;
-  border-color: #155ecb;
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 .game-screen {
   position: relative;
@@ -295,6 +299,8 @@ opacity: 0.7;
 .coin-image.flip-tail {
   animation: flip-tail 1.2s ease-out forwards !important;
 }
+
+
 
 /* === Золотой градиент только для экрана «Орёл и Решка» === */
 
@@ -391,3 +397,5 @@ opacity: 0.7;
   margin: 20px auto;
   display: block;
 }
+
+
