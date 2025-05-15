@@ -1,0 +1,21 @@
+<div class="game-screen" id="game-dice">
+<h2>КУБИКИ 🎲</h2>
+<button class="game-button play-btn" onclick="rollDice()">PLAY</button>
+<div class="dice-row">
+<img id="dice1" src="assets/dice1.png"/>
+<img id="dice2" src="assets/dice2.png"/>
+</div>
+<div class="result-box" id="diceResult"></div>
+<div class="bet-container">
+<label>Введите ставку</label>
+<div class="bet-box">
+<button onclick="setBet('min')">min</button>
+<button onclick="changeBet(-10)">-</button>
+<span id="betValue">100</span>
+<button onclick="changeBet(10)">+</button>
+<button onclick="setBet('max')">max</button>
+</div>
+<div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
+</div>
+<button class="btn back-btn" onclick="backToMain()">Назад</button>
+</div>

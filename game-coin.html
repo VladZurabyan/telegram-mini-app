@@ -1,0 +1,33 @@
+<div class="game-screen" id="game-coin">
+<div class="balance">
+<div class="currency-selector">
+<button class="currency-btn active" id="btn-currency-ton" onclick="setCurrency('ton')">
+    TON (<span id="bal-ton">0.00</span>)
+  </button>
+<button class="currency-btn" id="btn-currency-usdt" onclick="setCurrency('usdt')">
+    USDT (<span id="bal-usdt">0.00</span>)
+  </button>
+</div>
+</div>
+<h2>ОРЁЛ И РЕШКА</h2>
+<img class="coin-image" id="coinImageMain" src="assets/coin-heads.png"/>
+<div class="actions coin-choice">
+<button id="btn-heads" onclick="setCoinChoice('heads')">ОРЁЛ</button>
+<button id="btn-tails" onclick="setCoinChoice('tails')">РЕШКА</button>
+</div>
+<button class="game-button play-btn" onclick="playCoin(this)">Играть</button>
+<div class="result-box" id="coinResult"></div>
+<div class="prize-box" id="coinPrize"></div>
+<div class="bet-container">
+<label>Введите ставку</label>
+<div class="bet-box">
+<button onclick="setBet('min')">min</button>
+<button onclick="changeBet(-1)">-</button>
+<span id="betValue">10</span>
+<button onclick="changeBet(1)">+</button>
+<button onclick="setBet('max')">max</button>
+</div>
+<div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
+</div>
+<button class="btn back-btn" id="btn-back-coin" onclick="backToMain()"></button>
+</div>
