@@ -299,6 +299,13 @@ function loadGame(gameId) {
       container.innerHTML = html;
       console.log("Загружено:", gameId);
 
+      // Принудительно показать загруженный экран
+      const screen = document.getElementById(gameId);
+      if (screen) {
+        screen.classList.remove('game-screen'); // чтобы не было display: none
+        screen.style.display = 'block';
+      }
+
       if (gameId === 'game-coin') {
         updateBetUI();
         document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
