@@ -307,15 +307,6 @@ function loadGame(gameId) {
       }
 
       if (gameId === 'game-coin') {
-        // Заменим кнопку-назад (стрелку) на текстовую кнопку внизу
-        const oldBackBtn = document.getElementById('btn-back-coin');
-        if (oldBackBtn) oldBackBtn.remove();
-        const newBackBtn = document.createElement('button');
-        newBackBtn.className = 'play-btn back-btn-text';
-        newBackBtn.innerText = 'НАЗАД';
-        newBackBtn.onclick = backToMain;
-        document.getElementById('game-coin')?.appendChild(newBackBtn);
-
 
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
         document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
