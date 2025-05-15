@@ -196,21 +196,19 @@ function resetCoinScreen() {
   const resultBox = document.getElementById('coinResult');
   const prizeBox  = document.getElementById('coinPrize');
 
-  // Сбрасываем класс анимации
+  // Защита от ошибки, если элемента ещё нет
+  if (!img || !resultBox || !prizeBox) return;
+
   img.classList.remove('flip-head', 'flip-tail');
-  // Возвращаем начальное изображение (орёл)
   img.src = 'assets/coin-heads.png';
-  // Гарантируем видимость
   img.style.opacity = '1';
 
-  // Очищаем текст результата и приза
   resultBox.innerText = '';
   prizeBox.innerText  = '';
 
-  // Сбрасываем выбор пользователя
   playerChoice = '';
-  document.getElementById('btn-heads').classList.remove('active');
-  document.getElementById('btn-tails').classList.remove('active');
+  document.getElementById('btn-heads')?.classList.remove('active');
+  document.getElementById('btn-tails')?.classList.remove('active');
 }
 
 // Переписываем showGame и backToMain
