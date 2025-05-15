@@ -154,7 +154,7 @@ resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШ
 if (isWin) {
     prizeBox.innerText = `Вы выиграли: ${bet * 2} ${currencyLabel}`;
 } else {
-    prizeBox.innerText = `Желаем дальнейщий успехов`;
+    prizeBox.innerText = `Желаем дальнейших успехов`;
 }
 
 
