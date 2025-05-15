@@ -168,6 +168,18 @@ function showGame(id) {
   document.getElementById(id).style.display = 'block';
 
   if (id === 'game-coin') {
+    // Вращение монеты один раз при входе
+    const img = document.getElementById('coinImageMain');
+    resetCoinScreen();
+    updateBetUI();
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+
     updateBetUI();
 
     // Включаем один прокрут монеты при входе
@@ -219,6 +231,18 @@ function showGame(id) {
   document.getElementById(id).style.display = 'block';
 
   if (id === 'game-coin') {
+    // Вращение монеты один раз при входе
+    const img = document.getElementById('coinImageMain');
+    resetCoinScreen();
+    updateBetUI();
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+
     // Сбрасываем экран монеты при каждом входе
     resetCoinScreen();
     updateBetUI();
@@ -307,21 +331,6 @@ function loadGame(gameId) {
       }
 
       if (gameId === 'game-coin') {
-
-        document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
-        document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
-
-        const betBtns = document.querySelectorAll('#game-coin .bet-box button');
-        betBtns.forEach(btn => {
-          btn.addEventListener('click', () => {
-            const text = btn.innerText.toLowerCase();
-            if (text === 'min') setBet('min');
-            else if (text === 'max') setBet('max');
-            else if (text === '+') changeBet(1);
-            else if (text === '-') changeBet(-1);
-          });
-        });
-
         updateBetUI();
         document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
         document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
