@@ -383,3 +383,10 @@ opacity: 0.7;
   margin-bottom: 16px;
   padding-top: 8px;
 }
+
+
+/* Полное удаление отступов у currency-selector */
+#game-coin .currency-selector {
+  margin: 0 !important;
+  padding: 0 !important;
+}

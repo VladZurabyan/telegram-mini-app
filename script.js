@@ -267,11 +267,9 @@ function rollDice() {
   recordGame('dice', bet, `${d1}+${d2}`, win);
 }
 
-function hideAll() {
-  ['main', 'game-container'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
+function backToMain() {
+  document.getElementById('game-container').innerHTML = '';
+  showMain();
 }
 
 function loadGame(gameId) {
@@ -299,10 +297,9 @@ function loadGame(gameId) {
       container.innerHTML = html;
       console.log("Загружено:", gameId);
 
-      // Принудительно показать загруженный экран
       const screen = document.getElementById(gameId);
       if (screen) {
-        screen.classList.remove('game-screen'); // чтобы не было display: none
+        screen.classList.remove('game-screen');
         screen.style.display = 'block';
       }
 
