@@ -267,6 +267,13 @@ function rollDice() {
   recordGame('dice', bet, `${d1}+${d2}`, win);
 }
 
+function hideAll() {
+  ['main', 'game-container'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
 function loadGame(gameId) {
   const path = {
     'game-coin': 'games/game-coin.html',
@@ -281,6 +288,7 @@ function loadGame(gameId) {
   hideAll();
   const container = document.getElementById('game-container');
   container.innerHTML = '<p>Загрузка...</p>';
+  container.style.display = 'block';
 
   fetch(path)
     .then(r => {
@@ -293,7 +301,6 @@ function loadGame(gameId) {
 
       if (gameId === 'game-coin') {
         updateBetUI();
-
         document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
         document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
         document.querySelector('.play-btn')?.addEventListener('click', function () { playCoin(this); });
