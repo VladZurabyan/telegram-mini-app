@@ -376,18 +376,26 @@ opacity: 0.7;
 }
 
 
-/* === FIX: прижать селектор валюты к верху и вернуть кнопку Назад вниз === */
-#game-coin .currency-selector {
-  margin-top: 0 !important;
-  margin-bottom: 8px;
-}
-
-#game-coin .balance {
-  margin-top: 0 !important;
-}
-
+/* Назад как Play-кнопка (без удаления старого стиля) */
 #game-coin .btn.back-btn {
-  position: static !important;
-  margin: 20px auto;
   display: block;
+  margin: 20px auto;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#game-coin .btn.back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}
+#game-coin .btn.back-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
