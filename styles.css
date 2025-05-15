@@ -375,3 +375,11 @@ opacity: 0.7;
   pointer-events: none !important;
 }
 
+
+
+/* Фикс: прижимаем валютный селектор ближе к верху */
+#game-coin .currency-selector {
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-top: 8px;
+}
