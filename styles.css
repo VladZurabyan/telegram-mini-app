@@ -391,3 +391,9 @@ opacity: 0.7;
   margin: 20px auto;
   display: block;
 }
+
+
+/* Новая текстовая кнопка Назад */
+.back-btn-text {
+  margin-top: 16px;
+}
