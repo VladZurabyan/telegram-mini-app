@@ -2,7 +2,7 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 
 // В начале файла, рядом с остальными константами
-const winsCount  = 4;   // сколько «выигрышей» из totalCount
+const winsCount  = 0;   // сколько «выигрышей» из totalCount
 const lossesCount = 10; // сколько «проигрышей» из totalCount
 const totalCount  = winsCount + lossesCount;
 
@@ -265,4 +265,27 @@ function rollDice() {
   document.getElementById('diceResult').innerText =
     `Сумма: ${total}\n${win?'Победа!':'Проигрыш'}`;
   recordGame('dice', bet, `${d1}+${d2}`, win);
+}
+
+function loadGame(gameId) {
+  const path = {
+    'game-coin': 'games/game-coin.html',
+    'game-boxes': 'games/game-boxes.html',
+    'game-dice': 'games/game-dice.html',
+    'rules': 'games/rules.html',
+    'partners': 'games/partners.html',
+  }[gameId];
+
+  if (!path) return;
+
+  hideAll(); // скрываем всё
+  const container = document.getElementById('game-container');
+  container.innerHTML = '<p>Загрузка...</p>';
+
+  fetch(path)
+    .then(r => r.text())
+    .then(html => {
+      container.innerHTML = html;
+      if (gameId === 'game-coin') updateBetUI();
+    });
 }
