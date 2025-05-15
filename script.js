@@ -295,37 +295,28 @@ function loadGame(gameId) {
     })
     .then(html => {
       container.innerHTML = html;
-      console.log("Загружено:", gameId);
 
       const screen = document.getElementById(gameId);
-      if (screen) {
-        screen.classList.remove('game-screen');
-        screen.style.display = 'block';
-      }
+      if (screen) screen.style.display = 'block';
+
+      // Назад на всех экранах
+      container.querySelector('.btn.back-btn')?.addEventListener('click', backToMain);
 
       if (gameId === 'game-coin') {
         updateBetUI();
         document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
         document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
         document.querySelector('.play-btn')?.addEventListener('click', function () { playCoin(this); });
-        document.getElementById('btn-back-coin')?.addEventListener('click', backToMain);
       }
 
       if (gameId === 'game-boxes') {
-        const boxes = container.querySelectorAll('.boxes img');
-        boxes.forEach((img, i) => {
+        container.querySelectorAll('.boxes img').forEach((img, i) => {
           img.addEventListener('click', () => selectBox(i));
         });
-        container.querySelector('.btn.back-btn')?.addEventListener('click', backToMain);
       }
 
       if (gameId === 'game-dice') {
         container.querySelector('.play-btn')?.addEventListener('click', rollDice);
-        container.querySelector('.btn.back-btn')?.addEventListener('click', backToMain);
-      }
-
-      if (gameId === 'rules' || gameId === 'partners') {
-        container.querySelector('.btn.back-btn')?.addEventListener('click', backToMain);
       }
     })
     .catch(err => {

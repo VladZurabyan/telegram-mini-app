@@ -379,6 +379,9 @@ opacity: 0.7;
 
 /* Фикс: прижимаем валютный селектор ближе к верху */
 #game-coin .currency-selector {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+
   margin-top: 0;
   margin-bottom: 16px;
   padding-top: 8px;
@@ -387,6 +390,9 @@ opacity: 0.7;
 
 /* Полное удаление отступов у currency-selector */
 #game-coin .currency-selector {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+
   margin: 0 !important;
   padding: 0 !important;
 }
