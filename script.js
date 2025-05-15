@@ -46,7 +46,19 @@ function hideAll() {
     .forEach(id => document.getElementById(id).style.display = 'none');
 }
 function showMain()    { hideAll(); document.getElementById('main').style.display = 'block'; }
-function showGame(id)  { hideAll(); document.getElementById(id).style.display = 'block'; if (id==='game-coin') updateBetUI(); }
+function showGame(id)  { hideAll(); document.getElementById(id).style.display = 'block'; if (id==='game-coin') updateBetUI();
+
+    // При входе каждый раз анимация монеты
+    const img = document.getElementById('coinImageMain');
+    img.classList.remove('flip-head', 'flip-tail');
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+ }
 function showRules()   { hideAll(); document.getElementById('rules').style.display = 'block'; }
 function showPartners(){ hideAll(); document.getElementById('partners').style.display = 'block'; }
 function backToMain()  { showMain(); }
@@ -73,8 +85,32 @@ function recordGame(game, bet, result, win) {
 // Ставки
 let bet = 1, minBet = 1, maxBet = 100;
 function updateBetUI()    { document.querySelectorAll('#betValue').forEach(s => s.innerText = bet); }
-function changeBet(delta) { bet = Math.min(Math.max(bet+delta,minBet),maxBet); updateBetUI(); }
-function setBet(type)     { bet = (type==='min'?minBet:type==='max'?maxBet:bet); updateBetUI(); }
+function changeBet(delta) { bet = Math.min(Math.max(bet+delta,minBet),maxBet); updateBetUI();
+
+    // При входе каждый раз анимация монеты
+    const img = document.getElementById('coinImageMain');
+    img.classList.remove('flip-head', 'flip-tail');
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+ }
+function setBet(type)     { bet = (type==='min'?minBet:type==='max'?maxBet:bet); updateBetUI();
+
+    // При входе каждый раз анимация монеты
+    const img = document.getElementById('coinImageMain');
+    img.classList.remove('flip-head', 'flip-tail');
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+ }
 
 // Орёл и решка
 let playerChoice = '';
@@ -170,6 +206,18 @@ function showGame(id) {
   if (id === 'game-coin') {
     updateBetUI();
 
+    // При входе каждый раз анимация монеты
+    const img = document.getElementById('coinImageMain');
+    img.classList.remove('flip-head', 'flip-tail');
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+
+
     // Включаем один прокрут монеты при входе
     const img = document.getElementById('coinImageMain');
     img.classList.remove('flip-head', 'flip-tail');  // сбрасываем классы
@@ -222,6 +270,18 @@ function showGame(id) {
     // Сбрасываем экран монеты при каждом входе
     resetCoinScreen();
     updateBetUI();
+
+    // При входе каждый раз анимация монеты
+    const img = document.getElementById('coinImageMain');
+    img.classList.remove('flip-head', 'flip-tail');
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+
 
     // Запускаем единичный флип-орёл
     const img = document.getElementById('coinImageMain');
@@ -323,6 +383,18 @@ function loadGame(gameId) {
         });
 
         updateBetUI();
+
+    // При входе каждый раз анимация монеты
+    const img = document.getElementById('coinImageMain');
+    img.classList.remove('flip-head', 'flip-tail');
+    void img.offsetWidth;
+    img.classList.add('flip-head');
+    img.addEventListener('animationend', function handler() {
+      img.removeEventListener('animationend', handler);
+      img.classList.remove('flip-head');
+      img.style.opacity = '1';
+    }, { once: true });
+
         document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
         document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
         document.querySelector('.play-btn')?.addEventListener('click', function () { playCoin(this); });
