@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="main">
+<div class="balance">
+<div><img src="assets/ton.png"/><span>0.00</span></div>
+<div><img src="assets/usdt.png"/><span>0.00</span></div>
+</div>
+<h2>ВЫБЕРИТЕ ИГРУ</h2>
+<img class="controller-icon" src="assets/controller.png"/>
+<button class="game-button" onclick="showGame('game-coin')">
+<img src="assets/coin.png"/> ОРЁЛ И РЕШКА
+    </button>
+<button class="game-button" onclick="showGame('game-boxes')">
+<img src="assets/boxes.png"/> ТРИ КОРОБКИ
+    </button>
+<button class="game-button" onclick="showGame('game-dice')">
+<img src="assets/dice.png"/> КУБИКИ
+    </button>
+<div class="actions">
+<button>ПОПОЛНИТЬ</button>
+<button>ВЫВЕСТИ</button>
+</div>
+<footer>
+<p>
+<img src="assets/18plus.png"/>
+<span onclick="showRules()">ПРАВИЛА</span>  
+        <span onclick="showPartners()">ПАРТНЁРАМ</span>
+</p>
+<p>ВСЕ ПРАВА ЗАЩИЩЕНЫ</p>
+</footer>
+</div>
+<div id="game-container"></div>
+<script src="script.js"></script>
+</body>
+</html>
