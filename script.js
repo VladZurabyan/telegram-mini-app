@@ -267,9 +267,11 @@ function rollDice() {
   recordGame('dice', bet, `${d1}+${d2}`, win);
 }
 
-function backToMain() {
-  document.getElementById('game-container').innerHTML = '';
-  showMain();
+function hideAll() {
+  ['main', 'game-container'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
 }
 
 function loadGame(gameId) {
@@ -295,28 +297,38 @@ function loadGame(gameId) {
     })
     .then(html => {
       container.innerHTML = html;
+      console.log("Загружено:", gameId);
 
+      // Принудительно показать загруженный экран
       const screen = document.getElementById(gameId);
-      if (screen) screen.style.display = 'block';
-
-      // Назад на всех экранах
-      container.querySelector('.btn.back-btn')?.addEventListener('click', backToMain);
+      if (screen) {
+        screen.classList.remove('game-screen'); // чтобы не было display: none
+        screen.style.display = 'block';
+      }
 
       if (gameId === 'game-coin') {
         updateBetUI();
         document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
         document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
         document.querySelector('.play-btn')?.addEventListener('click', function () { playCoin(this); });
+        document.getElementById('btn-back-coin')?.addEventListener('click', backToMain);
       }
 
       if (gameId === 'game-boxes') {
-        container.querySelectorAll('.boxes img').forEach((img, i) => {
+        const boxes = container.querySelectorAll('.boxes img');
+        boxes.forEach((img, i) => {
           img.addEventListener('click', () => selectBox(i));
         });
+        container.querySelector('.btn.back-btn')?.addEventListener('click', backToMain);
       }
 
       if (gameId === 'game-dice') {
         container.querySelector('.play-btn')?.addEventListener('click', rollDice);
+        container.querySelector('.btn.back-btn')?.addEventListener('click', backToMain);
+      }
+
+      if (gameId === 'rules' || gameId === 'partners') {
+        container.querySelector('.btn.back-btn')?.addEventListener('click', backToMain);
       }
     })
     .catch(err => {
