@@ -375,3 +375,19 @@ opacity: 0.7;
   pointer-events: none !important;
 }
 
+
+/* === FIX: прижать селектор валюты к верху и вернуть кнопку Назад вниз === */
+#game-coin .currency-selector {
+  margin-top: 0 !important;
+  margin-bottom: 8px;
+}
+
+#game-coin .balance {
+  margin-top: 0 !important;
+}
+
+#game-coin .btn.back-btn {
+  position: static !important;
+  margin: 20px auto;
+  display: block;
+}
