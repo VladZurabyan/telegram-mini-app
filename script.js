@@ -268,7 +268,7 @@ document.getElementById('btn-box-replay')?.style.setProperty('display', 'none');
                     // Проигрыш — просто задержка перед открытием
                     setTimeout(() => {
                         img.src = `assets/box${index + 1}-open.png`;
-                    }, 200);
+                    }, 100);
                 }
             } else {
                 // Все остальные остаются закрытыми
