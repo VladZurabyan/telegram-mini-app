@@ -60,14 +60,16 @@ function recordGame(game, bet, result, win) {
     fetch(`${apiUrl}/game`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: u.id, game, bet, result, win })
+        body: JSON.stringify({ user_id: u.id, game, bet, result, win, currency: selectedCurrency })
+
     });
 
     fetch(`${apiUrl}/balance/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: u.id, currency: "ton", amount: win ? bet : -bet })
-    })
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: u.id, currency: selectedCurrency, amount: win ? bet : -bet })
+})
+
     .then(() => fetch(`${apiUrl}/balance/${u.id}`))
     .then(r => r.json())
     .then(d => {
@@ -196,12 +198,129 @@ function resetCoinScreen() {
 }
 
 function selectBox(choice) {
+
+
+const balanceAvailable = selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
+    if (bet > balanceAvailable) {
+        alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
+        return;
+    }
+
     if (bet < minBet) return alert(`Минимум ${minBet} TON`);
+
+    const boxImgs = document.querySelectorAll('#game-boxes .boxes img');
+    if (boxImgs.length !== 3) {
+        console.error("Не найдено 3 коробки");
+        return;
+    }
+
+    boxImgs.forEach(img => {
+        img.style.pointerEvents = 'none';
+        img.classList.remove('selected-box');
+    });
+
+        // Деактивация: выбор валюты
+document.querySelector('#game-boxes .currency-selector')?.classList.add('disabled');
+
+// Деактивация: ставка
+document.querySelector('#game-boxes .bet-box')?.classList.add('disabled');
+
+const backBtn = document.querySelector('#game-boxes .back-btn');
+if (backBtn) backBtn.disabled = true;
+
+
+// Скрываем кнопку «Играть снова», если она есть
+document.getElementById('btn-box-replay')?.style.setProperty('display', 'none');
+
     const prize = Math.floor(Math.random() * 3);
-    const win = choice === prize;
-    document.getElementById('boxResult').innerText = win ? 'Приз найден! Победа!' : 'Пусто. Проигрыш.';
-    recordGame('boxes', bet, win ? 'win' : 'lose', win);
+    const isWin = choice === prize;
+    const resultEl = document.getElementById('boxResult');
+    if (resultEl) resultEl.innerText = '';
+
+    // Подсветка выбранной
+    boxImgs[choice]?.classList.add('selected-box');
+
+    setTimeout(() => {
+        boxImgs.forEach((img, index) => {
+            // Снятие подсветки у невыбранных
+            if (index !== choice) {
+                img.classList.remove('selected-box');
+            }
+
+            if (index === prize) {
+                img.classList.add('prize-box');
+
+                if (isWin && index === choice) {
+                    // 🎆 Сначала показать взрыв
+                    const explosion = document.createElement('div');
+                    explosion.className = 'prize-explosion';
+                    explosion.style.top = img.offsetTop + 'px';
+                    explosion.style.left = img.offsetLeft + 'px';
+                    explosion.style.position = 'absolute';
+                    img.parentElement.appendChild(explosion);
+
+                    // ⏳ Через 1 сек — убрать взрыв и показать открытую коробку
+                    setTimeout(() => {
+                        img.src = `assets/box${index + 1}-open.png`;
+                        explosion.remove();
+                    }, 400);
+                } else {
+                    // Проигрыш — просто задержка перед открытием
+                    setTimeout(() => {
+                        img.src = `assets/box${index + 1}-open.png`;
+                    }, 400);
+                }
+            } else {
+                // Все остальные остаются закрытыми
+                img.src = `assets/box${index + 1}.png`;
+            }
+        });
+
+        if (resultEl) {
+            resultEl.className = '';
+resultEl.classList.add(isWin ? 'win' : 'lose');
+resultEl.innerText = isWin
+    ? 'Приз найден! Победа! 🎉'
+    : `😔 Пусто. Приз был в коробке ${prize + 1}`;
+
+const prizeEl = document.getElementById('boxPrize');
+if (prizeEl) {
+    prizeEl.innerText = isWin
+        ? `Вы выиграли: ${bet * 2} ${selectedCurrency.toUpperCase()}`
+        : '';
 }
+
+
+        }
+
+        // Обновление баланса
+        if (typeof selectedCurrency === 'undefined') {
+            console.error("selectedCurrency не определена");
+            return;
+        }
+
+        if (selectedCurrency === 'ton') {
+            fakeBalance.ton += isWin ? bet : -bet;
+        } else {
+            fakeBalance.usdt += isWin ? bet : -bet;
+        }
+
+        updateBalanceUI();
+        recordGame('boxes', bet, isWin ? 'win' : 'lose', isWin, selectedCurrency);
+        // Показываем кнопку «Играть снова»
+    document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
+    if (backBtn) backBtn.disabled = false;
+
+    }, 1000);
+
+
+
+
+}
+
+
+
+
 
 function rollDice() {
     if (bet < minBet) return alert(`Минимум ${minBet} TON`);
@@ -266,6 +385,7 @@ function loadGame(gameId) {
             if (gameId === 'game-coin') {
                 document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
                 document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+                setCurrency(selectedCurrency); // ← обновим визуально текущую валюту
 
                 const betBtns = document.querySelectorAll('#game-coin .bet-box button');
                 betBtns.forEach(btn => {
@@ -277,7 +397,7 @@ function loadGame(gameId) {
                         else if (text === '-') changeBet(-1);
                     });
                 });
-
+                 bet = minBet;
                 updateBetUI();
                 document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
                 document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
@@ -286,12 +406,71 @@ function loadGame(gameId) {
             }
 
             if (gameId === 'game-boxes') {
-                const boxes = container.querySelectorAll('.boxes img');
-                boxes.forEach((img, i) => {
-                    img.addEventListener('click', () => selectBox(i));
-                });
-                container.querySelector('.back-btn')?.addEventListener('click', backToMain);
-            }
+
+    // Валюта
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+     setCurrency(selectedCurrency); // ← обновим визуально текущую валюту
+    // Клики по коробкам
+    const boxes = container.querySelectorAll('.boxes img');
+
+// Сначала установим src и визуальные сбросы
+boxes.forEach((img, i) => {
+    img.src = `assets/box${i + 1}.png`;
+    img.style.opacity = '0';
+    img.style.transform = 'translateY(50px)';
+    img.classList.remove('box-animated');
+    img.style.border = 'none';
+    img.style.pointerEvents = 'auto';
+    img.addEventListener('click', () => selectBox(i));
+});
+
+
+
+
+    // Обнуляем результат
+    const result = document.getElementById('boxResult');
+    if (result) result.innerText = '';
+
+
+
+    // Обновляем ставки
+    const betBtns = document.querySelectorAll('#game-boxes .bet-box button');
+    betBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.innerText.toLowerCase();
+            if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+            else if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+        });
+    });
+
+
+    document.getElementById('btn-box-replay')?.addEventListener('click', () => {
+        // Активация валюты и ставки
+document.querySelector('#game-boxes .currency-selector')?.classList.remove('disabled');
+document.querySelector('#game-boxes .bet-box')?.classList.remove('disabled');
+
+    const boxImgs = document.querySelectorAll('#game-boxes .boxes img');
+    boxImgs.forEach((img, i) => {
+        img.src = `assets/box${i + 1}.png`;
+        img.style.pointerEvents = 'auto';
+        img.classList.remove('selected-box', 'prize-box');
+    });
+
+    document.getElementById('boxResult').innerText = '';
+    document.getElementById('btn-box-replay').style.display = 'none';
+});
+
+
+
+
+     bet = minBet;
+    updateBetUI();
+    container.querySelector('.back-btn')?.addEventListener('click', backToMain);
+}
+
 
             if (gameId === 'game-dice') {
                 container.querySelector('.play-btn')?.addEventListener('click', rollDice);
@@ -319,6 +498,20 @@ function loadGame(gameId) {
                         }, { once: true });
                     }
                 }
+
+
+                if (gameId === 'game-boxes') {
+    const boxes = document.querySelectorAll('#game-boxes .boxes img');
+    boxes.forEach((img, i) => {
+        setTimeout(() => {
+            img.classList.add('box-animated');
+        }, i * 100); // задержка для плавного появления
+    });
+}
+
+
+
+
             }, 700);
         })
         .catch(err => {

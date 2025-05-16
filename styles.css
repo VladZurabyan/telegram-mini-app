@@ -428,4 +428,139 @@ button[disabled],
 }
 
 
+ #game-boxes .boxes img {
+  transition: all 0.3s ease;
+  width: 80px;
+  cursor: pointer;
+}
+
+#game-boxes .boxes img.prize-box {
+  filter: drop-shadow(0 0 10px gold);
+}
+
+
+
+
+#game-boxes .boxes img.selected-box {
+  border: 3px solid #00c6ff;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0,198,255,0.6);
+}
+
+
+
+
+.prize-explosion {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background-image: url('assets/explosion.gif');
+  background-size: cover;
+  pointer-events: none;
+  animation: explode 1s ease-out forwards;
+}
+
+@keyframes explode {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+#game-boxes .currency-selector {
+  margin-top: 0 !important;
+  margin-bottom: 8px;
+}
+
+#game-boxes .balance {
+  margin-top: 0 !important;
+}
+
+#game-boxes .bet-box {
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #854526, #f1b15c); /* коричневый градиент */
+  border-radius: 30px;
+  overflow: hidden;
+  padding: 12px 10px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+#game-boxes .currency-btn.active {
+  background: linear-gradient(135deg, #854526, #f1b15c); /* коричневый градиент */
+  color: #1a1a1a;
+}
+
+#game-boxes h2 {
+  color: #f0c674; /* красивый золотисто-оранжевый */
+  text-shadow: 0 0 6px rgba(255, 200, 100, 0.5);
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+#game-boxes #boxResult {
+    margin-top: 30px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+ #game-boxes #boxPrize {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f9d423; /* золотистый */
+  text-shadow: 0 0 4px rgba(249, 212, 35, 0.8);
+  white-space: pre-line;
+}
+
+.currency-selector.disabled,
+.currency-selector.disabled * {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+}
+
+.bet-box.disabled,
+.bet-box.disabled * {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+}
+
+
+#game-boxes .boxes img {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.box-animated {
+  animation: boxIn 0.5s ease-out forwards;
+}
+
+
+
+#game-boxes .boxes img:nth-child(1) {
+  animation-delay: 0.1s;
+}
+#game-boxes .boxes img:nth-child(2) {
+  animation-delay: 0.2s;
+}
+#game-boxes .boxes img:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes boxIn {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+      opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
