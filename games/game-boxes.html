@@ -1,21 +1,31 @@
 <div class="game-screen" id="game-boxes">
-<h2>ТРИ КОРОБКИ 🎁</h2>
-<div class="boxes">
-<img src="assets/box1.png"/>
-<img src="assets/box2.png"/>
-<img src="assets/box3.png"/>
-</div>
-<div class="result-box" id="boxResult"></div>
-<div class="bet-container">
-<label>Введите ставку</label>
-<div class="bet-box">
-<button>min</button>
-<button>-</button>
-<span id="betValue">10</span>
-<button>+</button>
-<button>max</button>
-</div>
-<div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
-</div>
-<button class="back-btn">Назад</button>
+    <div class="balance">
+        <div class="currency-selector">
+            <button class="currency-btn active" id="btn-currency-ton">TON (<span id="bal-ton">0.00</span>)</button>
+            <button class="currency-btn" id="btn-currency-usdt">USDT (<span id="bal-usdt">0.00</span>)</button>
+        </div>
+    </div>
+
+    <h2>ТРИ КОРОБКИ 🎁</h2>
+    <div class="boxes">
+        <img src="assets/box1.png" data-index="0" />
+        <img src="assets/box2.png" data-index="1" />
+        <img src="assets/box3.png" data-index="2" />
+    </div>
+    <div class="result-box" id="boxResult"></div>
+     <div class="prize-box" id="boxPrize"></div>
+    <div class="bet-container">
+        <label>Введите ставку</label>
+        <div class="bet-box">
+            <button>min</button>
+            <button>-</button>
+            <span id="betValue">10</span>
+            <button>+</button>
+            <button>max</button>
+        </div>
+        <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
+    </div>
+    <button class="play-btn" id="btn-box-replay" style="display:none;">Играть снова</button>
+
+    <button class="back-btn">Назад</button>
 </div>
