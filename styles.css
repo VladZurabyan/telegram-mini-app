@@ -794,7 +794,7 @@ button[disabled],
 }
 
 
-@keyframes dice3DRoll {
+@keyframes dice-safe-throw {
   0% {
     transform: translateY(0) rotate(0deg);
     filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.3));
@@ -815,8 +815,8 @@ button[disabled],
   }
 }
 
-.dice-roll-3d {
-       animation: dice3DRoll 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+.dice-safe-throw {
+       animation: dice-safe-throw 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
        will-change: transform;
 }
 
