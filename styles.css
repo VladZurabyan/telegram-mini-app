@@ -529,6 +529,11 @@ button[disabled],
   white-space: pre-line;
 }
 
+#game-boxes .currency-btn.active {
+  background: linear-gradient(135deg, #854526, #f1b15c);
+  color: #1a1a1a;
+}
+
 .currency-selector.disabled,
 .currency-selector.disabled * {
   opacity: 0.5 !important;
@@ -577,3 +582,243 @@ button[disabled],
     transform: translateY(0) scale(1);
   }
 }
+
+
+
+
+
+.dice-choices {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.dice-choices button {
+  padding: 10px 15px;
+  font-size: 18px;
+  border-radius: 10px;
+  background: #123460;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.dice-choices button.active {
+  background: #00ff99;
+  color: #000;
+  font-weight: bold;
+}
+
+
+
+
+.dice-image-wrapper {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 20px;
+  padding: 16px 14px;
+  border-radius: 20px;
+  background: linear-gradient(to right, white 30%, #ff4d4d 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(255, 77, 77, 0.3);
+}
+
+
+
+
+.dice-image-wrapper img {
+  width: 100px;
+  height: 100px;
+}
+
+.dice-choices {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 300px; /* как bet-box */
+  margin: 0 auto 20px;
+  padding: 12px 10px;
+  border-radius: 16px;
+  background: linear-gradient(to bottom, white, #ff4d4d);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+.dice-choices button {
+  flex: 1;
+  margin: 0 3px;
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  color: #333;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dice-choices button {
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.dice-choices button:hover {
+  background-color: rgba(255,255,255,0.4);
+  transform: translateY(-2px);
+}
+
+
+.dice-choices button.active {
+  background: #ff4d4d;
+  color: white;
+  font-weight: 800;
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.6);
+  transform: scale(1.05);
+}
+
+
+
+.section-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.fancy-bet {
+  display: flex;
+  justify-content: space-between;
+  background: #e91e63;
+  padding: 10px;
+  border-radius: 12px;
+  margin: 10px auto;
+  color: white;
+}
+
+.fancy-bet button,
+.fancy-bet span {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.fancy-play {
+  width: 100%;
+  background: #e91e63;
+  color: white;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  margin: 15px 0;
+  cursor: pointer;
+}
+
+.win-multiplier {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dice-shake {
+  animation: shake 0.6s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(20deg); }
+  40% { transform: rotate(-20deg); }
+  60% { transform: rotate(15deg); }
+  80% { transform: rotate(-10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+#game-dice .currency-selector {
+  margin-top: 0 !important;
+  margin-bottom: 8px;
+}
+
+#game-dice .balance {
+  margin-top: 0 !important;
+}
+
+#game-dice .bet-box {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(45deg, #fff, #ff4e50);
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+#game-dice .bet-box button {
+  background: transparent;
+  border: none;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#game-dice #betValue {
+  color: black;
+  font-weight: bold;
+}
+
+
+
+ #game-dice h2 {
+  color: #ff3100; /* красивый золотисто-оранжевый */
+  text-shadow: 0 0 6px rgba(250, 128, 114);
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+#game-dice .currency-btn.active {
+  background: linear-gradient(45deg, #ffffff, #ff4e50);
+  color: #1a1a1a;
+}
+
+
+.dice-choices.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+
+@keyframes dice3DRoll {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.3));
+  }
+  30% {
+    transform: translateY(-90px) rotate(360deg);
+    filter: drop-shadow(0 40px 20px rgba(0, 0, 0, 0.1));
+  }
+  60% {
+    transform: translateY(-20px) rotate(720deg);
+    filter: drop-shadow(0 20px 10px rgba(0, 0, 0, 0.2));
+  }
+  85% {
+    transform: translateY(-6px) rotate(1080deg);
+  }
+  100% {
+    transform: translateY(0) rotate(1080deg);
+  }
+}
+
+.dice-roll-3d {
+       animation: dice3DRoll 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+       will-change: transform;
+}
+
+
+
