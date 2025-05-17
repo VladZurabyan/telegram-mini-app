@@ -1,7 +1,4 @@
-if (typeof diceChoice === 'undefined') {
-    var diceChoice = null;
-}
-
+let diceChoice = null;
 
 function setDiceChoice(num) {
     diceChoice = num;

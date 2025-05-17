@@ -21,6 +21,4 @@ function updateBalanceUI() {
 // Экспорт
 window.setCurrency = setCurrency;
 window.updateBalanceUI = updateBalanceUI;
-window.selectedCurrency = 'ton'; // создаём глобально
-function setCurrency(cur) {
-    window.selectedCurrency = cur;
+window.selectedCurrency = selectedCurrency;
