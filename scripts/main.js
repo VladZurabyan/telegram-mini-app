@@ -1,6 +1,6 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
-
+tg.expand(); // ← ВАЖНО: вызываем сразу    
 const fakeBalance = {
     ton: 10,
     usdt: 100
