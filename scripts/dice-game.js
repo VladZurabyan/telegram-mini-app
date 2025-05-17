@@ -51,7 +51,7 @@ function playDice(btn) {
 
     setTimeout(() => {
         img.classList.remove('dice-safe-throw');
-        img.src = `assets/dice${diceResult}.png`;
+        img.src = `assets/dice${diceResult}.PNG`;
 
         resultText.innerText = `Выпало: ${diceResult}`;
         prizeBox.innerText = win
