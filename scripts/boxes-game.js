@@ -43,16 +43,11 @@ function selectBox(choice) {
                 img.classList.add('prize-box');
 
                 if (isWin && index === choice) {
-                    const explosion = document.createElement('div');
-                    explosion.className = 'prize-explosion';
-                    explosion.style.top = img.offsetTop + 'px';
-                    explosion.style.left = img.offsetLeft + 'px';
-                    explosion.style.position = 'absolute';
-                    img.parentElement.appendChild(explosion);
+                  
 
                     setTimeout(() => {
                         img.src = `assets/box${index + 1}-open.png`;
-                        explosion.remove();
+
                     }, 400);
                 } else {
                     setTimeout(() => {
