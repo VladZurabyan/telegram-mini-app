@@ -486,12 +486,6 @@ button[disabled],
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-
-#game-boxes .currency-btn.active {
-  background: linear-gradient(135deg, #854526, #f1b15c); /* коричневый градиент */
-  color: #1a1a1a;
-}
-
 #game-boxes h2 {
   color: #f0c674; /* красивый золотисто-оранжевый */
   text-shadow: 0 0 6px rgba(255, 200, 100, 0.5);
@@ -563,4 +557,3 @@ button[disabled],
     transform: translateY(0) scale(1);
   }
 }
-
