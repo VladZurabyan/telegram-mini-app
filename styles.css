@@ -1,8 +1,25 @@
 /* === Общие стили === */
 body {
+
+
+
+
+
   margin: 0;
   padding: 0;
-  background: #0D2B4F;
+
+
+  background-image: url("assets/stars1.png"); /* или просто 'stars.png', если рядом */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #05002b; /* тёмный фон под звёздами */
+
+
+
+
+
+
   font-family: sans-serif;
   color: white;
   text-align: center;
@@ -32,13 +49,30 @@ footer,
   width: 50px;
   height: 50px;
 }
-h2 {
-  margin: 10px 0;
+
+
+
+
+.banner-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 8px auto;  /* уменьшаем внешний отступ */
+  padding: 0;        /* убираем внутренний, если был */
 }
-.controller-icon {
-  width: 150px;
-  margin: 10px auto;
+
+.choose-banner {
+  width: 90%;            /* адаптивно под ширину экрана */
+  max-width: 400px;      /* ограничение максимального размера */
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  display: block;
+  margin: 0 auto;
 }
+
+
+
+
 .game-button {
   background: #123460;
   border: none;
@@ -450,21 +484,7 @@ button[disabled],
 
 
 
-.prize-explosion {
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  background-image: url('assets/explosion.gif');
-  background-size: cover;
-  pointer-events: none;
-  animation: explode 1s ease-out forwards;
-}
 
-@keyframes explode {
-  0% { transform: scale(0.5); opacity: 0; }
-  50% { transform: scale(1.3); opacity: 1; }
-  100% { transform: scale(1); opacity: 0; }
-}
 
 #game-boxes .currency-selector {
   margin-top: 0 !important;
