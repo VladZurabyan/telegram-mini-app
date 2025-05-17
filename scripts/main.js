@@ -143,12 +143,26 @@ function loadGame(gameId) {
                 container.querySelector('.back-btn')?.addEventListener('click', backToMain);
             }
 
-            if (gameId === 'game-dice') {
-    container.querySelector('.play-btn')?.addEventListener('click', function () {
-        playDice(this);
-    });
+    if (gameId === 'game-dice') {
+    // Добавляем обработчики валют
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+    setCurrency(selectedCurrency); // отобразить выбранную валюту
+
+    // Кнопка Играть
+    const playBtn = container.querySelector('.play-btn');
+    if (playBtn) {
+        const newPlayBtn = playBtn.cloneNode(true);
+        playBtn.replaceWith(newPlayBtn);
+        newPlayBtn.addEventListener('click', function () {
+            playDice(this);
+        });
+    }
+
+    // Назад
     container.querySelector('.back-btn')?.addEventListener('click', backToMain);
 }
+
 
 
             if (gameId === 'rules' || gameId === 'partners') {

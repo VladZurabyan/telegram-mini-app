@@ -39,19 +39,15 @@ function playDice(btn) {
     prizeBox.innerText = '';
 
     // Анимация броска кубика
-    img.classList.remove('dice-roll-3d'); // сброс, если повторно
-void img.offsetWidth; // форс перерисовки
-img.classList.add('dice-roll-3d');
-
-
-
+    img.classList.remove('dice-safe-throw');
+    void img.offsetWidth;
+    img.classList.add('dice-safe-throw');
 
     const diceResult = Math.floor(Math.random() * 6) + 1;
     const win = diceResult === diceChoice;
 
     setTimeout(() => {
-        img.classList.remove('dice-shake');
-       img.classList.remove('dice-roll-3d');
+        img.classList.remove('dice-safe-throw');
         img.src = `assets/dice${diceResult}.png`;
 
         resultText.innerText = `Выпало: ${diceResult}`;
