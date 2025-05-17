@@ -1,6 +1,7 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
-tg.expand(); // ← ВАЖНО: вызываем сразу    
+tg.expand(); // ← ВАЖНО: вызываем сразу
+
 const fakeBalance = {
     ton: 10,
     usdt: 100
@@ -87,7 +88,7 @@ function loadGame(gameId) {
                 document.querySelector('.play-btn')?.addEventListener('click', function () { playCoin(this); });
                 document.getElementById('btn-back-coin')?.addEventListener('click', backToMain);
 
-              
+
             }
 
             if (gameId === 'game-boxes') {
@@ -143,9 +144,12 @@ function loadGame(gameId) {
             }
 
             if (gameId === 'game-dice') {
-                container.querySelector('.play-btn')?.addEventListener('click', rollDice);
-                container.querySelector('.back-btn')?.addEventListener('click', backToMain);
-            }
+    container.querySelector('.play-btn')?.addEventListener('click', function () {
+        playDice(this);
+    });
+    container.querySelector('.back-btn')?.addEventListener('click', backToMain);
+}
+
 
             if (gameId === 'rules' || gameId === 'partners') {
                 container.querySelector('.back-btn')?.addEventListener('click', backToMain);
