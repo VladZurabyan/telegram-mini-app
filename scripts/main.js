@@ -145,9 +145,21 @@ function loadGame(gameId) {
 
     if (gameId === 'game-dice') {
     // Добавляем обработчики валют
-    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
-    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
-    setCurrency(selectedCurrency); // отобразить выбранную валюту
+const tonBtn = document.getElementById('btn-currency-ton');
+const usdtBtn = document.getElementById('btn-currency-usdt');
+
+if (tonBtn && usdtBtn) {
+    const newTon = tonBtn.cloneNode(true);
+    const newUsdt = usdtBtn.cloneNode(true);
+    tonBtn.replaceWith(newTon);
+    usdtBtn.replaceWith(newUsdt);
+
+    newTon.addEventListener('click', () => setCurrency('ton'));
+    newUsdt.addEventListener('click', () => setCurrency('usdt'));
+}
+
+setCurrency(window.selectedCurrency); // применяем активную валюту
+
 
     // Кнопка Играть
     const playBtn = container.querySelector('.play-btn');
