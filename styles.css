@@ -121,6 +121,7 @@ footer img {
 
 /* Скрыть игровые экраны */
 .game-screen {
+  min-height: 100vh;
   display: none;
   padding: 20px;
 }
