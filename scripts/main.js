@@ -241,37 +241,34 @@ window.addEventListener("resize", () => {
     lastOrientation = current;
 
     if (current === 'portrait') {
-      console.log("🔁 Возврат в портрет — разблокируем интерфейс");
+      console.log("📱 Вернулись в портрет — разблокировка");
 
-      const currencySelector = document.querySelector('.currency-selector');
-      const betBox = document.querySelector('.bet-box');
-      const playBtn = document.querySelector('.play-btn');
-      const backBtn = document.querySelector('.back-btn');
-      const diceChoices = document.getElementById('diceChoices');
+      // Разблокировать все .disabled
+      document.querySelectorAll('.disabled').forEach(el => {
+        el.classList.remove('disabled');
+      });
 
-      currencySelector?.classList.remove('disabled');
-      betBox?.classList.remove('disabled');
-      playBtn && (playBtn.disabled = false);
-      backBtn && (backBtn.disabled = false);
-      diceChoices?.classList.remove('disabled');
+      // Включить все кнопки, которые были выключены
+      document.querySelectorAll('button:disabled').forEach(btn => {
+        btn.disabled = false;
+      });
 
-   const coinImage = document.getElementById('coinImageMain');
-if (coinImage) {
-  coinImage.src = 'assets/coin-heads.png';
-  coinImage.classList.remove('flip-head', 'flip-tail');
-}
+      // Сбросить только coin игру (если она активна)
+      const coinImage = document.getElementById('coinImageMain');
+      if (coinImage) {
+        coinImage.src = 'assets/coin-heads.png';
+        coinImage.classList.remove('flip-head', 'flip-tail');
+      }
 
-const coinResult = document.getElementById('coinResult');
-if (coinResult) coinResult.innerText = '';
+      const coinResult = document.getElementById('coinResult');
+      if (coinResult) coinResult.innerText = '';
 
-const coinPrize = document.getElementById('coinPrize');
-if (coinPrize) coinPrize.innerText = '';
-
-
-     
+      const coinPrize = document.getElementById('coinPrize');
+      if (coinPrize) coinPrize.innerText = '';
     }
   }
 });
+
 
 
 
