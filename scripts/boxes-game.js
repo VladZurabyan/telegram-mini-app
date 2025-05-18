@@ -1,16 +1,24 @@
-
+let boxInProgress = false;
 function selectBox(choice) {
+     if (boxInProgress) return; // запрет повторной игры
+    boxInProgress = true;
     const balanceAvailable = selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
     if (bet > balanceAvailable) {
         alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
+        boxInProgress = false;
         return;
     }
 
-    if (bet < minBet) return alert(`Минимум ${minBet} TON`);
+    if (bet < minBet) {
+    alert(`Минимум ${minBet} TON`);
+    boxInProgress = false;
+    return;
+}
 
     const boxImgs = document.querySelectorAll('#game-boxes .boxes img');
     if (boxImgs.length !== 3) {
         console.error("Не найдено 3 коробки");
+        boxInProgress = false;
         return;
     }
 
@@ -90,6 +98,7 @@ function selectBox(choice) {
 
         document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
         if (backBtn) backBtn.disabled = false;
+        boxInProgress = false;
     }, 1000);
 }
 
