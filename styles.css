@@ -9,6 +9,15 @@ html, body {
 }
 
 
+#game-coin, #game-dice, #game-boxes, #rules, #partners {
+
+  height: 100vh; /* Можно, если у тебя весь экран */
+  overflow-y: auto; /* Позволяет вертикальный скролл, если контент длинный */
+  -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+
+
+}
+
 
 #main {
    height: 100%;
