@@ -135,6 +135,15 @@ footer,
   display: flex;
   justify-content: space-around;
   margin-top: 20px;
+
+
+  gap: 12px;
+  max-width: 360px; /* или столько, сколько ширина кнопок игр */
+  margin: 16px auto 0;
+  padding: 0 12px;
+
+
+
 }
 .actions button {
   background: #123460;
@@ -144,6 +153,10 @@ footer,
   color: white;
   font-size: 16px;
   cursor: pointer;
+
+   flex: 1;
+  min-width: 120px;
+
 }
 footer {
   margin-top: 40px;
