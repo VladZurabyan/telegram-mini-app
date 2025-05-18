@@ -215,6 +215,16 @@ function updateBalanceUI() {
     if (usdtBtn) usdtBtn.textContent = `USDT (${fakeBalance.usdt.toFixed(2)})`;
 }
 
+
+window.addEventListener("orientationchange", () => {
+  setTimeout(() => {
+    if (window.matchMedia("(orientation: portrait)").matches) {
+      backToMain(); // вернуть на главный экран
+    }
+  }, 300); // немного подождать, чтобы Telegram успел повернуться
+});
+
+
 updateBalanceUI();
 
 window.backToMain = backToMain;
