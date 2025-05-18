@@ -263,11 +263,7 @@ if (coinImage) {
   coinImage.classList.add('flip-head');
 }
 
-// Сброс текста результатов монеты
-const coinResult = document.getElementById('coinResult');
-if (coinResult) coinResult.innerText = '';
-const coinPrize = document.getElementById('coinPrize');
-if (coinPrize) coinPrize.innerText = '';
+
 
 // Подготовка кубика к новой анимации
 const diceImage = document.getElementById('diceImage');
