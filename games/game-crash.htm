@@ -1,0 +1,27 @@
+<div class="game-screen" id="game-crash">
+    <div class="balance">
+        <div class="currency-selector">
+            <button id="btn-currency-ton-crash" class="currency-btn">TON</button>
+            <button id="btn-currency-usdt-crash" class="currency-btn">USDT</button>
+        </div>
+    </div>
+
+    <h2>✈️ CRASH GAME</h2>
+    <div id="crash-multiplier" class="crash-multiplier">x1.00</div>
+    <div id="crash-status" class="crash-status">⏳ Ожидание начала...</div>
+    <div class="crash-plane"></div>
+
+    <div class="bet-box" id="crashBetBox">
+        <button onclick="changeBet(-1)">-</button>
+        <span id="betValue">1</span>
+        <button onclick="changeBet(1)">+</button>
+        <button onclick="setBet('min')">MIN</button>
+        <button onclick="setBet('max')">MAX</button>
+    </div>
+
+    <button class="play-btn" id="crash-start">🎮 Играть</button>
+    <button class="play-btn" id="crash-cashout" disabled>💰 Забрать</button>
+
+    <div id="crash-result" class="result-box"></div>
+    <button class="back-btn" id="btn-back-crash">← Назад</button>
+</div>
