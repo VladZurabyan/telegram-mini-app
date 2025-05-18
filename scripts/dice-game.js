@@ -86,7 +86,7 @@ function playDice(btn) {
         resultText.innerText = `Выпало: ${diceResult}`;
         prizeBox.innerText = win
             ? `🎉 Победа! Вы выиграли ${bet * 5} ${selectedCurrency.toUpperCase()}`
-            : `😞 Не угадали. Попробуйте еще раз`;
+            : `😞 Не угадали. Попробуйте еще раз.`;
 
         if (selectedCurrency === 'ton') {
             fakeBalance.ton += win ? bet * 5 : -bet;
