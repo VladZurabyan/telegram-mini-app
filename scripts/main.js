@@ -195,6 +195,10 @@ function loadGame(gameId) {
         });
     }
 
+                   if (gameId === 'game-dice') {
+    resetDiceScreen();
+}
+
 }, 700);
 
         })
