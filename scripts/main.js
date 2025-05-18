@@ -232,9 +232,17 @@ window.loadGame = loadGame;
 
 
 
-window.addEventListener("orientationchange", () => {
-  setTimeout(() => {
-    if (window.matchMedia("(orientation: portrait)").matches) {
+let lastOrientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+
+window.addEventListener("resize", () => {
+  const current = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+
+  if (current !== lastOrientation) {
+    lastOrientation = current;
+
+    if (current === 'portrait') {
+      console.log("🔁 Возврат в портрет — разблокируем интерфейс");
+
       const currencySelector = document.querySelector('.currency-selector');
       const betBox = document.querySelector('.bet-box');
       const playBtn = document.querySelector('.play-btn');
@@ -247,7 +255,6 @@ window.addEventListener("orientationchange", () => {
       backBtn && (backBtn.disabled = false);
       diceChoices?.classList.remove('disabled');
 
-      // 👇 сброс монеты
       const coinImage = document.getElementById('coinImageMain');
       if (coinImage) {
         coinImage.src = 'assets/coin-heads.png';
@@ -257,7 +264,8 @@ window.addEventListener("orientationchange", () => {
       document.getElementById('coinResult')?.innerText = '';
       document.getElementById('coinPrize')?.innerText = '';
     }
-  }, 300);
+  }
 });
+
 
 
