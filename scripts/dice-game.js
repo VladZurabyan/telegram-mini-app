@@ -1,4 +1,8 @@
 let diceChoice = null;
+let diceInProgress = false;
+
+
+
 
 function setDiceChoice(num) {
     diceChoice = num;
@@ -7,6 +11,8 @@ function setDiceChoice(num) {
         btn.classList.toggle('active', parseInt(btn.innerText) === num);
     });
 }
+
+
 
 
 function resetDiceScreen() {
@@ -41,12 +47,34 @@ function resetDiceScreen() {
 
 
 
+
+
+
+
+
+
+
+
 function playDice(btn) {
-    if (!diceChoice) return alert("Выберите число от 1 до 6");
-    if (bet < minBet) return alert(`Минимум ${minBet} TON`);
+    if (diceInProgress) return;
+    diceInProgress = true;
+
+    if (!diceChoice) {
+        alert("Выберите число от 1 до 6");
+        diceInProgress = false;
+        return;
+    }
+
+    if (bet < minBet) {
+        alert(`Минимум ${minBet} TON`);
+        diceInProgress = false;
+        return;
+    }
+
     const balanceAvailable = selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
     if (bet > balanceAvailable) {
         alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
+        diceInProgress = false;
         return;
     }
 
@@ -86,7 +114,7 @@ function playDice(btn) {
         resultText.innerText = `Выпало: ${diceResult}`;
         prizeBox.innerText = win
             ? `🎉 Победа! Вы выиграли ${bet * 5} ${selectedCurrency.toUpperCase()}`
-            : `😞 Не угадали. Попробуйте еще раз.`;
+            : `😞 Не угадали. Вы потеряли ${bet} ${selectedCurrency.toUpperCase()}`;
 
         if (selectedCurrency === 'ton') {
             fakeBalance.ton += win ? bet * 5 : -bet;
@@ -103,6 +131,7 @@ function playDice(btn) {
 
         currencySelector.classList.remove('disabled');
         betBox.classList.remove('disabled');
+        diceInProgress = false;
     }, 1000);
 }
 
