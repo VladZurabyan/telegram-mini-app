@@ -16,15 +16,25 @@
 <div class="banner-wrapper">
   <img src="assets/choose-banner.png" alt="Выберите игру" class="choose-banner" />
 </div>
-<button class="game-button" onclick="loadGame('game-coin')">
-<img src="assets/coin.png"/> ОРЁЛ И РЕШКА
-    </button>
-<button class="game-button" onclick="loadGame('game-boxes')">
-<img src="assets/boxes.png"/> ТРИ КОРОБКИ
-    </button>
-<button class="game-button" onclick="loadGame('game-dice')">
-<img src="assets/dice.png"/> КУБИКИ
-    </button>
+<div class="game-button-group">
+  <button class="game-button" onclick="loadGame('game-coin')">
+    <img src="assets/coin.png"/>
+     <span>ОРЁЛ И РЕШКА</span>
+  </button>
+  <button class="game-button" onclick="loadGame('game-boxes')">
+    <img src="assets/boxes.png"/>
+    <span>ТРИ КОРОБКИ</span>
+  </button>
+  <button class="game-button" onclick="loadGame('game-dice')">
+    <img src="assets/dice.png"/>
+     <span>КУБИКИ</span>
+  </button>
+  <button class="game-button" onclick="loadGame('game-dice')">
+    <img src="assets/dice.png"/>
+     <span>КУБИКИ</span>
+  </button>
+</div>
+
 <div class="actions">
 <button>ПОПОЛНИТЬ</button>
 <button>ВЫВЕСТИ</button>
@@ -33,7 +43,7 @@
 <p>
 <img src="assets/18plus.png"/>
 <span onclick="loadGame('rules')">ПРАВИЛА</span>  
-        <span onclick="loadGame('partners')">ПАРТНЁРАМ</span>  
+        <span onclick="loadGame('partners')">ПАРТНЁРАМ</span>
 </p>
 <p>ВСЕ ПРАВА ЗАЩИЩЕНЫ</p>
 </footer>

@@ -14,11 +14,16 @@ html, body {
   overflow-y: auto; /* <-- чтобы прокручивался только #main, если надо */
 }
 
-
-
-
 /* === Общие стили === */
 body {
+
+
+
+
+
+
+
+
   background-image: url("assets/stars1.png"); /* или просто 'stars.png', если рядом */
   background-size: cover;
   background-repeat: no-repeat;
@@ -82,23 +87,50 @@ footer,
 
 
 
+.game-button-group {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px auto;
+  max-width: 95%;
+}
 
 .game-button {
-  background: #123460;
-  border: none;
-  border-radius: 16px;
-  padding: 12px;
-  margin: 10px auto;
-  width: 80%;
   display: flex;
+  flex-direction: column; /* <-- ставим вертикально */
   align-items: center;
-  gap: 12px;
-  font-size: 18px;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #123460;
   color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  min-width: 120px;
 }
+
+
+
 .game-button img {
-  height: 60px;
+  width: 50px;
+  height: 50px;
 }
+
+.game-button span {
+  display: block;
+  font-size: 14px;
+}
+
+
+
+
+
+
 .actions {
   display: flex;
   justify-content: space-around;
@@ -829,6 +861,7 @@ button[disabled],
        animation: dice-safe-throw 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
        will-change: transform;
 }
+
 
 
 
