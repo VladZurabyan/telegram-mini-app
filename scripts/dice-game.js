@@ -8,6 +8,39 @@ function setDiceChoice(num) {
     });
 }
 
+
+function resetDiceScreen() {
+    // Сброс выбора числа
+    diceChoice = null;
+    const buttons = document.querySelectorAll('#game-dice .dice-choices button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    // Сброс текста
+    const resultText = document.getElementById('diceResult');
+    const prizeBox = document.getElementById('dicePrize');
+    if (resultText) resultText.innerText = '';
+    if (prizeBox) prizeBox.innerText = '';
+
+    // Сброс изображения кубика
+    const img = document.getElementById('diceImage');
+    if (img) img.src = 'assets/dice1.png';
+
+    // Сброс ставки
+    bet = minBet;
+    const betDisplay = document.querySelector('#game-dice .current-bet');
+    if (betDisplay) betDisplay.innerText = bet;
+
+    // Включить интерфейс (на всякий случай)
+    document.querySelector('#game-dice .currency-selector')?.classList.remove('disabled');
+    document.getElementById('diceBetBox')?.classList.remove('disabled');
+    const backBtn = document.querySelector('#game-dice .back-btn');
+    if (backBtn) backBtn.disabled = false;
+}
+
+
+
+
+
 function playDice(btn) {
     if (!diceChoice) return alert("Выберите число от 1 до 6");
     if (bet < minBet) return alert(`Минимум ${minBet} TON`);
