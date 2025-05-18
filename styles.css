@@ -1,26 +1,28 @@
 html, body {
   height: 100%;
-  min-height: 100dvh; /* 🔥 device-height для Telegram */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-#game-container,
-.game-screen {
-  min-height: calc(100dvh - 30px); /* или -50px, если есть шапка/footer */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh; /* <— важно для Telegram */
 }
+
+#main {
+  flex: 1 0 auto; /* Растягивается, но не переполняет */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
 
 
 
 /* === Общие стили === */
 body {
-
-
-
-
-
-  margin: 0;
-  padding: 0;
-
-
   background-image: url("assets/stars1.png"); /* или просто 'stars.png', если рядом */
   background-size: cover;
   background-repeat: no-repeat;
