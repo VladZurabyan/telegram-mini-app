@@ -1,3 +1,4 @@
+let coinInProgress = false;
 
 let playerChoice = '';
 
@@ -24,17 +25,34 @@ function resetCoinScreen() {
     playerChoice = '';
     document.getElementById('btn-heads')?.classList.remove('active');
     document.getElementById('btn-tails')?.classList.remove('active');
+
+
+
+
+
 }
 
 function playCoin(btn) {
+    if (coinInProgress) return;
+    coinInProgress = true;
     const balanceAvailable = selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
     if (bet > balanceAvailable) {
-        alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
-        return;
-    }
+    alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
+    coinInProgress = false;
+    return;
+}
 
-    if (bet < minBet) return alert(`Минимум ${minBet} TON`);
-    if (!playerChoice) return alert('Выберите сторону');
+if (bet < minBet) {
+    alert(`Минимум ${minBet} TON`);
+    coinInProgress = false;
+    return;
+}
+
+if (!playerChoice) {
+    alert('Выберите сторону');
+    coinInProgress = false;
+    return;
+}
 
     const backBtn = document.getElementById('btn-back-coin');
     const headsBtn = document.getElementById('btn-heads');
@@ -78,8 +96,8 @@ function playCoin(btn) {
             img.style.opacity = '1';
 
             img.addEventListener('transitionend', function onFadeIn(e2) {
-                if (e2.propertyName !== 'opacity') return;
-                img.removeEventListener('transitionend', onFadeIn);
+        if (e2.propertyName !== 'opacity') return;
+        img.removeEventListener('transitionend', onFadeIn);
 
                 const currencyLabel = selectedCurrency.toUpperCase();
                 resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
@@ -97,10 +115,11 @@ function playCoin(btn) {
                 }
 
                 updateBalanceUI();
-                recordGame('coin', bet, result, isWin);
+        recordGame('coin', bet, result, isWin);
                 allBtns.forEach(el => el.disabled = false);
-                currencyWrapper.classList.remove('disabled');
-                betBoxWrapper.classList.remove('disabled');
+        currencyWrapper.classList.remove('disabled');
+        betBoxWrapper.classList.remove('disabled');
+        coinInProgress = false;
             }, { once: true });
         }, { once: true });
     }, { once: true });
