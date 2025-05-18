@@ -216,6 +216,22 @@ function updateBalanceUI() {
 }
 
 
+
+
+
+
+updateBalanceUI();
+
+window.backToMain = backToMain;
+window.fakeBalance = fakeBalance;
+window.bet = 1;
+window.minBet = 1;
+window.maxBet = 100;
+window.loadGame = loadGame;
+
+
+
+
 window.addEventListener("orientationchange", () => {
     setTimeout(() => {
         if (window.matchMedia("(orientation: portrait)").matches) {
@@ -235,14 +251,3 @@ window.addEventListener("orientationchange", () => {
     }, 300); // Даем Telegram немного времени вернуться из landscape
 });
 
-
-
-
-updateBalanceUI();
-
-window.backToMain = backToMain;
-window.fakeBalance = fakeBalance;
-window.bet = 1;
-window.minBet = 1;
-window.maxBet = 100;
-window.loadGame = loadGame;
