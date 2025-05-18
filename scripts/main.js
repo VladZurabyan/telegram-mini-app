@@ -44,6 +44,8 @@ function loadGame(gameId) {
 
     if (!path) return;
 
+    bet = minBet;
+
     hideAll();
     const container = document.getElementById('game-container');
     showLoader();
@@ -195,9 +197,10 @@ function loadGame(gameId) {
         });
     }
 
-                   if (gameId === 'game-dice') {
+    if (gameId === 'game-dice') {
     resetDiceScreen();
 }
+
 
 }, 700);
 
@@ -218,11 +221,6 @@ function updateBalanceUI() {
     if (tonBtn)  tonBtn.textContent  = `TON (${fakeBalance.ton.toFixed(2)})`;
     if (usdtBtn) usdtBtn.textContent = `USDT (${fakeBalance.usdt.toFixed(2)})`;
 }
-
-
-
-
-
 
 updateBalanceUI();
 
