@@ -2,6 +2,9 @@ let boxInProgress = false;
 function selectBox(choice) {
      if (boxInProgress) return; // запрет повторной игры
     boxInProgress = true;
+
+     
+
     const balanceAvailable = selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
     if (bet > balanceAvailable) {
         alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
@@ -99,6 +102,7 @@ function selectBox(choice) {
         document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
         if (backBtn) backBtn.disabled = false;
         boxInProgress = false;
+
     }, 1000);
 }
 

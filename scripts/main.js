@@ -137,7 +137,7 @@ function loadGame(gameId) {
                     });
 
                     document.getElementById('boxResult').innerText = '';
-                    document.getElementById('boxPrize').innerText = ''; // ← очищает надпись выигрыша   
+                    document.getElementById('boxPrize').innerText = ''; // ← очищает надпись выигрыша
                     document.getElementById('btn-box-replay').style.display = 'none';
                 });
 

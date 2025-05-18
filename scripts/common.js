@@ -33,6 +33,9 @@ function hideLoader() {
     document.getElementById('loader').style.display = 'none';
 }
 
+
+
+
 // Экспорт
 window.hideAll = hideAll;
 window.showMain = showMain;
