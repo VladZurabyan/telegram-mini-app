@@ -219,7 +219,6 @@ function updateBalanceUI() {
 window.addEventListener("orientationchange", () => {
   setTimeout(() => {
     if (window.matchMedia("(orientation: portrait)").matches) {
-      // Вернулись в портрет — сбросить блокировки
       const currencySelector = document.querySelector('.currency-selector');
       const betBox = document.querySelector('.bet-box');
       const playBtn = document.querySelector('.play-btn');
@@ -231,9 +230,20 @@ window.addEventListener("orientationchange", () => {
       playBtn && (playBtn.disabled = false);
       backBtn && (backBtn.disabled = false);
       diceChoices?.classList.remove('disabled');
+
+      // 👇 сброс монеты
+      const coinImage = document.getElementById('coinImageMain');
+      if (coinImage) {
+        coinImage.src = 'assets/coin-heads.png';
+        coinImage.classList.remove('flip-head', 'flip-tail');
+      }
+
+      document.getElementById('coinResult')?.innerText = '';
+      document.getElementById('coinPrize')?.innerText = '';
     }
-  }, 300); // Даем Telegram немного времени вернуться из landscape
+  }, 300);
 });
+
 
 
 updateBalanceUI();
