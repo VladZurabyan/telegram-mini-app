@@ -255,11 +255,18 @@ window.addEventListener("resize", () => {
       backBtn && (backBtn.disabled = false);
       diceChoices?.classList.remove('disabled');
 
-      const coinImage = document.getElementById('coinImageMain');
-      if (coinImage) {
-        coinImage.src = 'assets/coin-heads.png';
-        coinImage.classList.remove('flip-head', 'flip-tail');
-      }
+   const coinImage = document.getElementById('coinImageMain');
+if (coinImage) {
+  coinImage.src = 'assets/coin-heads.png';
+  coinImage.classList.remove('flip-head', 'flip-tail');
+}
+
+const coinResult = document.getElementById('coinResult');
+if (coinResult) coinResult.innerText = '';
+
+const coinPrize = document.getElementById('coinPrize');
+if (coinPrize) coinPrize.innerText = '';
+
 
      
     }
