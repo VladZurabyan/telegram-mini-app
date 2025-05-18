@@ -1,3 +1,13 @@
+html, body {
+  height: 100%;
+  min-height: 100dvh; /* 🔥 device-height для Telegram */
+}
+
+#game-container,
+.game-screen {
+  min-height: 100dvh;
+}
+
 /* === Общие стили === */
 body {
 
