@@ -1,3 +1,26 @@
+@media screen and (orientation: landscape) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #05002b;
+  }
+
+  #main, #game-container {
+    display: none;
+  }
+
+  body::before {
+    content: "Поверните устройство вертикально";
+    color: white;
+    font-size: 18px;
+    padding: 20px;
+    text-align: center;
+  }
+}
+
+
+
 html, body {
   margin: 0;
   padding: 0;
