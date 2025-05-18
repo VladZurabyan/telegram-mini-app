@@ -1,25 +1,19 @@
 @media screen and (orientation: landscape) {
   body {
+    overflow: hidden !important;
+    height: 100vh;
     display: flex !important;
     justify-content: center;
     align-items: center;
-    background: #05002b !important;
-    overflow: hidden !important;
+    background: #05002b;
   }
 
-  #main,
-  #game-container,
-  .game-screen,
-  footer,
-  .balance,
-  .actions,
-  .play-btn,
-  .back-btn {
+  body > * {
     display: none !important;
   }
 
   body::before {
-    content: "Пожалуйста, поверните телефон вертикально";
+    content: "Поверните устройство вертикально ⬆️";
     color: white;
     font-size: 18px;
     padding: 20px;
@@ -27,6 +21,7 @@
     max-width: 300px;
   }
 }
+
 
 
 
