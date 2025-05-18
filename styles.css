@@ -9,6 +9,13 @@ html, body {
 }
 
 
+
+#main {
+   height: 100%;
+  overflow-y: auto; /* <-- чтобы прокручивался только #main, если надо */
+}
+
+
 #game-coin, #game-dice, #game-boxes, #rules, #partners {
 
   height: 100vh; /* Можно, если у тебя весь экран */
@@ -18,22 +25,8 @@ html, body {
 
 }
 
-
-#main {
-   height: 100%;
-  overflow-y: auto; /* <-- чтобы прокручивался только #main, если надо */
-}
-
 /* === Общие стили === */
 body {
-
-
-
-
-
-
-
-
   background-image: url("assets/stars1.png"); /* или просто 'stars.png', если рядом */
   background-size: cover;
   background-repeat: no-repeat;
@@ -547,7 +540,14 @@ button[disabled],
 }
 
 
-
+ #game-boxes .lose {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f9d423;           /* золотистый */
+  text-shadow: 0 0 4px rgba(249, 212, 35, 0.8);
+  white-space: pre-line;    /* чтобы переносы \n работали */
+}
 
 
 
@@ -846,6 +846,20 @@ button[disabled],
   font-weight: 800;
   margin-bottom: 16px;
 }
+
+
+
+#game-dice .result-box, .prize-box {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f9d423;           /* золотистый */
+  text-shadow: 0 0 4px rgba(249, 212, 35, 0.8);
+  white-space: pre-line;    /* чтобы переносы \n работали */
+}
+
+
+
 
 #game-dice .currency-btn.active {
   background: linear-gradient(45deg, #ffffff, #ff4e50);
