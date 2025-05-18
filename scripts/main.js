@@ -261,8 +261,7 @@ window.addEventListener("resize", () => {
         coinImage.classList.remove('flip-head', 'flip-tail');
       }
 
-      document.getElementById('coinResult')?.innerText = '';
-      document.getElementById('coinPrize')?.innerText = '';
+     
     }
   }
 });
