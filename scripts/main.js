@@ -253,6 +253,35 @@ window.addEventListener("resize", () => {
         btn.disabled = false;
       });
 
+
+// Сброс картинки и анимации монеты
+const coinImage = document.getElementById('coinImageMain');
+if (coinImage) {
+  coinImage.src = 'assets/coin-heads.png';
+  coinImage.classList.remove('flip-head', 'flip-tail');
+  void coinImage.offsetWidth;
+  coinImage.classList.add('flip-head');
+}
+
+// Сброс текста результатов монеты
+const coinResult = document.getElementById('coinResult');
+if (coinResult) coinResult.innerText = '';
+const coinPrize = document.getElementById('coinPrize');
+if (coinPrize) coinPrize.innerText = '';
+
+// Подготовка кубика к новой анимации
+const diceImage = document.getElementById('diceImage');
+if (diceImage) {
+  diceImage.classList.remove('dice-safe-throw');
+  void diceImage.offsetWidth;
+}
+
+
+
+
+
+        
+
       // Сбросить только coin игру (если она активна)
       const coinImage = document.getElementById('coinImageMain');
       if (coinImage) {
