@@ -278,12 +278,7 @@ if (diceImage) {
 
         
 
-      // Сбросить только coin игру (если она активна)
-      const coinImage = document.getElementById('coinImageMain');
-      if (coinImage) {
-        coinImage.src = 'assets/coin-heads.png';
-        coinImage.classList.remove('flip-head', 'flip-tail');
-      }
+      
 
       const coinResult = document.getElementById('coinResult');
       if (coinResult) coinResult.innerText = '';
