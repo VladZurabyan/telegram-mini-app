@@ -35,6 +35,7 @@ function backToMain() {
 
 function loadGame(gameId) {
     const path = {
+        'game-crash': 'games/game-crash.htm',
         'game-coin': 'games/game-coin.html',
         'game-boxes': 'games/game-boxes.html',
         'game-dice': 'games/game-dice.html',
