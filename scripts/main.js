@@ -219,9 +219,20 @@ function updateBalanceUI() {
 window.addEventListener("orientationchange", () => {
   setTimeout(() => {
     if (window.matchMedia("(orientation: portrait)").matches) {
-      backToMain(); // вернуть на главный экран
+      // Вернулись в портрет — сбросить блокировки
+      const currencySelector = document.querySelector('.currency-selector');
+      const betBox = document.querySelector('.bet-box');
+      const playBtn = document.querySelector('.play-btn');
+      const backBtn = document.querySelector('.back-btn');
+      const diceChoices = document.getElementById('diceChoices');
+
+      currencySelector?.classList.remove('disabled');
+      betBox?.classList.remove('disabled');
+      playBtn && (playBtn.disabled = false);
+      backBtn && (backBtn.disabled = false);
+      diceChoices?.classList.remove('disabled');
     }
-  }, 300); // немного подождать, чтобы Telegram успел повернуться
+  }, 300); // Даем Telegram немного времени вернуться из landscape
 });
 
 
