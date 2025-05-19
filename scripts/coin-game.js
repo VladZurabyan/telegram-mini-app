@@ -25,34 +25,30 @@ function resetCoinScreen() {
     playerChoice = '';
     document.getElementById('btn-heads')?.classList.remove('active');
     document.getElementById('btn-tails')?.classList.remove('active');
-
-
-
-
-
 }
 
 function playCoin(btn) {
     if (coinInProgress) return;
     coinInProgress = true;
+
     const balanceAvailable = selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
     if (bet > balanceAvailable) {
-    alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
-    coinInProgress = false;
-    return;
-}
+        alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
+        coinInProgress = false;
+        return;
+    }
 
-if (bet < minBet) {
-    alert(`Минимум ${minBet} TON`);
-    coinInProgress = false;
-    return;
-}
+    if (bet < minBet) {
+        alert(`Минимум ${minBet} TON`);
+        coinInProgress = false;
+        return;
+    }
 
-if (!playerChoice) {
-    alert('Выберите сторону');
-    coinInProgress = false;
-    return;
-}
+    if (!playerChoice) {
+        alert('Выберите сторону');
+        coinInProgress = false;
+        return;
+    }
 
     const backBtn = document.getElementById('btn-back-coin');
     const headsBtn = document.getElementById('btn-heads');
@@ -83,45 +79,36 @@ if (!playerChoice) {
     void img.offsetWidth;
     img.classList.add(animClass);
 
+    // ✅ Меняем сторону в середине анимации (на 0.6 сек)
+    setTimeout(() => {
+        img.src = `assets/coin-${result}.png`;
+    }, 600);
+
     img.addEventListener('animationend', function onFlipEnd() {
         img.removeEventListener('animationend', onFlipEnd);
-        img.style.opacity = '0';
 
-        img.addEventListener('transitionend', function onFade(e) {
-            if (e.propertyName !== 'opacity') return;
-            img.removeEventListener('transitionend', onFade);
+        const currencyLabel = selectedCurrency.toUpperCase();
+        resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
 
-            img.src = `assets/coin-${result}.png`;
-            void img.offsetWidth;
-            img.style.opacity = '1';
+        if (isWin) {
+            prizeBox.innerText = `Вы выиграли: ${bet * 2} ${currencyLabel}`;
+        } else {
+            prizeBox.innerText = `Желаем дальнейших успехов`;
+        }
 
-            img.addEventListener('transitionend', function onFadeIn(e2) {
-        if (e2.propertyName !== 'opacity') return;
-        img.removeEventListener('transitionend', onFadeIn);
+        if (selectedCurrency === 'ton') {
+            fakeBalance.ton += isWin ? bet : -bet;
+        } else {
+            fakeBalance.usdt += isWin ? bet : -bet;
+        }
 
-                const currencyLabel = selectedCurrency.toUpperCase();
-                resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
-
-                if (isWin) {
-                    prizeBox.innerText = `Вы выиграли: ${bet * 2} ${currencyLabel}`;
-                } else {
-                    prizeBox.innerText = `Желаем дальнейших успехов`;
-                }
-
-                if (selectedCurrency === 'ton') {
-                    fakeBalance.ton += isWin ? bet : -bet;
-                } else {
-                    fakeBalance.usdt += isWin ? bet : -bet;
-                }
-
-                updateBalanceUI();
+        updateBalanceUI();
         recordGame('coin', bet, result, isWin);
-                allBtns.forEach(el => el.disabled = false);
+
+        allBtns.forEach(el => el.disabled = false);
         currencyWrapper.classList.remove('disabled');
         betBoxWrapper.classList.remove('disabled');
         coinInProgress = false;
-            }, { once: true });
-        }, { once: true });
     }, { once: true });
 }
 
