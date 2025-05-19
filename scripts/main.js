@@ -35,7 +35,7 @@ function backToMain() {
 
 function loadGame(gameId) {
     const path = {
-        'game-crash': 'games/game-crash.htm',
+        'game-crash': 'games/game-crash.htm', // ← ДОБАВЬ ЭТУ СТРОКУ
         'game-coin': 'games/game-coin.html',
         'game-boxes': 'games/game-boxes.html',
         'game-dice': 'games/game-dice.html',
@@ -166,6 +166,52 @@ function loadGame(gameId) {
     // Назад
     container.querySelector('.back-btn')?.addEventListener('click', backToMain);
 }
+
+
+
+
+if (gameId === 'game-crash') {
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+setCurrency(selectedCurrency); // выставить текущую валюту
+
+
+    // Обработчики кнопок ставок
+    const betBtns = document.querySelectorAll('#game-crash .bet-box button');
+    betBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.innerText.toLowerCase();
+            if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+            else if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+        });
+    });
+    updateBetUI();
+
+    // Кнопки "Играть" и "Забрать"
+    const startBtn = document.getElementById('crash-start');
+    const cashBtn = document.getElementById('crash-cashout');
+    if (startBtn) {
+        const newStart = startBtn.cloneNode(true);
+        startBtn.replaceWith(newStart);
+        newStart.addEventListener('click', () => playCrash());
+    }
+    if (cashBtn) {
+        const newCash = cashBtn.cloneNode(true);
+        cashBtn.replaceWith(newCash);
+        newCash.addEventListener('click', () => crashCashOut());
+    }
+
+    // Назад
+    document.getElementById('btn-back-crash')?.addEventListener('click', backToMain);
+}
+
+
+
+
+
+
 
 
 
