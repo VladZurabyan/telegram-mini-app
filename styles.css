@@ -380,14 +380,14 @@ button[disabled],
 
 @keyframes flip-head {
   from { transform: rotateY(0deg); }
-  to   { transform: rotateY(360deg); }
+  to   { transform: rotateY(720deg); }
 }
 @keyframes flip-tail {
   from { transform: rotateY(0deg); }
   to   { transform: rotateY(720deg); }
 }
 .coin-image.flip-head {
-  animation: flip-head 0.6s ease-out forwards !important;
+  animation: flip-head 1.2s ease-out forwards !important;
 }
 .coin-image.flip-tail {
   animation: flip-tail 1.2s ease-out forwards !important;
