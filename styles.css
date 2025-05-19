@@ -402,6 +402,8 @@ button[disabled],
 
 
 
+
+
 /* === Золотой градиент только для экрана «Орёл и Решка» === */
 
 /* Градиентный текст для заголовка */
@@ -609,7 +611,23 @@ button[disabled],
   padding: 12px 10px;
   color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
 }
+
+#game-boxes .bet-box button {
+  background: transparent;
+  border: none;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#game-boxes #betValue {
+  color: black;
+  font-weight: bold;
+}
+
 
 #game-boxes h2 {
   color: #f0c674; /* красивый золотисто-оранжевый */
@@ -1051,7 +1069,7 @@ button[disabled],
 .crash-flight-frame {
   position: relative;
   width: 360px;           /* Ширина игрового поля */
-  height: 120px;          /* Высота игрового поля */
+  height: 180px;          /* Высота игрового поля */
   border: 2px solid rgba(76, 201, 240, 0.5);
   border-radius: 16px;
   box-shadow: 0 0 20px rgba(76, 201, 240, 0.4);
@@ -1060,6 +1078,34 @@ button[disabled],
   overflow: hidden;
   z-index: 1;
 }
+
+
+
+.crash-flight-frame {
+  background-image: url('assets/stars1.png'); /* или облака */
+  background-repeat: repeat-x;
+  background-size: cover;
+  background-position: 0 0;
+
+  transition: background-position 0.1s linear;
+
+}
+
+
+.moon-fixed {
+  position: absolute;
+  top: 20px;
+  left: 59px;
+  width: 70px;
+  height: auto;
+  z-index: 0;
+  opacity: 0.7;
+  pointer-events: none;
+  filter: blur(1px);
+}
+
+
+
 
 .flight-line {
   position: absolute;
