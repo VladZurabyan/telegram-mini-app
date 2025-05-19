@@ -395,6 +395,22 @@ button[disabled],
 
 
 
+
+@keyframes flipCoin {
+  0%   { transform: rotateY(0deg); }
+  100% { transform: rotateY(720deg); }
+}
+
+.coin-image.flipping {
+  animation: flipCoin 1.2s ease-in-out forwards;
+}
+
+
+
+
+
+
+
 /* === Золотой градиент только для экрана «Орёл и Решка» === */
 
 /* Градиентный текст для заголовка */
