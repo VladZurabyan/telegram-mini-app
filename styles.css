@@ -387,13 +387,11 @@ button[disabled],
   to   { transform: rotateY(720deg); }
 }
 .coin-image.flip-head {
-  animation: flip-head 1s ease-in-out forwards !important;
+  animation: flip-head 1.2s ease-out forwards !important;
 }
 .coin-image.flip-tail {
-  animation: flip-tail 1s ease-in-out forwards !important;
+  animation: flip-tail 1.2s ease-out forwards !important;
 }
-
-
 
 
 
