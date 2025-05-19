@@ -19,7 +19,7 @@ function playCrash() {
 
 
 
-const prankChance = 0.1; // 20% шанс шутки
+const prankChance = 0.1; // 10% шанс шутки
 const prank = Math.random() < prankChance;
 
 if (prank) {
@@ -79,8 +79,9 @@ if (backBtn) {
     const path = document.getElementById('flightPath');
     if (path) path.setAttribute('d', '');
 
-    const balanceAvailable =
-        selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
+    const balanceAvailable = selectedCurrency === 'ton'
+    ? parseFloat(fakeBalance.ton.toFixed(2))
+    : parseFloat(fakeBalance.usdt.toFixed(2));
     if (bet > balanceAvailable) {
         alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
         crashInProgress = false;
@@ -116,7 +117,14 @@ if (backBtn) {
     return;
 }
 
+         // 💳 Списываем ставку из баланса
+    if (selectedCurrency === 'ton') {
+        fakeBalance.ton -= bet;
+    } else {
+        fakeBalance.usdt -= bet;
+    }
 
+    updateBalanceUI(); // ✅ ОБНОВЛЯЕМ интерфейс сразу после вычета
 
     const crashStatus = document.getElementById('crash-status');
 crashStatus.classList.remove('crash-win', 'crash-lose');
@@ -127,6 +135,8 @@ crashStatus.classList.remove('crash-win', 'crash-lose');
     document.getElementById('crash-cashout').disabled = false;
 
     const crashPoint = parseFloat((Math.pow(Math.random(), 2) * 3 + 1.01).toFixed(2));
+
+
 
 
 
@@ -157,6 +167,15 @@ const drawY = svgHeight - y - 35;
         const d = flightPoints.map((pt, i) => `${i === 0 ? 'M' : 'L'}${pt.x},${pt.y}`).join(' ');
         path.setAttribute('d', d);
     }
+
+
+    // Двигаем фон влево, создавая эффект полёта
+const frame = document.querySelector('.crash-flight-frame');
+if (frame) {
+    frame.style.backgroundPosition = `-${x}px 0`;
+}
+
+
 
     if (multiplier >= crashPoint) {
         clearInterval(interval);
@@ -239,18 +258,23 @@ document.getElementById('flightPath')?.setAttribute('d', '');
 }
 
 function updateCrashBalance(isWin) {
-    const delta = isWin ? bet * multiplier : -bet;
-    if (selectedCurrency === 'ton') fakeBalance.ton += delta;
-    else fakeBalance.usdt += delta;
+    if (isWin) {
+        const payout = bet * multiplier;
+        if (selectedCurrency === 'ton') fakeBalance.ton += payout;
+        else fakeBalance.usdt += payout;
+
+        document.getElementById('crash-result').innerText =
+            `🎉 Вы выиграли ${formatAmount(payout)} ${selectedCurrency.toUpperCase()}`;
+    } else {
+        document.getElementById('crash-result').innerText =
+            `😞 Вы проиграли. Попробуйте еще раз.`;
+    }
 
     updateBalanceUI();
 
-    document.getElementById('crash-result').innerText = isWin
-        ? `🎉 Вы выиграли ${delta.toFixed(2)} ${selectedCurrency.toUpperCase()}`
-        : `😞 Вы проиграли. Попробуйте еще раз.`;
-
     recordGame('crash', bet, isWin ? 'win' : 'lose', isWin);
 }
+
 
 window.playCrash = playCrash;
 window.crashCashOut = crashCashOut;

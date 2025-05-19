@@ -1,9 +1,8 @@
 let boxInProgress = false;
-function selectBox(choice) {
-     if (boxInProgress) return; // запрет повторной игры
-    boxInProgress = true;
 
-     
+function selectBox(choice) {
+    if (boxInProgress) return;
+    boxInProgress = true;
 
     const balanceAvailable = selectedCurrency === 'ton' ? fakeBalance.ton : fakeBalance.usdt;
     if (bet > balanceAvailable) {
@@ -13,10 +12,18 @@ function selectBox(choice) {
     }
 
     if (bet < minBet) {
-    alert(`Минимум ${minBet} TON`);
-    boxInProgress = false;
-    return;
-}
+        alert(`Минимум ${minBet} TON`);
+        boxInProgress = false;
+        return;
+    }
+
+    // 💳 Списываем ставку сразу
+    if (selectedCurrency === 'ton') {
+        fakeBalance.ton -= bet;
+    } else {
+        fakeBalance.usdt -= bet;
+    }
+    updateBalanceUI(); // 💡 моментальное обновление баланса
 
     const boxImgs = document.querySelectorAll('#game-boxes .boxes img');
     if (boxImgs.length !== 3) {
@@ -85,24 +92,26 @@ function selectBox(choice) {
             const prizeEl = document.getElementById('boxPrize');
             if (prizeEl) {
                 prizeEl.innerText = isWin
-                    ? `Вы выиграли: ${bet * 2} ${selectedCurrency.toUpperCase()}`
+                    ? `Вы выиграли: ${formatAmount(bet * 2)} ${selectedCurrency.toUpperCase()}`
                     : '';
             }
         }
 
-        if (selectedCurrency === 'ton') {
-            fakeBalance.ton += isWin ? bet : -bet;
-        } else {
-            fakeBalance.usdt += isWin ? bet : -bet;
+        // 💰 Начисление выигрыша отдельно
+        if (isWin) {
+            if (selectedCurrency === 'ton') {
+                fakeBalance.ton += bet * 2;
+            } else {
+                fakeBalance.usdt += bet * 2;
+            }
+            updateBalanceUI(); // повторное обновление
         }
 
-        updateBalanceUI();
         recordGame('boxes', bet, isWin ? 'win' : 'lose', isWin, selectedCurrency);
 
         document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
         if (backBtn) backBtn.disabled = false;
         boxInProgress = false;
-
     }, 1000);
 }
 

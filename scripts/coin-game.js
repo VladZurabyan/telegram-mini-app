@@ -91,16 +91,23 @@ function playCoin(btn) {
         resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
 
         if (isWin) {
-            prizeBox.innerText = `Вы выиграли: ${bet * 2} ${currencyLabel}`;
+            prizeBox.innerText = `Вы выиграли: ${formatAmount(bet * 2)} ${currencyLabel}`;
         } else {
             prizeBox.innerText = `Желаем дальнейших успехов`;
         }
 
-        if (selectedCurrency === 'ton') {
-            fakeBalance.ton += isWin ? bet : -bet;
-        } else {
-            fakeBalance.usdt += isWin ? bet : -bet;
-        }
+       if (selectedCurrency === 'ton') {
+    fakeBalance.ton -= bet;
+    if (isWin) {
+        fakeBalance.ton += bet * 2;
+    }
+} else {
+    fakeBalance.usdt -= bet;
+    if (isWin) {
+        fakeBalance.usdt += bet * 2;
+    }
+}
+
 
         updateBalanceUI();
         recordGame('coin', bet, result, isWin);
