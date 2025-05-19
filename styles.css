@@ -230,7 +230,8 @@ footer img {
   transform-style: preserve-3d;
   backface-visibility: hidden;
   transition: opacity 0.4s ease;
-  opacity: 1;
+  //opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 /* Анимация флипа */
