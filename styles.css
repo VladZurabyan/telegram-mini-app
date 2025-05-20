@@ -1263,3 +1263,279 @@ button[disabled],
 }
 
 
+
+
+
+
+
+
+ #game-chicken {
+
+  padding-top: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+
+
+
+
+
+
+#game-chicken .currency-selector {
+  margin-top: 0 !important;
+  margin-bottom: 8px;
+}
+
+#game-chicken .balance {
+  margin-top: 0 !important;
+
+}
+
+
+#game-chicken .bet-box {
+    max-width: 260px;
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #854526, #f1b15c);
+    border-radius: 30px;
+    overflow: hidden;
+    padding: 12px 10px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+#game-chicken .bet-box button {
+  background: transparent;
+  border: none;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#game-chicken #betValue {
+  color: black;
+  font-weight: bold;
+}
+
+
+#game-chicken .currency-btn.active {
+  background: radial-gradient(circle at top left, #d0f0ff, #a0d8ef, #80c0e0);
+  color: #1a1a1a;
+}
+
+
+
+.chicken-frame {
+    width: 500px;         /* или сколько тебе нужно */
+  max-width: 100%;      /* чтобы не выходил за экран */
+  margin: 0 auto;       /* чтобы по центру */
+  position: relative;
+  height: 232px;
+  background-image: url('assets/road.png');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+
+.chicken-road {
+  width: 100%;
+
+  aspect-ratio: 3 / 2; /* сохраняет пропорции */
+
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding-left: 10px;
+}
+
+
+
+
+
+
+.chicken {
+  width: 50px;
+  height: auto;
+  position: absolute;
+  left: 10px;
+  bottom: 0px;
+  transition: left 0.2s ease;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.lane {
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  overflow: visible;
+}
+
+.lane-1 { bottom: 40px; }
+.lane-2 { bottom: 80px; }
+.lane-3 { bottom: 130px; }
+
+.car {
+  position: absolute;
+  width: 70px;
+  height: auto;
+  left: -80px;
+  top: 0;
+  animation-name: moveCar;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes moveCar {
+  0% {
+    left: -80px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+ .chicken-hit {
+  animation: chickenFly 1.2s ease-out forwards;
+  z-index: 1000;
+}
+
+@keyframes chickenFly {
+  0% {
+    transform: scale(1) rotate(0deg) translate(0, 0);
+    opacity: 1;
+  }
+  10% {
+    transform: scale(1.05) rotate(5deg) translate(5px, -5px);
+  }
+  30% {
+    transform: rotate(-10deg) translate(20px, -30px);
+  }
+  60% {
+    transform: rotate(30deg) translate(60px, -80px);
+  }
+  100% {
+    transform: scale(0.5) rotate(720deg) translate(150px, -200px);
+    opacity: 0;
+  }
+}
+
+
+.crash-effect {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: url("assets/explosion.png") no-repeat center / contain;
+  pointer-events: none;
+  animation: boom 0.5s ease-out forwards;
+  z-index: 999;
+}
+
+@keyframes boom {
+  0% { transform: scale(0.5); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+
+.feather {
+  position: absolute;
+  width: 40px;
+  height: auto;
+  pointer-events: none;
+  opacity: 0;
+  animation: featherFly 1.2s ease-out forwards;
+}
+
+@keyframes featherFly {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) rotate(var(--r));
+    opacity: 0;
+  }
+}
+
+.car-hit {
+  animation: carFly 1.4s ease-out forwards;
+  z-index: 999;
+}
+
+@keyframes carFly {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(120px, -30px) rotate(15deg);
+  }
+  50% {
+    transform: translate(160px, -60px) rotate(45deg);
+  }
+  75% {
+    transform: translate(240px, -30px) rotate(90deg);
+  }
+  100% {
+    transform: translate(320px, 0px) rotate(180deg);
+    opacity: 0;
+  }
+  }
+
+.bet-box-label {
+  margin: 12px 0;
+  display: block;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+ .custom-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-alert-box {
+  background: #fff0f0;
+  border: 2px solid #ff4d4f;
+  color: #900;
+  padding: 20px 25px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 12px rgba(0,0,0,0.2);
+  font-size: 18px;
+  max-width: 300px;
+}
+
+.custom-alert.hidden {
+  display: none;
+}
+
+.custom-alert-box button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}

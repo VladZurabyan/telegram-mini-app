@@ -35,6 +35,11 @@
     <img src="assets/planeimg.png"/>
      <span>САМОЛЁТ</span>
   </button>
+  <button class="game-button" onclick="loadGame('game-chicken')">
+  <img src="assets/555.png" />
+  <span>КУРИЦА НА ДОРОГЕ</span>
+</button>
+
 </div>
 
 <div class="actions">
@@ -63,7 +68,17 @@
 <script src="scripts/boxes-game.js"></script>
 <script src="scripts/dice-game.js"></script>
 <script src="scripts/crash-game.js"></script>
+<script src="scripts/chicken-game.js"></script>
 <script src="scripts/main.js"></script>
+
+
+<div id="custom-alert" class="custom-alert hidden">
+    <div class="custom-alert-box">
+        <p id="custom-alert-message"></p>
+        <button onclick="closeCustomAlert()">OK</button>
+    </div>
+</div>
+
 
 </body>
 </html>
