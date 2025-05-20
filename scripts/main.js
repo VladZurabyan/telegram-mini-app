@@ -35,6 +35,7 @@ function backToMain() {
 
 function loadGame(gameId) {
     const path = {
+        'game-chicken': 'games/game-chicken.html',
         'game-crash': 'games/game-crash.htm', // ← ДОБАВЬ ЭТУ СТРОКУ
         'game-coin': 'games/game-coin.html',
         'game-boxes': 'games/game-boxes.html',
@@ -208,6 +209,36 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 }
 
 
+
+    if (gameId === 'game-chicken') {
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+    setCurrency(selectedCurrency); // выставить текущую валюту
+
+    // Обработчики кнопок ставок
+    const betBtns = document.querySelectorAll('#game-chicken .bet-box button');
+    betBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.innerText.toLowerCase();
+            if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+            else if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+        });
+    });
+    updateBetUI();
+
+    // Кнопка "Играть"
+    const startBtn = document.getElementById('chickenStart');
+    if (startBtn) {
+        const newStart = startBtn.cloneNode(true);
+        startBtn.replaceWith(newStart);
+        newStart.addEventListener('click', () => playChickenGame());
+    }
+
+    // Кнопка "Назад"
+    document.querySelector('#game-chicken .back-btn')?.addEventListener('click', backToMain);
+}
 
 
 
