@@ -30,11 +30,13 @@ if (user) {
 
 function backToMain() {
     resetCoinScreen();
+
     showMain();
 }
 
 function loadGame(gameId) {
     const path = {
+        'game-safe': 'games/game-safe.html',
         'game-chicken': 'games/game-chicken.html',
         'game-crash': 'games/game-crash.htm', // ← ДОБАВЬ ЭТУ СТРОКУ
         'game-coin': 'games/game-coin.html',
@@ -243,6 +245,54 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 
 
 
+  if (gameId === 'game-safe') {
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+    setCurrency(selectedCurrency);
+
+    const betBtns = document.querySelectorAll('#game-safe .bet-box button');
+    betBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.innerText.toLowerCase();
+            if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+            else if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+        });
+    });
+
+    document.getElementById('hint-btn')?.addEventListener('click', () => showHint());   
+
+    // Кнопка Играть
+    const startBtn = document.getElementById('safeStart');
+    if (startBtn) {
+        const newStart = startBtn.cloneNode(true);
+        startBtn.replaceWith(newStart);
+        newStart.addEventListener('click', () => playSafeGame());
+    }
+
+
+
+
+    // Кнопка Назад
+    document.querySelector('#game-safe .back-btn')?.addEventListener('click', backToMain);
+
+
+
+        setupDigitSwipes();
+        updateSafeDigits();
+        updateBalanceUI();
+
+
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -281,6 +331,8 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 }
 
 
+
+
 }, 700);
 
         })
@@ -289,6 +341,19 @@ setCurrency(selectedCurrency); // выставить текущую валюту
             console.error(err);
         });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function formatAmount(amount) {
     const fixed = parseFloat(amount.toFixed(2));
