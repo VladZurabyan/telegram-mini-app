@@ -1704,9 +1704,7 @@ button[disabled],
 }
 
 .safe-image {
-  transition: all 0.6s ease;
-  width: 100%;
-  max-width: 300px;
+  transition: transform 1.5s ease, opacity 1.5s ease;
 }
 
 .safe-door-open {
@@ -1723,19 +1721,35 @@ button[disabled],
 }
 
 .safe-door-open {
-    animation: doorOpen 1s forwards ease-in-out;
+  animation: doorOpen 1s forwards ease-in-out;
 }
+
+@keyframes doorOpen {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.1) rotateY(60deg); }
+}
+
 
 .safe-door-closed {
     animation: doorClose 1s forwards ease-in-out;
 }
 
-@keyframes doorOpen {
-    0% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(1.5) rotateY(90deg); }
-}
+
 
 @keyframes doorClose {
     0% { opacity: 0; transform: scale(1.5) rotateY(90deg); }
     100% { opacity: 1; transform: scale(1); }
+}
+
+.safe-zoom {
+  transform: scale(2);
+  opacity: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: inline-block;
 }
