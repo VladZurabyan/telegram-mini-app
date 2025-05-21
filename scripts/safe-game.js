@@ -3,19 +3,14 @@ let digits = [0, 0, 0];
 let safeAttempts = 3;
 let safeInProgress = false;
 
-// UI
 function blockSafeUI() {
-    document.querySelectorAll('#game-safe .currency-selector button').forEach(btn => btn.disabled = true);
     document.querySelectorAll('#game-safe .bet-box button').forEach(btn => btn.disabled = true);
-    document.querySelector('#safeStart')?.setAttribute('disabled', 'true');
-    document.querySelector('#game-safe .back-btn')?.setAttribute('disabled', 'true');
+    document.getElementById('safeStart')?.setAttribute('disabled', 'true');
 }
 
 function unblockSafeUI() {
-    document.querySelectorAll('#game-safe .currency-selector button').forEach(btn => btn.disabled = false);
     document.querySelectorAll('#game-safe .bet-box button').forEach(btn => btn.disabled = false);
-    document.querySelector('#safeStart')?.removeAttribute('disabled');
-    document.querySelector('#game-safe .back-btn')?.removeAttribute('disabled');
+    document.getElementById('safeStart')?.removeAttribute('disabled');
 }
 
 function updateSafeDigits() {
@@ -32,19 +27,27 @@ function resetSafeDigits() {
 
 function setupDigitSwipes() {
     const digitEls = document.querySelectorAll('#game-safe .digit');
+
     digitEls.forEach((el, i) => {
-        el.addEventListener('touchstart', e => el.startY = e.touches[0].clientY);
+        let startY = 0;
+
+        el.addEventListener('touchstart', e => {
+            startY = e.touches[0].clientY;
+        });
+
         el.addEventListener('touchend', e => {
-            const deltaY = e.changedTouches[0].clientY - el.startY;
-            if (deltaY < -10) {
+            const deltaY = e.changedTouches[0].clientY - startY;
+
+            if (deltaY < -20) {
+                // Свайп вверх — увеличить строго на 1
                 digits[i] = (digits[i] + 1) % 10;
-            } else if (deltaY > 10) {
-                digits[i] = (digits[i] + 9) % 10;
+                updateSafeDigits();
             }
-            updateSafeDigits();
         });
     });
 }
+
+
 
 function showHint() {
     const hintCost = 0.5;
@@ -68,103 +71,94 @@ function changeBet(delta) {
 function setBet(type) {
     const display = document.getElementById("safe-bet-display");
     if (type === 'min') display.textContent = '1';
-    if (type === 'max') display.textContent = Math.floor(fakeBalance[selectedCurrency]);
+    if (type === 'max') display.textContent = '100';
 }
 
 function resetSafeScreen() {
-    const screen = document.getElementById('game-safe');
-    if (screen) screen.style.display = 'none';
-
-    digits = [0, 0, 0];
-    safeCode = [];
-    safeAttempts = 3;
-    safeInProgress = false;
-
-    if (typeof updateSafeDigits === 'function') {
-        updateSafeDigits();
-    }
-
-    const hintBtn = document.getElementById('hint-btn');
-    if (hintBtn) hintBtn.textContent = '🔍 Подсказка (-0.5)';
-
-    const image = document.getElementById('safeImage');
-    if (image) image.className = 'safe-image';
-
-    document.getElementById('safeImageContainer')?.classList.remove('zoomed-in');
-    document.getElementById('safeImageContainer')?.classList.remove('hidden');
+    const safeImg = document.getElementById('safeImage');
+    safeImg.className = "safe-image";
+    safeImg.src = "assets/safe.png";
+    safeImg.classList.remove('hidden');
     document.getElementById('safeDigitsContainer')?.classList.add('hidden');
+    document.getElementById('checkSafeBtn')?.classList.add('hidden');
+    resetSafeDigits();
 }
 
 function playSafeGame() {
     const bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
-    const balanceAvailable = fakeBalance[selectedCurrency];
-    if (safeInProgress || bet > balanceAvailable || bet <= 0) return;
-
-    fakeBalance[selectedCurrency] -= bet;
-    updateBalanceUI();
-    blockSafeUI();
-
     safeCode = [randDigit(), randDigit(), randDigit()];
     safeAttempts = 3;
-    resetSafeDigits();
-
-    const img = document.getElementById('safeImage');
-    const digitsBox = document.getElementById('safeDigitsContainer');
-    if (img && digitsBox) {
-        img.classList.add('zoomed-in');
-        setTimeout(() => {
-            document.getElementById('safeImageContainer').style.display = 'none';
-            digitsBox.classList.remove('hidden');
-        }, 600);
-    }
-
-    document.querySelectorAll('#game-safe .digit').forEach(d => d.classList.add('active'));
     safeInProgress = true;
+    blockSafeUI();
+
+    const safeImg = document.getElementById('safeImage');
+    safeImg.classList.add('safe-zoom');
 
     setTimeout(() => {
-        document.querySelectorAll('#game-safe .digit').forEach(d => d.classList.remove('active'));
-    }, 600);
+        safeImg.classList.add('hidden');
+        document.getElementById('safeDigitsContainer')?.classList.remove('hidden');
+        document.getElementById('checkSafeBtn')?.classList.remove('hidden');
+        setupDigitSwipes();
+        unblockSafeUI();
+    }, 1500);
 }
 
 function checkSafeGuess() {
     if (!safeInProgress) return;
 
-    const img = document.getElementById('safeImage');
-    const imgContainer = document.getElementById('safeImageContainer');
-    const digitsBox = document.getElementById('safeDigitsContainer');
+    const safeImg = document.getElementById('safeImage');
+    const digitsContainer = document.getElementById('safeDigitsContainer');
 
     if (digits.join('') === safeCode.join('')) {
-    const img = document.getElementById('safeImage');
-    if (img) {
-        img.className = 'safe-image safe-door-open';
-    }
-    safeInProgress = false;
-    unblockSafeUI();
+        // Победа
+        safeImg.src = 'assets/safe-open.png';
+        digitsContainer?.classList.add('hidden');
 
+        setTimeout(() => {
+            safeImg.classList.remove('hidden');
+            safeImg.classList.add('safe-door-open');
+        }, 400);
+
+        safeInProgress = false;
+
+        // После анимации открытия, вернуть в закрытое состояние
+        setTimeout(() => {
+            safeImg.classList.remove('safe-door-open');
+            safeImg.src = 'assets/safe.png'; // картинка снова закрытого сейфа
+        }, 3000);
+
+        // Полный сброс через 4.5 сек
+        setTimeout(resetSafeScreen, 4500);
 
     } else {
+        // Ошибка
         safeAttempts--;
+
         if (safeAttempts <= 0) {
-            digitsBox.classList.add('hidden');
-            imgContainer.style.display = 'block';
-            img.className = 'safe-image safe-door-closed';
+            safeImg.src = 'assets/safe-closed.png';
+            setTimeout(() => {
+                safeImg.classList.remove('hidden');
+                safeImg.classList.add('safe-door-closed');
+            }, 400);
+            digitsContainer?.classList.add('hidden');
             safeInProgress = false;
-            unblockSafeUI();
+            setTimeout(resetSafeScreen, 3000);
         } else {
             alert(`Неверно. Осталось попыток: ${safeAttempts}`);
         }
     }
 }
 
+
+
 function randDigit() {
     return Math.floor(Math.random() * 10);
 }
 
-window.setupDigitSwipes = setupDigitSwipes;
 window.updateSafeDigits = updateSafeDigits;
 window.showHint = showHint;
 window.playSafeGame = playSafeGame;
+window.checkSafeGuess = checkSafeGuess;
 window.resetSafeScreen = resetSafeScreen;
 window.setBet = setBet;
 window.changeBet = changeBet;
-window.checkSafeGuess = checkSafeGuess;
