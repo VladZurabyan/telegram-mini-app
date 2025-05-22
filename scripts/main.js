@@ -279,7 +279,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 
 
 
-        setupDigitSwipes();
+        setupDigitClicks();
         updateSafeDigits();
         updateBalanceUI();
 
