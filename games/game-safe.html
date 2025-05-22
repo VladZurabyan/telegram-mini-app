@@ -9,9 +9,9 @@
     <h2>ОТКРОЙ СЕЙФ</h2>
 
     <!-- Картинка сейфа по умолчанию -->
-    <div id="safeImageContainer">
-        <img id="safeImage" src="assets/safe.png" alt="safe" class="safe-image" />
-    </div>
+    <div id="safeImageContainer" class="safe-frame">
+    <img id="safeImage" src="assets/safe.png" alt="safe" class="safe-image" />
+</div>
 
     <!-- Цифры -->
     <div class="safe-frame hidden" id="safeDigitsContainer">
@@ -22,18 +22,18 @@
         </div>
         <button id="checkSafeBtn" class="hidden" onclick="checkSafeGuess()">Проверить код</button>
 
-        <button id="hint-btn" class="safe-hint-btn">🔍 Подсказка (-0.5)</button>
+        <button id="hint-btn" class="safe-hint-btn">🔍 Подсказка (-1)</button>
     </div>
 
     <div class="prize-box" id="boxPrize"></div>
     <label class="bet-box-label">Введите ставку</label>
 
     <div class="bet-box">
-        <button onclick="setBet('min')">min</button>
-        <button onclick="changeBet(-1)">-</button>
+        <button>min</button>
+        <button>-</button>
         <span id="safe-bet-display">1</span>
-        <button onclick="changeBet(1)">+</button>
-        <button onclick="setBet('max')">max</button>
+        <button>+</button>
+        <button>max</button>
     </div>
 
     <div class="win-multiplier">Возможный выигрыш: <strong>10x</strong></div>
