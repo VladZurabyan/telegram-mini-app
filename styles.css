@@ -129,7 +129,9 @@ footer,
   font-size: 14px;
 }
 
-
+.game-button.long-text span {
+  font-size: 12px; /* уменьшенный текст */
+}
 
 
 
@@ -1662,7 +1664,8 @@ button[disabled],
     margin: 10px auto;
     display: flex;
     justify-content: space-between;
-   background: linear-gradient(135deg, #4CAF50, #8BC34A);
+   background: linear-gradient(135deg, #003c78, #607d8b);
+
 
 
     border-radius: 30px;
@@ -1682,74 +1685,151 @@ button[disabled],
   font-weight: bold;
 }
 
-#game-safe #betValue {
+#game-safe #safe-bet-display {
   color: black;
   font-weight: bold;
 }
 
 
 #game-safe .currency-btn.active {
-  background: radial-gradient(circle at top left, #c8ffbc, #8BC34A, #4CAF50);
+  background: linear-gradient(135deg, #003c78, #607d8b);
 
   color: #1a1a1a;
 }
 
 
-.safe-image {
-    width: 100%;
-    max-width: 300px;
-    display: block;
-    margin: 0 auto;
-    transition: transform 0.7s ease;
+#game-safe h2 {
+  color: #94b3c1; /* светло-серый с голубым подтоном */
+  text-shadow: 0 0 6px rgba(96, 125, 139, 0.8); /* стальное свечение */
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+
+.safe-frame {
+  width: 100%;
+  max-width: 300px;
+  overflow: hidden;
+  margin: 0 auto;
+  border-radius: 12px;
+  position: relative;
 }
 
 .safe-image {
-  transition: transform 1.5s ease, opacity 1.5s ease;
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin: 0 auto;
+  transition: transform 1.2s ease, opacity 0.6s ease;
+  transform-origin: center 28%; /* ← центрируй по блоку с цифрами */
 }
 
+/* Когда приближаем */
+.safe-zoomed {
+  transform: scale(2.3) translateX(55px) translateY(-10px);
+ /* ← подгони под свой макет */
+}
+
+/* Плавное исчезновение */
+.safe-fade-out {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+/* Анимация открытия двери */
 .safe-door-open {
   content: url('assets/safe-open.png');
-}
-
-
-.safe-frame.hidden {
-    display: none;
-}
-
-.zoomed-in {
-    transform: scale(1.4);
-}
-
-.safe-door-open {
   animation: doorOpen 1s forwards ease-in-out;
 }
 
 @keyframes doorOpen {
   0%   { opacity: 1; transform: scale(1); }
-  100% { opacity: 1; transform: scale(1.1) rotateY(60deg); }
+  100% { opacity: 1; transform: scale(1.1); }
 }
 
-
+/* Анимация закрытия */
 .safe-door-closed {
-    animation: doorClose 1s forwards ease-in-out;
+  animation: doorClose 1s forwards ease-in-out;
 }
-
-
 
 @keyframes doorClose {
-    0% { opacity: 0; transform: scale(1.5) rotateY(90deg); }
-    100% { opacity: 1; transform: scale(1); }
+  0% { opacity: 0; transform: scale(1.5) rotateY(90deg); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
-.safe-zoom {
-  transform: scale(2);
-  opacity: 0;
-}
-
+/* Утилиты */
 .hidden {
-  display: none;
+  display: none !important;
+}
+.visible {
+  display: inline-block !important;
 }
 
-.visible {
-  display: inline-block;
+
+
+#checkSafeBtn {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: background 0.3s ease, transform 0.2s ease;
 }
+
+#checkSafeBtn:hover {
+  background: linear-gradient(135deg, #45a049, #388e3c);
+  transform: scale(1.03);
+}
+
+#checkSafeBtn:active {
+  transform: scale(0.97);
+}
+
+
+
+
+
+.safe-fail {
+  background-color: rgba(255, 0, 0, 0.2);
+  transition: background-color 0.5s ease-in-out;
+}
+
+
+
+
+
+.money {
+  position: absolute;
+  width: 150px;
+  z-index: 9999;
+  animation: moneyFly 1.4s ease-out forwards;
+  pointer-events: none;
+  opacity: 1;
+  transform-origin: center;
+}
+
+@keyframes moneyFly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform:
+      translate(
+        var(--x, 0px),
+        var(--y, -150px)
+      )
+      rotate(var(--r, 0deg))
+      scale(var(--s, 1));
+  }
+}
+
+
+
