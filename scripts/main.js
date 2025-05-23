@@ -53,6 +53,7 @@ function backToMain() {
     else if (game === 'game-chicken') resetChickenScreen();
     else if (game === 'game-dice') resetDiceScreen();
     else if (game === 'game-crash') resetCrashScreen();
+     else if (game === 'game-bombs') resetCrashScreen();
         resetCoinScreen();
 
         showMain();
@@ -60,6 +61,7 @@ function backToMain() {
 
 function loadGame(gameId) {
         const path = {
+                'game-bombs': 'games/game-bombs.html',
                 'game-safe': 'games/game-safe.html',
                 'game-chicken': 'games/game-chicken.html',
                 'game-crash': 'games/game-crash.htm', // ← ДОБАВЬ ЭТУ СТРОКУ
@@ -311,6 +313,27 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 }
 
 
+                   if (gameId === 'game-bombs') {
+                       showEmptyBombGrid();
+    document.querySelector('#game-bombs .back-btn')?.addEventListener('click', backToMain);
+    document.getElementById('bomb-cashout')?.addEventListener('click', collectBombsPrize);
+    document.getElementById('btn-bomb-start')?.addEventListener('click', startBombsGame);
+
+    document.querySelectorAll('#game-bombs .bet-box button').forEach(btn => {
+        const text = btn.innerText.toLowerCase();
+        btn.addEventListener('click', () => {
+            if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+            else if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+        });
+    });
+
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+    setCurrency(selectedCurrency);
+    updateBetUI();
+}
 
 
 
