@@ -18,7 +18,9 @@
 <div class="banner-wrapper">
   <img src="assets/choose-banner.png" alt="Выберите игру" class="choose-banner" />
 </div>
-<div class="game-button-group">
+<div class="game-scroll-wrapper">
+<div class="game-scroll-content">
+    <div class="game-scroll-column">
   <button class="game-button" onclick="loadGame('game-coin')">
     <img src="assets/coin.png"/>
      <span>ОРЁЛ И РЕШКА</span>
@@ -27,6 +29,8 @@
     <img src="assets/boxes.png"/>
     <span>ТРИ КОРОБКИ</span>
   </button>
+  </div>
+    <div class="game-scroll-column">
   <button class="game-button" onclick="loadGame('game-dice')">
     <img src="assets/dice.png"/>
      <span>КУБИКИ</span>
@@ -35,6 +39,28 @@
     <img src="assets/planeimg.png"/>
      <span>САМОЛЁТ</span>
   </button>
+    </div>
+    <div class="game-scroll-column">
+  <button class="game-button long-text" onclick="loadGame('game-chicken')">
+  <img src="assets/555.png" />
+  <span>КУРИЦА НА ДОРОГЕ</span>
+</button>
+<button class="game-button" onclick="loadGame('game-safe')">
+  <img src="assets/safe-door.png" />
+  <span>ОТКРОЙ СЕЙФ</span>
+</button>
+</div>
+<div class="game-scroll-column">
+  <button class="game-button long-text" onclick="loadGame('game-chicken')">
+  <img src="assets/555.png" />
+  <span>КУРИЦА НА ДОРОГЕ</span>
+</button>
+<button class="game-button" onclick="loadGame('game-safe')">
+  <img src="assets/safe-door.png" />
+  <span>ОТКРОЙ СЕЙФ</span>
+</button>
+</div>
+<div class="game-scroll-column">
   <button class="game-button long-text" onclick="loadGame('game-chicken')">
   <img src="assets/555.png" />
   <span>КУРИЦА НА ДОРОГЕ</span>
@@ -45,6 +71,11 @@
 </button>
 
 </div>
+    <div class="scroll-padding"></div>   
+</div>
+</div>
+
+
 
 <div class="actions">
 <button>ПОПОЛНИТЬ</button>

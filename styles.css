@@ -90,32 +90,83 @@ footer,
 
 
 
-.game-button-group {
+/*.game-button-group {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 12px;
   margin: 16px auto;
   max-width: 95%;
+}    */
+
+.game-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding: 10px 20px;
+  height: 220px;
+  max-width: 100%;
+  margin: 0 auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.game-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.game-scroll-content {
+  display: flex;
+  gap: 10px; /* больше расстояние между колонками */
+  padding-right: 50px; /* дополнительный отступ справа */
+}
+
+  .scroll-padding {
+  min-width: 20px; /* регулируй под нужный тебе отступ */
+  flex-shrink: 0;
+}
+
+
+
+.game-scroll-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 140px;
 }
 
 .game-button {
   display: flex;
-  flex-direction: column; /* <-- ставим вертикально */
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  text-align: center;
+  align-items: center;
   gap: 6px;
-  padding: 12px;
-  border-radius: 16px;
   background: #123460;
   color: white;
-  font-size: 16px;
   font-weight: bold;
   border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  padding: 12px;
+  height: 100px;
   cursor: pointer;
-  min-width: 150px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -290,6 +341,7 @@ footer img {
 
 /* === PLAY-кнопка === */
 .play-btn {
+
   background: linear-gradient(135deg, #00c6ff, #0072ff);
   border: none;
   border-radius: 25px;
@@ -317,6 +369,10 @@ footer img {
   font-size: 20px;
   width: 150px;
   min-width: 0;
+}
+
+#game-coin .play-btn {
+    height: 39px;
 }
 
 /* Стили для неактивных кнопок */
