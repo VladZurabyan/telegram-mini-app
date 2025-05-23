@@ -27,9 +27,14 @@ function resetDiceScreen() {
     if (resultText) resultText.innerText = '';
     if (prizeBox) prizeBox.innerText = '';
 
-    // Сброс изображения кубика
+    // Сброс изображения кубика + Анимация
     const img = document.getElementById('diceImage');
-    if (img) img.src = 'assets/dice1.png';
+    if (img) {
+        img.src = `assets/dice${Math.floor(Math.random() * 6) + 1}.png`; // случайное число
+        img.classList.remove('dice-safe-throw'); // сброс анимации
+        void img.offsetWidth; // форс перерисовку
+        img.classList.add('dice-safe-throw'); // запуск анимации
+    }
 
     // Сброс ставки
     bet = minBet;

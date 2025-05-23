@@ -1,7 +1,8 @@
-let safeCode = [];
+const adminSafeCode = "754";
 let digits = [0, 0, 0];
-let safeAttempts = 3;
-let safeInProgress = false;
+ let isChecking = false;
+
+
 
 function blockSafeUI() {
     // Отключить кнопки ставки
@@ -27,6 +28,56 @@ function unblockSafeUI() {
     document.querySelector('#game-safe .currency-selector')?.classList.remove('disabled');
     document.querySelector('#game-safe .bet-box')?.classList.remove('disabled');
 }
+
+
+const SafeGame = (() => {
+    let code = []; // 🔒 приватно
+    let attempts = 3;
+    let inProgress = false;
+
+    function generateCode() {
+        code = [randDigit(), randDigit(), randDigit()];
+        attempts = 3;
+        inProgress = true;
+    }
+
+    function getAttempts() {
+        return attempts;
+    }
+
+    function isInProgress() {
+        return inProgress;
+    }
+
+    function getFirstDigit() {
+        return code.length ? code[0] : null;
+    }
+
+    function checkGuess(guess) {
+        if (!inProgress) return null;
+        if (guess.join('') === code.join('')) {
+            inProgress = false;
+            return 'win';
+        } else {
+            attempts--;
+            if (attempts <= 0) {
+                inProgress = false;
+                return 'lose';
+            } else {
+                return 'try';
+            }
+        }
+    }
+
+    return {
+        generateCode,
+        getAttempts,
+        isInProgress,
+        getFirstDigit,
+        checkGuess
+    };
+})();
+
 
 
 function updateSafeDigits() {
@@ -100,16 +151,25 @@ function throwMoney(count = 15) {
 
 function showHint() {
     const hintCost = 1;
+
+    if (!SafeGame.isInProgress()) {
+        alert("Сначала начните игру.");
+        return;
+    }
+
     if (fakeBalance[selectedCurrency] < hintCost) {
         alert("Недостаточно средств для подсказки.");
         return;
     }
+
     fakeBalance[selectedCurrency] -= hintCost;
     updateBalanceUI();
-    alert(`Первая цифра: ${safeCode[0]}`);
+    alert(`Первая цифра: ${SafeGame.getFirstDigit()}`);
 }
 
-function changeBet(delta) {
+
+
+function changeSafeBet(delta) {
     const display = document.getElementById("safe-bet-display");
     let bet = parseFloat(display.textContent);
     bet += delta;
@@ -117,7 +177,7 @@ function changeBet(delta) {
     display.textContent = bet;
 }
 
-function setBet(type) {
+function setSafeBet(type) {
     const display = document.getElementById("safe-bet-display");
     if (type === 'min') display.textContent = '1';
     if (type === 'max') display.textContent = '100';
@@ -128,14 +188,23 @@ function resetSafeScreen() {
     safeImg.className = 'safe-image';
     safeImg.src = 'assets/safe.png';
     safeImg.style.opacity = '1';
+
     document.getElementById('safeDigitsContainer')?.classList.add('hidden');
-    document.getElementById('checkSafeBtn')?.classList.add('hidden');
+
+    const checkBtn = document.getElementById('checkSafeBtn');
+    checkBtn?.classList.add('hidden');
+    checkBtn?.removeAttribute('disabled'); // ✅ вернуть в исходное
+
     resetSafeDigits();
 }
 
 
 
+
 function playSafeGame() {
+    SafeGame.generateCode(); // 👈 генерируем код приватно
+    resetSafeDigits();
+
     window.bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
 
     if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
@@ -160,18 +229,13 @@ function playSafeGame() {
         return;
     }
 
-    // Списание ставки
+    document.getElementById('checkSafeBtn')?.setAttribute('disabled', 'true');
+    blockSafeUI();
+
     fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] - window.bet).toFixed(2));
     updateBalanceUI();
 
-    safeCode = [randDigit(), randDigit(), randDigit()];
-    safeAttempts = 3;
-    safeInProgress = true;
-    blockSafeUI();
-
     const safeImg = document.getElementById('safeImage');
-
-    // Анимация
     safeImg.classList.add('safe-zoomed');
 
     setTimeout(() => {
@@ -181,7 +245,9 @@ function playSafeGame() {
     setTimeout(() => {
         safeImg.classList.add('hidden');
         document.getElementById('safeDigitsContainer')?.classList.remove('hidden');
-        document.getElementById('checkSafeBtn')?.classList.remove('hidden');
+        const checkBtn = document.getElementById('checkSafeBtn');
+        checkBtn?.classList.remove('hidden');
+        checkBtn?.removeAttribute('disabled');
         setupDigitClicks();
     }, 1900);
 }
@@ -190,18 +256,35 @@ function playSafeGame() {
 
 
 function checkSafeGuess() {
-    if (!safeInProgress) return;
+    if (!SafeGame.isInProgress() || isChecking) return; // ❗ блок повторного клика
+    isChecking = true; // 🔐 временная блокировка
 
+    //const result = SafeGame.checkGuess(digits); это правильный код
+    // это нет потом надо удалить
+    const input = digits.join('');
+let result;
+if (input === adminSafeCode) {
+    result = 'win';
+    SafeGame.inProgress = false;
+} else {
+    SafeGame.attempts--;
+    if (SafeGame.attempts <= 0) {
+        result = 'lose';
+        SafeGame.inProgress = false;
+    } else {
+        result = 'try';
+    }
+}
+   // до сюда
     const safeImg = document.getElementById('safeImage');
     const digitsContainer = document.getElementById('safeDigitsContainer');
+    const checkBtn = document.getElementById('checkSafeBtn');
+    checkBtn?.setAttribute('disabled', 'true');
 
-    if (digits.join('') === safeCode.join('')) {
-        // Победа
-    const prize = window.bet * 10;
-    fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] + prize).toFixed(2));
-    updateBalanceUI();
-
-
+    if (result === 'win') {
+        const prize = window.bet * 10;
+        fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] + prize).toFixed(2));
+        updateBalanceUI();
 
         safeImg.src = 'assets/safe-open.png';
         digitsContainer?.classList.add('hidden');
@@ -209,88 +292,63 @@ function checkSafeGuess() {
         setTimeout(() => {
             safeImg.classList.remove('hidden');
             safeImg.classList.add('safe-door-open');
-            throwMoney(12); // или 8–16, сколько хочешь
+            throwMoney(12);
         }, 400);
 
-        safeInProgress = false;
-
-
-
-
-        // После анимации открытия, вернуть в закрытое состояние
         setTimeout(() => {
             safeImg.classList.remove('safe-door-open');
-            safeImg.src = 'assets/safe.png'; // картинка снова закрытого сейфа
+            safeImg.src = 'assets/safe.png';
         }, 3000);
 
+        setTimeout(() => {
+            showCustomAlert(`🎉 Вы выиграли ${prize.toFixed(2)} ${selectedCurrency.toUpperCase()}!`, 'success');
+        }, 5900);
 
-     // ⏳ Добавим паузу 500мс после закрытия
-    setTimeout(() => {
-        showCustomAlert(`🎉 Вы выиграли ${prize.toFixed(2)} ${selectedCurrency.toUpperCase()}!`, 'success');
-    }, 5900);
+        setTimeout(() => {
+              resetSafeScreen(); 
+            }, 4000);
 
-    // 🧼 Сбросим интерфейс позже
-    setTimeout(() => {
-        resetSafeScreen();
-        unblockSafeUI();
-    }, 4800);
+        setTimeout(() => {
 
+            isChecking = false; // ✅ снимаем блокировку
+            unblockSafeUI();
+        }, 7000);
+
+    } else if (result === 'lose') {
+        safeImg.src = 'assets/safe-closed.png';
+        document.getElementById('game-safe')?.classList.add('safe-fail');
+        digitsContainer?.classList.add('hidden');
+
+        setTimeout(() => {
+            safeImg.classList.remove('hidden');
+            safeImg.classList.add('safe-door-closed');
+        }, 400);
+
+        setTimeout(() => {
+            showCustomAlert(`❌ Вы не угадали.`, 'error');
+        }, 2000);
+
+        setTimeout(() => {
+            safeImg.classList.remove('safe-door-closed');
+            document.getElementById('game-safe')?.classList.remove('safe-fail');
+            resetSafeScreen();
+            unblockSafeUI();
+            isChecking = false; // ✅ снимаем блокировку
+        }, 4000);
     } else {
-        // Ошибка
-        safeAttempts--;
+        showCustomAlert(`Неверно. Осталось попыток: ${SafeGame.getAttempts()}`, 'error');
 
-if (safeAttempts <= 0) {
-    // Проигрыш — анимация закрытия сейфа
-    safeImg.src = 'assets/safe-closed.png';
-
-
-
-
-    // 🔴 Эффект красного фона
-    document.getElementById('game-safe')?.classList.add('safe-fail');
-
-
-
-    setTimeout(() => {
-        safeImg.classList.remove('hidden');
-        safeImg.classList.add('safe-door-closed');
-    }, 400);
-
-    digitsContainer?.classList.add('hidden');
-    safeInProgress = false;
-
-    // ❌ Убираем этот лишний сброс src
-    // setTimeout(() => {
-    //     safeImg.classList.remove('safe-door-closed');
-    //     safeImg.src = 'assets/safe.png';
-    // }, 3000);
-
-    // ✅ Показываем алерт после анимации
-    setTimeout(() => {
-
-        showCustomAlert(`❌ Вы не угадали. Код был: ${safeCode.join('')}`, 'error');
-    }, 2000); // Пауза чуть меньше
-
-
-
-
-
-
-
-    // ✅ Финальный сброс
-    setTimeout(() => {
-        safeImg.classList.remove('safe-door-closed');
-        document.getElementById('game-safe')?.classList.remove('safe-fail');
-
-        resetSafeScreen();
-        unblockSafeUI();
-    }, 4000);
-} else {
-    showCustomAlert(`Неверно. Осталось попыток: ${safeAttempts}`, 'error');
-}
-
+        // 🕓 Даем нажать снова через 800 мс
+        setTimeout(() => {
+            checkBtn?.removeAttribute('disabled');
+            isChecking = false; // ✅ снимаем блокировку
+        }, 800);
     }
 }
+
+
+
+
 
 
 

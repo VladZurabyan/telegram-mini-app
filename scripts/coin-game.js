@@ -28,6 +28,7 @@ function resetCoinScreen() {
 }
 
 function playCoin(btn) {
+
     if (coinInProgress) return;
     coinInProgress = true;
 
@@ -37,6 +38,14 @@ function playCoin(btn) {
         coinInProgress = false;
         return;
     }
+
+    if (selectedCurrency === 'ton') {
+    fakeBalance.ton -= bet;
+} else {
+    fakeBalance.usdt -= bet;
+}
+updateBalanceUI(); // сразу показать обновление
+
 
     if (bet < minBet) {
         alert(`Минимум ${minBet} TON`);
@@ -96,14 +105,11 @@ function playCoin(btn) {
             prizeBox.innerText = `Желаем дальнейших успехов`;
         }
 
-       if (selectedCurrency === 'ton') {
-    fakeBalance.ton -= bet;
+
     if (isWin) {
+    if (selectedCurrency === 'ton') {
         fakeBalance.ton += bet * 2;
-    }
-} else {
-    fakeBalance.usdt -= bet;
-    if (isWin) {
+    } else {
         fakeBalance.usdt += bet * 2;
     }
 }
