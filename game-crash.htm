@@ -1,0 +1,68 @@
+<div id="game-crash-wrapper">
+<div class="game-screen" id="game-crash">
+    <div class="balance">
+        <div class="currency-selector">
+            <button id="btn-currency-ton" class="currency-btn">TON</button>
+            <button id="btn-currency-usdt" class="currency-btn">USDT</button>
+        </div>
+    </div>
+
+    <h2>САМОЛЁТ</h2>
+    <div id="crash-multiplier" class="crash-multiplier">x1.00</div>
+    <div id="crash-status" class="crash-status">⏳ Ожидание начала...</div>
+
+    <div class="crash-flight-area">
+    <div class="crash-flight-frame">
+        
+        <img src="assets/moon.png" alt="moon" class="moon-fixed" />
+
+       <img src="assets/cloud.png" class="clouds" />
+        <img src="assets/cloud.png" class="clouds1" />
+        <svg class="flight-line" width="100%" height="100%">
+    <defs>
+        <filter id="blurFilter" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+        </filter>
+    </defs>
+
+    <path
+        id="flightPath"
+        d=""
+        stroke="#4cc9f0"
+        stroke-width="2"
+        fill="none"
+        filter="url(#blurFilter)"
+    />
+</svg>
+
+
+        <div class="crash-plane" id="crashPlane"></div>
+    </div>
+</div>
+         <div id="crash-result" class="result-box"></div>
+        <label class="bet-box-label">Введите ставку</label>
+    <div class="bet-box">
+        <button>min</button>
+        <button>-</button>
+        <span id="betValue">10</span>
+        <button>+</button>
+        <button>max</button>
+    </div>
+
+    <button class="play-btn" id="crash-start">Начать полет</button>
+    <button class="play-btn" id="crash-cashout" disabled>Забрать выигрыш</button>
+
+
+    <button class="back-btn" id="btn-back-crash">Назад</button>
+</div>
+
+
+<!-- Прикольное сообщение -->
+    <div id="crash-joke" class="crash-joke hidden">
+    <div class="crash-joke-box">
+        🚫 Недостаточно топлива<br>
+        ✈️ Пилот ушёл за шаурмой<br>
+        <small>Заправьтесь и попробуйте снова</small>
+    </div>
+</div>
+</div>

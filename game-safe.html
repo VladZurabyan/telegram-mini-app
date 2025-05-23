@@ -1,0 +1,46 @@
+<div class="game-screen" id="game-safe" style="display: none;">
+    <div class="balance">
+        <div class="currency-selector">
+            <button id="btn-currency-ton" class="currency-btn">TON</button>
+            <button id="btn-currency-usdt" class="currency-btn">USDT</button>
+        </div>
+    </div>
+
+    <h2>ОТКРОЙ СЕЙФ</h2>
+
+    <!-- Картинка сейфа по умолчанию -->
+    <div id="safeImageContainer" class="safe-frame">
+    <img id="safeImage" src="assets/safe.png" alt="safe" class="safe-image" />
+</div>
+
+    <!-- Цифры -->
+    <div class="safe-frame hidden" id="safeDigitsContainer">
+        <div class="safe-digits zoom-target">
+            <div class="digit" data-index="0">0</div>
+            <div class="digit" data-index="1">0</div>
+            <div class="digit" data-index="2">0</div>
+        </div>
+        <button id="checkSafeBtn" class="hidden" onclick="checkSafeGuess()">Проверить код</button>
+
+        <button id="hint-btn" class="safe-hint-btn">🔍 Подсказка (-1)</button>
+    </div>
+
+    <div class="prize-box" id="boxPrize"></div>
+    <label class="bet-box-label">Введите ставку</label>
+
+    <div class="bet-box">
+        <button>min</button>
+        <button>-</button>
+        <span id="safe-bet-display">1</span>
+        <button>+</button>
+        <button>max</button>
+    </div>
+
+    <div class="win-multiplier">Возможный выигрыш: <strong>10x</strong></div>
+
+    <div class="action-box">
+        <button class="play-btn" id="safeStart">ИГРАТЬ</button>
+    </div>
+
+    <button class="back-btn">НАЗАД</button>
+</div>

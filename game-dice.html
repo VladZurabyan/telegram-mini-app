@@ -1,0 +1,49 @@
+<div class="game-screen" id="game-dice">
+    <div class="balance">
+        <div class="currency-selector">
+            <button id="btn-currency-ton" class="currency-btn">TON</button>
+            <button id="btn-currency-usdt" class="currency-btn">USDT</button>
+        </div>
+    </div>
+
+    <h2>КУБИК</h2>
+
+    <div class="dice-image-wrapper">
+        <img id="diceImage" src="assets/dice1.png" />
+    </div>
+
+   <div class="dice-choices" id="diceChoices">
+        <button onclick="setDiceChoice(1)">1</button>
+        <button onclick="setDiceChoice(2)">2</button>
+        <button onclick="setDiceChoice(3)">3</button>
+        <button onclick="setDiceChoice(4)">4</button>
+        <button onclick="setDiceChoice(5)">5</button>
+        <button onclick="setDiceChoice(6)">6</button>
+    </div>
+
+    <div class="result-box" id="diceResult"></div>
+    <div class="prize-box" id="dicePrize"></div>
+
+     <button class="play-btn">БРОСИТЬ</button>
+
+    <div class="bet-container">
+        <label>Введите ставку</label>
+        <div class="bet-box" id="diceBetBox">
+            <button onclick="setBet('min')">min</button>
+            <button onclick="changeBet(-1)">-</button>
+            <span id="betValue">1</span>
+            <button onclick="changeBet(1)">+</button>
+            <button onclick="setBet('max')">max</button>
+        </div>
+    </div>
+
+
+
+       <div class="win-multiplier">Возможный выигрыш: <strong>5x</strong></div>
+
+
+
+
+
+    <button class="back-btn" id="btn-back-dice" onclick="backToMain()">Назад</button>
+</div>
