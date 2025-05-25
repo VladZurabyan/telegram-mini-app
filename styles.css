@@ -285,6 +285,20 @@ footer img {
   font-weight: bold;
 }
 
+
+#game-coin {
+
+  padding-top: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+
+
 /* === Монета с тенями и фиксированным размером === */
 #game-coin .coin-image,
 #coinImageMain {
@@ -2231,13 +2245,4 @@ body:-moz-full-screen {
 }
 
 
-#game-coin {
 
-  padding-top: 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-  height: 100vh;
-  box-sizing: border-box;
-}
