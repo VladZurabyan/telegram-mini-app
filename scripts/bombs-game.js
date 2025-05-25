@@ -32,15 +32,19 @@ function showEmptyBombGrid() {
 }
 
 function startBombsGame() {
-    cashoutPressed = false;
-    document.getElementById('bomb-cashout')?.removeAttribute('disabled');
-    blockBombUI();
-
     if (bombsInProgress) return;
+
+    cashoutPressed = false;
+
+    const resultBox = document.getElementById('bombResult');
+    const prizeBox = document.getElementById('bombPrize');
+    if (resultBox) resultBox.innerText = '';
+    if (prizeBox) prizeBox.innerText = '';
+
+    document.getElementById('bomb-cashout')?.removeAttribute('disabled');
 
     if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
         alert("Введите корректную ставку.");
-        unblockBombUI();
         return;
     }
 
@@ -50,15 +54,16 @@ function startBombsGame() {
 
     if (window.bet > balanceAvailable) {
         alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
-        unblockBombUI();
         return;
     }
 
     if (window.bet < minBet) {
         alert(`Минимум ${minBet} TON`);
-        unblockBombUI();
         return;
     }
+
+    showEmptyBombGrid();
+    blockBombUI();
 
     bombsInProgress = true;
     bombsLives = 1;
@@ -90,29 +95,66 @@ function startBombsGame() {
         grid.appendChild(cell);
     }
 
-    document.getElementById('bomb-cashout')?.classList.remove('hidden');
+    document.getElementById('bomb-cashout')?.classList.add('hidden'); // скрыта до первой монеты
     document.getElementById('btn-bomb-start')?.classList.add('hidden');
 }
 
 function revealBombCell(cell, index) {
+
     if (!bombsInProgress || cell.classList.contains('revealed')) return;
 
-    const type = bombsGrid[index];
-    cell.classList.add('revealed');
+            if (!bombsGrid[index]) return;
 
+    // 🎯 Динамический шанс, что следующая монета — бомба
+const dynamicBombChance = [0.1, 0.15, 0.25, 0.4, 0.6, 0.8, 1.0]; // по количеству открытых алмазов
+const chance = dynamicBombChance[revealedCells] ?? 1.0; // если больше 6 открытых — 100%
+if (bombsGrid[index] === 'coin' && Math.random() < chance) {
+    bombsGrid[index] = 'bomb';
+}
+
+
+
+
+
+    const type = bombsGrid[index];
     const backSide = cell.querySelector('.card-back');
-    if (type === 'bomb') {
-        backSide.innerHTML = '💣';
-        backSide.classList.add('bomb-hit');
-        bombsLives = 0;
-        endBombsGame(false);
-    } else {
-        backSide.innerHTML = '💎';
-        backSide.classList.add('diamond-glow');
-        bombsMultiplier += 0.3;
-        revealedCells++;
-        updateBombMultiplierUI();
+    if (!backSide) return;
+
+    requestAnimationFrame(() => {
+        cell.classList.add('revealed');
+
+
+        if (type === 'bomb') {
+            backSide.innerHTML = '💣';
+            backSide.classList.remove('bomb-hit');
+            void backSide.offsetWidth;
+            backSide.classList.add('bomb-hit');
+
+            if ("vibrate" in navigator) {
+        navigator.vibrate([100, 50, 100]);
     }
+
+           cell.classList.remove('shake');
+void cell.offsetWidth;
+cell.classList.add('shake');
+
+
+
+            document.querySelectorAll('#game-bombs .bomb-cell').forEach(c => (c.onclick = null));
+
+            setTimeout(() => {
+                bombsLives = 0;
+                endBombsGame(false);
+            }, 600);
+        } else {
+            backSide.innerHTML = '💎';
+            backSide.classList.add('diamond-glow');
+            bombsMultiplier += 0.3;
+            revealedCells++;
+            updateBombMultiplierUI();
+            document.getElementById('bomb-cashout')?.classList.remove('hidden');
+        }
+    });
 }
 
 function updateBombMultiplierUI() {
@@ -126,34 +168,58 @@ function collectBombsPrize() {
     cashoutPressed = true;
     document.getElementById('bomb-cashout')?.setAttribute('disabled', 'true');
 
-    const winAmount = bet * bombsMultiplier;
-
-    if (selectedCurrency === 'ton') {
-        fakeBalance.ton += winAmount;
-    } else {
-        fakeBalance.usdt += winAmount;
-    }
+    const winAmount = parseFloat((window.bet * bombsMultiplier).toFixed(2));
+    fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] + winAmount).toFixed(2));
 
     updateBalanceUI();
-    endBombsGame(true);
+    endBombsGame(true, winAmount);
 }
 
-function endBombsGame(won) {
-    bombsMultiplier = 1.0;
-updateBombMultiplierUI(); // чтобы обновить UI
-
-
-    unblockBombUI();
+function endBombsGame(won, winAmount = 0) {
     bombsInProgress = false;
+
+    const resultBox = document.getElementById('bombResult');
+    const prizeBox = document.getElementById('bombPrize');
+
+    const currencyLabel = selectedCurrency.toUpperCase();
+
+    if (won) {
+        if (resultBox) resultBox.innerText = "Победа!";
+        if (prizeBox) prizeBox.innerText = `Вы выиграли: ${formatAmount(winAmount)} ${currencyLabel}`;
+    } else {
+        if (resultBox) resultBox.innerText = "Бомба 💥";
+        if (prizeBox) prizeBox.innerText = "Желаем дальнейших успехов!";
+    }
+
+    bombsMultiplier = 1.0;
+    updateBombMultiplierUI();
+    unblockBombUI();
+
     document.getElementById('bomb-cashout')?.classList.add('hidden');
     document.getElementById('btn-bomb-start')?.classList.remove('hidden');
 
-    const msg = won
-        ? `🏆 Победа! Вы выиграли ${formatAmount(bet * bombsMultiplier)}`
-        : `💥 Бомба! Вы потеряли ${formatAmount(bet)}`;
-    alert(msg);
-
-    showEmptyBombGrid();
-
+    // Отключить клики
     document.querySelectorAll('#game-bombs .bomb-cell').forEach(c => (c.onclick = null));
+
+    // 🔁 Автоматически открыть все оставшиеся клетки
+    document.querySelectorAll('#game-bombs .bomb-cell').forEach((cell, index) => {
+        if (!cell.classList.contains('revealed')) {
+            const back = cell.querySelector('.card-back');
+            const inner = cell.querySelector('.card-inner');
+            cell.classList.add('revealed');
+
+            if (bombsGrid[index] === 'bomb') {
+                back.innerHTML = '💣';
+                back.classList.add('bomb-hit');
+            } else {
+                back.innerHTML = '💎';
+                back.classList.add('diamond-glow');
+            }
+
+            void inner.offsetWidth;
+            inner.classList.add('pop-flip'); // чтобы анимация сработала
+
+        }
+    });
+    bombsGrid = []; // Очистить массив после игры 
 }

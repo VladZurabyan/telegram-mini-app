@@ -18,8 +18,7 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
-
+//tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
 
 const fakeBalance = {
         ton: 10,

@@ -1,4 +1,3 @@
-const adminSafeCode = "754";
 let digits = [0, 0, 0];
  let isChecking = false;
 
@@ -53,6 +52,9 @@ const SafeGame = (() => {
         return code.length ? code[0] : null;
     }
 
+
+
+
     function checkGuess(guess) {
         if (!inProgress) return null;
         if (guess.join('') === code.join('')) {
@@ -70,6 +72,7 @@ const SafeGame = (() => {
     }
 
     return {
+
         generateCode,
         getAttempts,
         isInProgress,
@@ -169,6 +172,7 @@ function showHint() {
 
 
 
+
 function changeSafeBet(delta) {
     const display = document.getElementById("safe-bet-display");
     let bet = parseFloat(display.textContent);
@@ -259,23 +263,9 @@ function checkSafeGuess() {
     if (!SafeGame.isInProgress() || isChecking) return; // ❗ блок повторного клика
     isChecking = true; // 🔐 временная блокировка
 
-    //const result = SafeGame.checkGuess(digits); это правильный код
-    // это нет потом надо удалить
-    const input = digits.join('');
-let result;
-if (input === adminSafeCode) {
-    result = 'win';
-    SafeGame.inProgress = false;
-} else {
-    SafeGame.attempts--;
-    if (SafeGame.attempts <= 0) {
-        result = 'lose';
-        SafeGame.inProgress = false;
-    } else {
-        result = 'try';
-    }
-}
-   // до сюда
+    const result = SafeGame.checkGuess(digits);
+
+
     const safeImg = document.getElementById('safeImage');
     const digitsContainer = document.getElementById('safeDigitsContainer');
     const checkBtn = document.getElementById('checkSafeBtn');
@@ -305,7 +295,7 @@ if (input === adminSafeCode) {
         }, 5900);
 
         setTimeout(() => {
-              resetSafeScreen(); 
+              resetSafeScreen();
             }, 4000);
 
         setTimeout(() => {
