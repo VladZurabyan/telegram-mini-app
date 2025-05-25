@@ -2132,7 +2132,7 @@ button[disabled],
 
 /* 💣 бомба трясётся */
 .card-back.bomb-hit {
-  animation: shake-back 0.4s ease;
+  
   color: #fff;
   background: #8b0000;
   box-shadow: 0 0 12px red;
@@ -2156,19 +2156,49 @@ button[disabled],
   }
 }
 
-@keyframes shake-back {
-  0% { transform: rotateY(180deg) translateX(0); }
-  25% { transform: rotateY(180deg) translateX(-4px); }
-  50% { transform: rotateY(180deg) translateX(4px); }
-  75% { transform: rotateY(180deg) translateX(-2px); }
-  100% { transform: rotateY(180deg) translateX(0); }
-}
+
 
 @keyframes glow-back {
   0% { box-shadow: 0 0 0px cyan; }
   50% { box-shadow: 0 0 10px cyan; }
   100% { box-shadow: 0 0 0px cyan; }
 }
+
+.bomb-cell.shake {
+  animation: cell-shake 0.5s ease-in-out;
+}
+
+@keyframes cell-shake {
+  0%   { transform: translate(0, 0) rotate(0); }
+  10%  { transform: translate(-12px, -2px) rotate(-2deg); }
+  20%  { transform: translate(12px, 2px) rotate(2deg); }
+  30%  { transform: translate(-10px, -2px) rotate(-1.5deg); }
+  40%  { transform: translate(10px, 2px) rotate(1.5deg); }
+  50%  { transform: translate(-8px, -1px) rotate(-1deg); }
+  60%  { transform: translate(8px, 1px) rotate(1deg); }
+  70%  { transform: translate(-5px, 0) rotate(-0.5deg); }
+  80%  { transform: translate(5px, 0) rotate(0.5deg); }
+  90%  { transform: translate(-2px, 0) rotate(0deg); }
+  100% { transform: translate(0, 0) rotate(0); }
+}
+
+
+
+
+.card-inner.shake-bomb {
+  animation: shake-bomb 0.5s ease-in-out;
+}
+
+@keyframes shake-bomb {
+  0%   { transform: rotateY(180deg) translate(0, 0) scale(1); }
+  15%  { transform: rotateY(180deg) translate(-6px, 0) scale(1.05); }
+  30%  { transform: rotateY(180deg) translate(6px, 0) scale(1.1); }
+  45%  { transform: rotateY(180deg) translate(-4px, 0) scale(1.08); }
+  60%  { transform: rotateY(180deg) translate(4px, 0) scale(1.05); }
+  75%  { transform: rotateY(180deg) translate(-2px, 0) scale(1.02); }
+  100% { transform: rotateY(180deg) translate(0, 0) scale(1); }
+}
+
 
 
 @media (min-width: 768px) {
