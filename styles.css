@@ -2214,4 +2214,11 @@ body:-moz-full-screen {
 }
 
 
+@media screen and (orientation: portrait) {
+  #game-bombs,
+  #main,
+  .game-screen {
+    padding-bottom: 120px !important; /* ← отступ под системные кнопки */
+  }
+}
 
