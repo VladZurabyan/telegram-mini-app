@@ -130,9 +130,15 @@ if (bombsGrid[index] === 'coin' && Math.random() < chance) {
             void backSide.offsetWidth;
             backSide.classList.add('bomb-hit');
 
-            if ("vibrate" in navigator) {
-        navigator.vibrate([100, 50, 100]);
-    }
+            // Вибрация или хаптик для Android и iPhone
+if ("vibrate" in navigator) {
+    navigator.vibrate([100, 50, 100]); // Android
+} else if (Telegram.WebApp.HapticFeedback?.impactOccurred) {
+    Telegram.WebApp.HapticFeedback.impactOccurred("medium"); // iPhone (если Telegram разрешил)
+} else {
+    console.log("Вибрация не поддерживается.");
+}
+
 
            cell.classList.remove('shake');
 void cell.offsetWidth;
