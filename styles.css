@@ -2226,7 +2226,7 @@ body:-moz-full-screen {
    .game-screen {
     padding-top: 100px !important; /* ← отступ под системные кнопки */
      height: 100dvh; /* Можно, если у тебя весь экран */
-  overflow-y: auto !important; /* Позволяет вертикальный скролл, если контент длинный */
+  overflow-y: auto; /* Позволяет вертикальный скролл, если контент длинный */
   -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
   }
 }
