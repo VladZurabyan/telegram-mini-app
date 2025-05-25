@@ -2236,14 +2236,18 @@ body:-moz-full-screen {
   }
 }
 @media screen and (orientation: portrait) {
-  #game-coin,#game-boxes,#game-dice,#game-crash,#game-chicken,#game-safe,#game-bombs,
-   .game-screen {
+  #main,
+  .game-screen,
+  #game-coin, #game-boxes, #game-dice, #game-crash, #game-chicken, #game-safe, #game-bombs {
     padding-top: calc(env(safe-area-inset-top, 20px) + 100px) !important;
-    height: 100dvh;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 60px) !important;
+    min-height: 100vh;
     overflow-y: auto;
+    box-sizing: border-box;
     -webkit-overflow-scrolling: touch;
   }
 }
+
 
 
 
