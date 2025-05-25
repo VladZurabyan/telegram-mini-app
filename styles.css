@@ -2238,7 +2238,7 @@ body:-moz-full-screen {
 @media screen and (orientation: portrait) {
   #main,
   .game-screen,
-  #game-coin, #game-boxes, #game-dice, #game-crash, #game-chicken, #game-safe, #game-bombs{
+  #game-coin, #game-boxes, #game-dice, #game-crash, #game-chicken, #game-safe, #game-bombs, #rules, #partners{
     padding-top: calc(env(safe-area-inset-top, 20px) + 100px) !important;
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 60px) !important;
     min-height: 100vh;
@@ -2248,16 +2248,7 @@ body:-moz-full-screen {
   }
 }
 
-@media screen and (orientation: portrait) {
-   #rules, #partners{
-    padding-top: calc(env(safe-area-inset-top, 20px) + 150px) !important;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 60px) !important;
-    min-height: 100vh;
-    overflow-y: auto;
-    box-sizing: border-box;
-    -webkit-overflow-scrolling: touch;
-  }
-}
+
 
 @media screen and (orientation: landscape) {
   footer {
