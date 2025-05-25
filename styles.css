@@ -2231,8 +2231,10 @@ body:-moz-full-screen {
   }
 }
 
-:fullscreen .game-screen,
-:-webkit-full-screen .game-screen {
+:fullscreen #game-coin,#game-boxes,#game-dice,#game-crash,#game-chicken,#game-safe,#game-bombs,
+   .game-screen,
+:-webkit-full-screen .#game-coin,#game-boxes,#game-dice,#game-crash,#game-chicken,#game-safe,#game-bombs,
+   .game-screen {
   height: 100vh !important;
   overflow-y: auto !important;
 }
