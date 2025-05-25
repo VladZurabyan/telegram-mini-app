@@ -2249,8 +2249,6 @@ body:-moz-full-screen {
 }
 
 @media screen and (orientation: portrait) {
-  #main,
-  .game-screen,
    rules, partners{
     padding-top: calc(env(safe-area-inset-top, 20px) + 150px) !important;
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 60px) !important;
