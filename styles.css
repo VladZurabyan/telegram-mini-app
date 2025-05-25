@@ -15,7 +15,7 @@ html, body {
 }
 
 #main {
-    padding-top: calc(2rem + env(safe-area-inset-top));
+    padding-top: calc(5rem + env(safe-area-inset-top));
   padding-bottom: calc(1rem + env(safe-area-inset-bottom));
   height: 100dvh; /* тоже заменить */
   overflow-y: auto;
