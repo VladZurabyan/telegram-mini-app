@@ -2223,7 +2223,7 @@ body:-moz-full-screen {
 }
 @media screen and (orientation: portrait) {
   #game-coin,#game-boxes,#game-dice,#game-crash,#game-chicken,#game-safe,#game-bombs,
-  .game-screen {
+   {
     padding-top: 100px !important; /* ← отступ под системные кнопки */
   }
 }
