@@ -2245,7 +2245,7 @@ body:-moz-full-screen {
 }
 
 .game-screen {
-  padding-bottom: env(safe-area-inset-bottom, 30px);
+  padding-bottom: 30px;
 }
 
 
