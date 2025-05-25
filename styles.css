@@ -2223,11 +2223,12 @@ body:-moz-full-screen {
 @media screen and (orientation: portrait) {
   #game-coin,#game-boxes,#game-dice,#game-crash,#game-chicken,#game-safe,#game-bombs,
    .game-screen {
-    padding-top: 100px !important; /* ← отступ под системные кнопки */
-     height: 100dvh; /* Можно, если у тебя весь экран */
-  overflow-y: auto; /* Позволяет вертикальный скролл, если контент длинный */
-  -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+    padding-top: calc(env(safe-area-inset-top, 20px) + 60px) !important;
+    height: 100dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
+
 
 
