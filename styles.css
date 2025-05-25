@@ -2218,7 +2218,7 @@ body:-moz-full-screen {
   #game-bombs,
   #main,
   .game-screen {
-    padding-top: 100px !important; /* ← отступ под системные кнопки */
+    padding-top: 80px !important; /* ← отступ под системные кнопки */
   }
 }
 
