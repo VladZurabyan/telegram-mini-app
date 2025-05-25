@@ -2,8 +2,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  min-height: 100vh;
+  height: 100dvh;
+  min-height: 100dvh;
   overflow: hidden; /* <-- ОТКЛЮЧАЕТ скролл полностью */
   background-color: #05002b;
 }
@@ -11,14 +11,14 @@ html, body {
 
 
 #main {
-   height: 100%;
+   height: 100dvh;
   overflow-y: auto; /* <-- чтобы прокручивался только #main, если надо */
 }
 
 
 #game-coin, #game-dice, #game-boxes, #game-crash, #rules, #partners {
 
-  height: 100vh; /* Можно, если у тебя весь экран */
+  height: 100dvh; /* Можно, если у тебя весь экран */
   overflow-y: auto; /* Позволяет вертикальный скролл, если контент длинный */
   -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
 
@@ -1991,7 +1991,7 @@ button[disabled],
 }
 
 #game-bombs .cashout-btn:hover {
- 
+
   box-shadow:
     0 6px 16px rgba(76, 175, 80, 0.6),
     inset 0 1px 3px rgba(255, 255, 255, 0.2);
@@ -2144,3 +2144,18 @@ button[disabled],
 }
 
 
+@media (min-width: 768px) {
+  .game-scroll-wrapper {
+    height: 280px;
+    padding: 20px;
+  }
+
+  .game-button {
+    font-size: 18px;
+    height: 120px;
+  }
+
+  .balance div {
+    padding: 16px 20px;
+  }
+}
