@@ -2231,4 +2231,13 @@ body:-moz-full-screen {
 }
 
 
+#game-coin {
 
+  padding-top: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+}
