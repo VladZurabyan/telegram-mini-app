@@ -2250,13 +2250,15 @@ body:-moz-full-screen {
 
 @media screen and (orientation: landscape) {
   footer {
-    display: block !important;
+    display: block;
     margin-top: 40px;
     font-size: 12px;
     opacity: 0.7;
-    padding-bottom: env(safe-area-inset-bottom, 150px); /* защищает от системных кнопок */
+    text-align: center;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 30px); /* 🔧 под линию свайпа */
   }
 }
+
 
 
 
