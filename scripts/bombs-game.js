@@ -135,6 +135,7 @@ if ("vibrate" in navigator) {
     navigator.vibrate([100, 50, 100]); // Android
 } else if (Telegram.WebApp.HapticFeedback?.impactOccurred) {
     Telegram.WebApp.HapticFeedback.impactOccurred("heavy"); // iPhone (если Telegram разрешил)
+    Telegram.WebApp.HapticFeedback.notificationOccurred?.("error"); // ← по желанию
 } else {
     console.log("Вибрация не поддерживается.");
 }
