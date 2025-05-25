@@ -2180,7 +2180,7 @@ button[disabled],
 body:fullscreen #main,
 body:-webkit-full-screen #main,
 body:-moz-full-screen #main {
-  padding-top: 40px !important;
+  padding-top: 80px !important;
   padding-bottom: 40px !important;
   height: 100vh !important;
   box-sizing: border-box;
