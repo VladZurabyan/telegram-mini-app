@@ -2188,7 +2188,6 @@ body:-moz-full-screen {
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
-  overflow-y: auto !important;
 }
 
 
@@ -2231,3 +2230,10 @@ body:-moz-full-screen {
   -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
   }
 }
+
+:fullscreen .game-screen,
+:-webkit-full-screen .game-screen {
+  height: 100vh !important;
+  overflow-y: auto !important;
+}
+
