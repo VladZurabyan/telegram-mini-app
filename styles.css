@@ -2,18 +2,23 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100dvh;
-  min-height: 100dvh;
-  overflow: hidden; /* <-- ОТКЛЮЧАЕТ скролл полностью */
+  height: 100vh; /* заменено с 100dvh */
+  min-height: 100vh;
+  overflow: hidden;
   background-color: #05002b;
+  font-family: sans-serif;
+  color: white;
+  text-align: center;
 }
-
-
 
 #main {
-   height: 100dvh;
-  overflow-y: auto; /* <-- чтобы прокручивался только #main, если надо */
+    padding: 2rem 0;
+  height: 100vh; /* тоже заменить */
+  overflow-y: auto;
+
+  flex-direction: column;
 }
+
 
 
 #game-coin, #game-dice, #game-boxes, #game-crash, #rules, #partners {
@@ -27,12 +32,13 @@ html, body {
 
 /* === Общие стили === */
 body {
+
   background-image: url("assets/stars1.png"); /* или просто 'stars.png', если рядом */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   background-color: #05002b; /* тёмный фон под звёздами */
- padding-top: 2rem;  
+
 
 
 
@@ -413,6 +419,9 @@ button[disabled],
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 .game-screen {
+    height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
   position: relative;
   padding-top: 48px;
 }
@@ -2158,4 +2167,19 @@ button[disabled],
   .balance div {
     padding: 16px 20px;
   }
+}
+
+:fullscreen,
+:-webkit-full-screen,
+:-moz-full-screen {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body:fullscreen #main,
+body:-webkit-full-screen #main,
+body:-moz-full-screen #main {
+  height: 100vh !important;
+  overflow-y: auto;
 }
