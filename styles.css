@@ -2198,7 +2198,7 @@ body:fullscreen,
 body:-webkit-full-screen,
 body:-moz-full-screen {
   padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom, 40px);
+  padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
