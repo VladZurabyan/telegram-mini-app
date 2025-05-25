@@ -2223,7 +2223,7 @@ body:-moz-full-screen {
 @media screen and (orientation: portrait) {
   #game-coin,#game-boxes,#game-dice,#game-crash,#game-chicken,#game-safe,#game-bombs,
    .game-screen {
-    padding-top: calc(env(safe-area-inset-top, 50px) + 60px) !important;
+    padding-top: calc(env(safe-area-inset-top, 20px) + 100px) !important;
     height: 100dvh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
