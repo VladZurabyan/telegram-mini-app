@@ -2,18 +2,22 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100vh; /* заменено с 100dvh */
-  min-height: 100vh;
+  height: 100dvh; /* заменено с 100dvh */
+  min-height: 100dvh;
   overflow: hidden;
   background-color: #05002b;
   font-family: sans-serif;
   color: white;
   text-align: center;
+
+  padding-top: env(safe-area-inset-top); /* ← верхние отступы */
+  padding-bottom: env(safe-area-inset-bottom); /* ← нижние отступы */
 }
 
 #main {
-    padding: 2rem 0;
-  height: 100vh; /* тоже заменить */
+    padding-top: calc(2rem + env(safe-area-inset-top));
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  height: 100dvh; /* тоже заменить */
   overflow-y: auto;
 
   flex-direction: column;
@@ -2180,12 +2184,6 @@ button[disabled],
 body:fullscreen #main,
 body:-webkit-full-screen #main,
 body:-moz-full-screen #main {
-  padding-top: 40px !important;
-  padding-bottom: 40px !important;
   height: 100vh !important;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  overflow-y: auto;
 }
-
