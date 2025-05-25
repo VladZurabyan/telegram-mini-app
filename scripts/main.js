@@ -15,11 +15,10 @@
 
 
 
-if (window.Telegram && window.Telegram.WebApp) {
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
-    Telegram.WebApp.requestFullscreen?.(); // безопасный вызов
-}
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
 
 
 const fakeBalance = {
