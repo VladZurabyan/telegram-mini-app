@@ -2254,7 +2254,7 @@ body:-moz-full-screen {
     margin-top: 40px;
     font-size: 12px;
     opacity: 0.7;
-    padding-bottom: env(safe-area-inset-bottom, 80px); /* защищает от системных кнопок */
+    padding-bottom: env(safe-area-inset-bottom, 150px); /* защищает от системных кнопок */
   }
 }
 
