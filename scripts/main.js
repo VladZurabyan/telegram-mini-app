@@ -15,10 +15,12 @@
 
 
 
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand(); // ← ВАЖНО: вызываем сразу
-tg.requestFullscreen();
+if (window.Telegram && window.Telegram.WebApp) {
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+    Telegram.WebApp.requestFullscreen?.(); // безопасный вызов
+}
+
 
 const fakeBalance = {
         ton: 10,
