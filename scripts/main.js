@@ -450,24 +450,3 @@ window.minBet = 1;
 window.maxBet = 100;
 window.loadGame = loadGame;
 window.updateBalanceUI = updateBalanceUI;
-
-let confirmShown = false;
-
-window.addEventListener("touchstart", () => {
-  if (window.scrollY === 0 && !confirmShown) {
-    confirmShown = true;
-
-    const wantsToClose = confirm("Вы хотите закрыть игру?");
-
-    if (wantsToClose) {
-      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
-        Telegram.WebApp.close(); // закрытие Mini App
-      }
-    } else {
-      confirmShown = false;
-      window.scrollTo(0, 1); // прокрутка вниз
-    }
-  }
-});
-
-
