@@ -4,6 +4,7 @@ let bombsLives = 1;
 let bombsMultiplier = 1.0;
 let revealedCells = 0;
 let cashoutPressed = false;
+let bombClickLock = false; // 🔒 Блокировка быстрого клика
 
 function blockBombUI() {
     document.querySelectorAll('#game-bombs .currency-selector button').forEach(btn => btn.disabled = true);
@@ -41,7 +42,8 @@ function startBombsGame() {
     if (resultBox) resultBox.innerText = '';
     if (prizeBox) prizeBox.innerText = '';
 
-    document.getElementById('bomb-cashout')?.removeAttribute('disabled');
+    document.getElementById('bomb-cashout')?.setAttribute('disabled', 'true');
+    document.getElementById('bomb-cashout')?.classList.add('hidden');
 
     if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
         alert("Введите корректную ставку.");
@@ -58,9 +60,9 @@ function startBombsGame() {
     }
 
     if (window.bet < minBet) {
-    alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
-    return;
-}
+        alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
+        return;
+    }
 
     showEmptyBombGrid();
     blockBombUI();
@@ -95,26 +97,22 @@ function startBombsGame() {
         grid.appendChild(cell);
     }
 
-    document.getElementById('bomb-cashout')?.classList.add('hidden'); // скрыта до первой монеты
     document.getElementById('btn-bomb-start')?.classList.add('hidden');
 }
 
 function revealBombCell(cell, index) {
+    if (!bombsInProgress || cell.classList.contains('revealed') || bombClickLock) return;
+    if (!bombsGrid[index]) return;
 
-    if (!bombsInProgress || cell.classList.contains('revealed')) return;
-
-            if (!bombsGrid[index]) return;
+    bombClickLock = true;
+    document.getElementById('bomb-cashout')?.setAttribute('disabled', 'true');
 
     // 🎯 Динамический шанс, что следующая монета — бомба
-const dynamicBombChance = [0.1, 0.15, 0.25, 0.4, 0.6, 0.8, 1.0]; // по количеству открытых алмазов
-const chance = dynamicBombChance[revealedCells] ?? 1.0; // если больше 6 открытых — 100%
-if (bombsGrid[index] === 'coin' && Math.random() < chance) {
-    bombsGrid[index] = 'bomb';
-}
-
-
-
-
+    const dynamicBombChance = [0.1, 0.15, 0.25, 0.4, 0.6, 0.8, 1.0];
+    const chance = dynamicBombChance[revealedCells] ?? 1.0;
+    if (bombsGrid[index] === 'coin' && Math.random() < chance) {
+        bombsGrid[index] = 'bomb';
+    }
 
     const type = bombsGrid[index];
     const backSide = cell.querySelector('.card-back');
@@ -123,28 +121,21 @@ if (bombsGrid[index] === 'coin' && Math.random() < chance) {
     requestAnimationFrame(() => {
         cell.classList.add('revealed');
 
-
         if (type === 'bomb') {
             backSide.innerHTML = '💣';
             backSide.classList.remove('bomb-hit');
             void backSide.offsetWidth;
             backSide.classList.add('bomb-hit');
 
-           // Вибрация или хаптик для Android и iPhone
-if ("vibrate" in navigator) {
-    navigator.vibrate([100, 50, 100]); // Android
-} else if (Telegram.WebApp.HapticFeedback?.impactOccurred) {
-    Telegram.WebApp.HapticFeedback.impactOccurred("heavy"); // iPhone (если Telegram разрешил)
-} else {
-    console.log("Вибрация не поддерживается.");
-}
+            if ("vibrate" in navigator) {
+                navigator.vibrate([100, 50, 100]);
+            } else if (Telegram.WebApp.HapticFeedback?.impactOccurred) {
+                Telegram.WebApp.HapticFeedback.impactOccurred("heavy");
+            }
 
-
-           cell.classList.remove('shake');
-void cell.offsetWidth;
-cell.classList.add('shake');
-
-
+            cell.classList.remove('shake');
+            void cell.offsetWidth;
+            cell.classList.add('shake');
 
             document.querySelectorAll('#game-bombs .bomb-cell').forEach(c => (c.onclick = null));
 
@@ -158,8 +149,17 @@ cell.classList.add('shake');
             bombsMultiplier += 0.3;
             revealedCells++;
             updateBombMultiplierUI();
-            document.getElementById('bomb-cashout')?.classList.remove('hidden');
+
+            if (revealedCells > 0 && !cashoutPressed) {
+                const btn = document.getElementById('bomb-cashout');
+                btn?.removeAttribute('disabled');
+                btn?.classList.remove('hidden');
+            }
         }
+
+        setTimeout(() => {
+            bombClickLock = false;
+        }, 300);
     });
 }
 
@@ -169,7 +169,7 @@ function updateBombMultiplierUI() {
 }
 
 function collectBombsPrize() {
-    if (!bombsInProgress || cashoutPressed) return;
+    if (!bombsInProgress || cashoutPressed || revealedCells === 0) return;
 
     cashoutPressed = true;
     document.getElementById('bomb-cashout')?.setAttribute('disabled', 'true');
@@ -186,7 +186,6 @@ function endBombsGame(won, winAmount = 0) {
 
     const resultBox = document.getElementById('bombResult');
     const prizeBox = document.getElementById('bombPrize');
-
     const currencyLabel = selectedCurrency.toUpperCase();
 
     if (won) {
@@ -204,10 +203,8 @@ function endBombsGame(won, winAmount = 0) {
     document.getElementById('bomb-cashout')?.classList.add('hidden');
     document.getElementById('btn-bomb-start')?.classList.remove('hidden');
 
-    // Отключить клики
     document.querySelectorAll('#game-bombs .bomb-cell').forEach(c => (c.onclick = null));
 
-    // 🔁 Автоматически открыть все оставшиеся клетки
     document.querySelectorAll('#game-bombs .bomb-cell').forEach((cell, index) => {
         if (!cell.classList.contains('revealed')) {
             const back = cell.querySelector('.card-back');
@@ -223,9 +220,9 @@ function endBombsGame(won, winAmount = 0) {
             }
 
             void inner.offsetWidth;
-            inner.classList.add('pop-flip'); // чтобы анимация сработала
-
+            inner.classList.add('pop-flip');
         }
     });
-    bombsGrid = []; // Очистить массив после игры
+
+    bombsGrid = [];
 }
