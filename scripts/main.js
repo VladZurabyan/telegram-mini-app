@@ -19,7 +19,7 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
-//window.Telegram.WebApp.disableVerticalSwipes()
+window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
         ton: 10,
         usdt: 100
