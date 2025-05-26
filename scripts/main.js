@@ -453,20 +453,21 @@ window.updateBalanceUI = updateBalanceUI;
 
 let confirmShown = false;
 
-window.addEventListener("scroll", () => {
+window.addEventListener("touchstart", () => {
   if (window.scrollY === 0 && !confirmShown) {
     confirmShown = true;
 
-    const userChoice = confirm("Вы хотите закрыть игру?");
+    const wantsToClose = confirm("Вы хотите закрыть игру?");
 
-    if (userChoice) {
-      // Пользователь нажал "Да"
-      tg.close(); // Закрыть Mini App (если поддерживается)
+    if (wantsToClose) {
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
+        Telegram.WebApp.close(); // закрытие Mini App
+      }
     } else {
-      // Пользователь нажал "Нет" — просто сбрасываем флаг
       confirmShown = false;
-      window.scrollTo(0, 1); // прокрутка вниз, чтобы не вызывалось снова
+      window.scrollTo(0, 1); // прокрутка вниз
     }
   }
 });
+
 
