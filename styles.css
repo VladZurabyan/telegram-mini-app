@@ -2132,7 +2132,7 @@ button[disabled],
 
 /* 💣 бомба трясётся */
 .card-back.bomb-hit {
-  
+
   color: #fff;
   background: #8b0000;
   box-shadow: 0 0 12px red;
@@ -2198,6 +2198,313 @@ button[disabled],
   75%  { transform: rotateY(180deg) translate(-2px, 0) scale(1.02); }
   100% { transform: rotateY(180deg) translate(0, 0) scale(1); }
 }
+
+
+
+
+
+
+
+
+
+
+ #game-wheel {
+  padding-top: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+#game-wheel h2 {
+  font-size: 26px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+
+  background: linear-gradient(145deg, #1e83ff, #f31111);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+
+#game-wheel .currency-selector {
+  margin-top: 0 !important;
+  margin-bottom: 8px;
+}
+
+#game-wheel .balance {
+  margin-top: 0 !important;
+}
+
+#game-wheel .currency-selector {
+  margin-top: 0 !important;
+  margin-bottom: 8px;
+}
+
+#game-wheel .currency-btn.active {
+  background: linear-gradient(145deg, #1e83ff, #f31111);
+  color: #ffffff;
+
+}
+
+
+#game-wheel .bet-box {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(145deg, #1e83ff, #f31111);
+
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+#game-wheel .bet-box button {
+  background: transparent;
+  border: none;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#game-wheel #betValue {
+  color: black;
+  font-weight: bold;
+}
+
+
+.wheel-area {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 20px auto;
+}
+
+#wheelWrapper {
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  transition: transform 4s ease-out;
+  will-change: transform;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+
+
+
+
+
+
+#game-wheel .cashout-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #00ff91;
+  color: black;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#game-wheel .cashout-btn.hidden {
+  display: none;
+}
+
+
+.wheel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 6px solid #0a194e;
+  transform-origin: center center;
+  transition: transform 4s ease-out;
+  will-change: transform;
+  overflow: hidden;
+  background: #07102f;
+}
+
+.sector {
+    border-right: 2px solid white; /* ← разделение между секторами */
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  left: 50%;
+  top: 50%;
+  transform-origin: 0% 0%;
+  transform: rotate(calc(var(--i) * 45deg)) translate(-100%, 0);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  user-select: none;
+  pointer-events: none;
+}
+
+.sector::before {
+  content: attr(data-label);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  height: 60%;
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  transform: rotate(calc(-1 * var(--i) * 45deg));
+  text-shadow: 1px 1px 2px black;
+}
+
+
+.sector.blue {
+  background: linear-gradient(145deg, #0f4c81, #072a4a);
+}
+
+.sector.red {
+  background: linear-gradient(145deg, #ab2f2f, #5c0f0f);
+}
+
+.sector.darkred {
+  background: linear-gradient(145deg, #5c0f0f, #2b0707);
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -12px;
+  left: 52%;
+   transform: translateX(-50%) rotate(180deg);
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle, #ffd700 40%, #c90 60%);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  z-index: 3;
+  box-shadow: 0 0 6px #fff8;
+}
+
+.spin-center-btn {
+  position: absolute;
+  top: 50%;
+  left: 51.5%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #ff0080, #000000);
+  border: none;
+  font-weight: bold;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: 0 0 20px #ff008088;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2268,7 +2575,7 @@ body:-moz-full-screen {
 @media screen and (orientation: portrait) {
   #main,
   .game-screen,
-  #game-coin, #game-boxes, #game-dice, #game-crash, #game-chicken, #game-safe, #game-bombs, #rules, #partners{
+  #game-coin, #game-boxes, #game-dice, #game-crash, #game-chicken, #game-safe, #game-bombs, #game-wheel, #rules, #partners{
     padding-top: calc(env(safe-area-inset-top, 20px) + 100px) !important;
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 60px) !important;
     min-height: 100vh;
@@ -2290,6 +2597,7 @@ body:-moz-full-screen {
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 30px); /* 🔧 под линию свайпа */
   }
 }
+
 
 
 
