@@ -451,11 +451,22 @@ window.maxBet = 100;
 window.loadGame = loadGame;
 window.updateBalanceUI = updateBalanceUI;
 
-let swipeWarningShown = false;
+let confirmShown = false;
 
-window.addEventListener("touchstart", () => {
-  if (window.scrollY === 0 && !swipeWarningShown) {
-    alert("⛔ Не делайте резкий свайп вниз — это может свернуть игру.");
-    swipeWarningShown = true;
+window.addEventListener("scroll", () => {
+  if (window.scrollY === 0 && !confirmShown) {
+    confirmShown = true;
+
+    const userChoice = confirm("Вы хотите закрыть игру?");
+
+    if (userChoice) {
+      // Пользователь нажал "Да"
+      tg.close(); // Закрыть Mini App (если поддерживается)
+    } else {
+      // Пользователь нажал "Нет" — просто сбрасываем флаг
+      confirmShown = false;
+      window.scrollTo(0, 1); // прокрутка вниз, чтобы не вызывалось снова
+    }
   }
 });
+
