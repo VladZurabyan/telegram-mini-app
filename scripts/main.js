@@ -451,22 +451,3 @@ window.maxBet = 100;
 window.loadGame = loadGame;
 window.updateBalanceUI = updateBalanceUI;
 
-
-function ensureDocumentIsScrollable() {
-  const isScrollable = document.documentElement.scrollHeight > window.innerHeight;
-  if (!isScrollable) {
-    document.documentElement.style.setProperty(
-      "height",
-      "calc(100vh + 1px)",
-      "important"
-    );
-  }
-}
-
-// ⬇️ Прокрутка 1px вниз, чтобы избежать сворачивания WebView
-window.addEventListener("load", () => {
-  ensureDocumentIsScrollable();
-  setTimeout(() => window.scrollTo(0, 1), 50);
-});
-
-
