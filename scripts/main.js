@@ -451,3 +451,11 @@ window.maxBet = 100;
 window.loadGame = loadGame;
 window.updateBalanceUI = updateBalanceUI;
 
+let swipeWarningShown = false;
+
+window.addEventListener("touchstart", () => {
+  if (window.scrollY === 0 && !swipeWarningShown) {
+    alert("⛔ Не делайте резкий свайп вниз — это может свернуть игру.");
+    swipeWarningShown = true;
+  }
+});
