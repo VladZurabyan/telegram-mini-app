@@ -452,9 +452,6 @@ window.loadGame = loadGame;
 window.updateBalanceUI = updateBalanceUI;
 
 
-// === Scroll Fix for iOS/Fullscreen/Telegram WebApp ===
-
-// 1. Убедиться, что документ скроллится
 function ensureDocumentIsScrollable() {
   const isScrollable = document.documentElement.scrollHeight > window.innerHeight;
   if (!isScrollable) {
@@ -466,20 +463,10 @@ function ensureDocumentIsScrollable() {
   }
 }
 
-// 2. Защита от scrollY === 0
-function preventCollapse() {
-  if (window.scrollY === 0) {
-    window.scrollTo(0, 1);
-  }
-}
-
-// 3. Назначить события
+// ⬇️ Прокрутка 1px вниз, чтобы избежать сворачивания WebView
 window.addEventListener("load", () => {
   ensureDocumentIsScrollable();
-
-  // Назначить на все игровые экраны
-  document.querySelectorAll('.game-screen').forEach(el => {
-    el.addEventListener("touchstart", preventCollapse);
-  });
+  setTimeout(() => window.scrollTo(0, 1), 50);
 });
+
 
