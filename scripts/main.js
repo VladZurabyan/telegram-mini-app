@@ -18,8 +18,8 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
-window.Telegram.WebApp.disableVerticalSwipes()
+//tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
+ window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
         ton: 10,
         usdt: 100
@@ -55,6 +55,7 @@ function backToMain() {
     else if (game === 'game-dice') resetDiceScreen();
     else if (game === 'game-crash') resetCrashScreen();
      else if (game === 'game-bombs') resetCrashScreen();
+     else if (game === 'game-wheel') resetSafeScreen();
         resetCoinScreen();
 
         showMain();
@@ -62,6 +63,7 @@ function backToMain() {
 
 function loadGame(gameId) {
         const path = {
+                'game-wheel': 'games/game-wheel.html',
                 'game-bombs': 'games/game-bombs.html',
                 'game-safe': 'games/game-safe.html',
                 'game-chicken': 'games/game-chicken.html',
@@ -321,6 +323,29 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     document.getElementById('btn-bomb-start')?.addEventListener('click', startBombsGame);
 
     document.querySelectorAll('#game-bombs .bet-box button').forEach(btn => {
+        const text = btn.innerText.toLowerCase();
+        btn.addEventListener('click', () => {
+            if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+            else if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+        });
+    });
+
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+    setCurrency(selectedCurrency);
+    updateBetUI();
+}
+
+
+
+
+      if (gameId === 'game-wheel') {
+    document.querySelector('#game-wheel .back-btn')?.addEventListener('click', backToMain);
+    document.getElementById('btn-wheel-spin')?.addEventListener('click', spinWheel);
+
+    document.querySelectorAll('#game-wheel .bet-box button').forEach(btn => {
         const text = btn.innerText.toLowerCase();
         btn.addEventListener('click', () => {
             if (text === '+') changeBet(1);

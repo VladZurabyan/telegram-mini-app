@@ -71,7 +71,7 @@ function playDice(btn) {
     }
 
     if (bet < minBet) {
-        alert(`Минимум ${minBet} TON`);
+        alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
         diceInProgress = false;
         return;
     }

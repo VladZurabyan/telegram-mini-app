@@ -206,8 +206,7 @@ function resetSafeScreen() {
 
 
 function playSafeGame() {
-    SafeGame.generateCode(); // 👈 генерируем код приватно
-    resetSafeDigits();
+
 
     window.bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
 
@@ -232,6 +231,9 @@ function playSafeGame() {
         unblockSafeUI();
         return;
     }
+
+    SafeGame.generateCode(); // 👈 генерируем код приватно
+    resetSafeDigits();
 
     document.getElementById('checkSafeBtn')?.setAttribute('disabled', 'true');
     blockSafeUI();

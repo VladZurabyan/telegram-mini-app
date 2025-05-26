@@ -58,9 +58,9 @@ function startBombsGame() {
     }
 
     if (window.bet < minBet) {
-        alert(`Минимум ${minBet} TON`);
-        return;
-    }
+    alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
+    return;
+}
 
     showEmptyBombGrid();
     blockBombUI();
@@ -130,12 +130,11 @@ if (bombsGrid[index] === 'coin' && Math.random() < chance) {
             void backSide.offsetWidth;
             backSide.classList.add('bomb-hit');
 
-            // Вибрация или хаптик для Android и iPhone
+           // Вибрация или хаптик для Android и iPhone
 if ("vibrate" in navigator) {
     navigator.vibrate([100, 50, 100]); // Android
 } else if (Telegram.WebApp.HapticFeedback?.impactOccurred) {
     Telegram.WebApp.HapticFeedback.impactOccurred("heavy"); // iPhone (если Telegram разрешил)
-    Telegram.WebApp.HapticFeedback.notificationOccurred?.("error"); // ← по желанию
 } else {
     console.log("Вибрация не поддерживается.");
 }
@@ -228,5 +227,5 @@ function endBombsGame(won, winAmount = 0) {
 
         }
     });
-    bombsGrid = []; // Очистить массив после игры 
+    bombsGrid = []; // Очистить массив после игры
 }

@@ -140,7 +140,7 @@ function playChickenGame() {
     }
 
     if (window.bet < minBet) {
-        alert(`Минимум ${minBet} TON`);
+        alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
         unblockChickenUI();
         return;
     }

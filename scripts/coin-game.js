@@ -48,7 +48,7 @@ updateBalanceUI(); // сразу показать обновление
 
 
     if (bet < minBet) {
-        alert(`Минимум ${minBet} TON`);
+        alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
         coinInProgress = false;
         return;
     }

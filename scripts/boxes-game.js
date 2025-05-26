@@ -12,7 +12,7 @@ function selectBox(choice) {
     }
 
     if (bet < minBet) {
-        alert(`Минимум ${minBet} TON`);
+        alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
         boxInProgress = false;
         return;
     }
