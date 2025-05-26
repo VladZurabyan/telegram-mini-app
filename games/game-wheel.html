@@ -1,0 +1,46 @@
+<div class="game-screen" id="game-wheel">
+    <div class="balance">
+        <div class="currency-selector">
+            <button class="currency-btn active" id="btn-currency-ton">TON (<span id="bal-ton">0.00</span>)</button>
+            <button class="currency-btn" id="btn-currency-usdt">USDT (<span id="bal-usdt">0.00</span>)</button>
+        </div>
+    </div>
+
+    <h2>КОЛЕСО ФОРТУНЫ</h2>
+
+   <div class="wheel-area">
+    <div class="wheel-pointer"></div>
+    <div id="wheelWrapper" class="wheel">
+        <div class="sector blue" style="--i: 0" data-label="x10"></div>
+<div class="sector blue" style="--i: 1" data-label="x3"></div>
+<div class="sector blue" style="--i: 2" data-label="x2"></div>
+<div class="sector blue" style="--i: 3" data-label="x1"></div>
+<div class="sector blue" style="--i: 4" data-label="x1"></div>
+<div class="sector red"  style="--i: 5" data-label="x0.5"></div>
+<div class="sector red"  style="--i: 6" data-label="x0.5"></div>
+<div class="sector darkred" style="--i: 7" data-label="x0"></div>
+
+    </div>
+    <button id="btn-wheel-spin" class="spin-center-btn">КРУТИТЬ</button>
+</div>
+
+
+
+
+    <div class="result-box" id="wheelResult"></div>
+    <div class="prize-box" id="wheelPrize"></div>
+
+    <div class="bet-container">
+        <label>Введите ставку</label>
+        <div class="bet-box">
+            <button id="wheel-bet-min">min</button>
+            <button id="wheel-bet-decrease">-</button>
+            <span id="betValue">10</span>
+            <button id="wheel-bet-increase">+</button>
+            <button id="wheel-bet-max">max</button>
+        </div>
+    </div>
+
+    <button class="cashout-btn hidden" id="wheel-cashout">Забрать</button>
+    <button class="back-btn">Назад</button>
+</div>
