@@ -18,7 +18,7 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
+//tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
  window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
         ton: 10,
@@ -55,7 +55,8 @@ function backToMain() {
     else if (game === 'game-dice') resetDiceScreen();
     else if (game === 'game-crash') resetCrashScreen();
      else if (game === 'game-bombs') resetCrashScreen();
-     else if (game === 'game-wheel') resetSafeScreen();
+     else if (game === 'game-wheel') resetWheelScreen();
+     else if (game === 'game-arrow') resetArrowScreen();
         resetCoinScreen();
 
         showMain();
@@ -63,6 +64,7 @@ function backToMain() {
 
 function loadGame(gameId) {
         const path = {
+                'game-arrow': 'games/game-arrow.html',
                 'game-wheel': 'games/game-wheel.html',
                 'game-bombs': 'games/game-bombs.html',
                 'game-safe': 'games/game-safe.html',
@@ -361,6 +363,29 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     updateBetUI();
 }
 
+    if (gameId === 'game-arrow') {
+   initArrowScene();
+
+
+    document.querySelector('#game-arrow .back-btn')?.addEventListener('click', backToMain);
+    document.getElementById('btn-arrow-start')?.addEventListener('click', startArrowGame);
+    document.getElementById('arrow-cashout')?.addEventListener('click', collectArrowPrize);
+
+    document.querySelectorAll('#game-arrow .bet-box button').forEach(btn => {
+        const text = btn.innerText.toLowerCase();
+        btn.addEventListener('click', () => {
+            if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+            else if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+        });
+    });
+
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+    setCurrency(selectedCurrency);
+    updateBetUI();
+}
 
 
 
