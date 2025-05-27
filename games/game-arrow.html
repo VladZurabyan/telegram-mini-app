@@ -1,0 +1,37 @@
+<div class="game-screen" id="game-arrow">
+    <!-- Баланс и валюты -->
+    <div class="balance">
+        <div class="currency-selector">
+            <button class="currency-btn active" id="btn-currency-ton">TON (<span id="bal-ton">0.00</span>)</button>
+            <button class="currency-btn" id="btn-currency-usdt">USDT (<span id="bal-usdt">0.00</span>)</button>
+        </div>
+    </div>
+
+    <!-- Название игры -->
+    <h2>СТРЕЛА</h2>
+
+    <!-- Контейнер PixiJS -->
+    <div id="arrow-canvas-container"></div>
+
+
+    <!-- Результат -->
+    <div id="arrow-result"></div>
+    <div id="arrow-prize"></div>
+
+    <!-- Управление ставкой -->
+    <div class="bet-container">
+        <label>Введите ставку</label>
+        <div class="bet-box">
+            <button>min</button>
+            <button>-</button>
+            <span id="betValue">10</span>
+            <button>+</button>
+            <button>max</button>
+        </div>
+    </div>
+
+    <!-- Кнопки -->
+    <button class="play-btn" id="btn-arrow-start">Стрелять</button>
+    <button class="cashout-btn hidden" id="arrow-cashout">Забрать</button>
+    <button class="back-btn">Назад</button>
+</div>
