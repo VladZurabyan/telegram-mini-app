@@ -262,7 +262,7 @@ function startArrowGame() {
     });
 
     timeline.to(bgSprite.tilePosition, {
-    x: "+=100", // сместить фон на 200 пикселей
+    x: "+=0", // сместить фон на 200 пикселей
     duration: 2.2,
     ease: "power2.inOut"
 }, "<"); // < — означает, что эта анимация запускается одновременно со стрелой
