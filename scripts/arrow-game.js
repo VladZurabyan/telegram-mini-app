@@ -48,11 +48,15 @@
     }
 
     function setupScene() {
-        bgSprite = PIXI.Sprite.from("assets/background.png");
-        bgSprite.width = app.screen.width + 100;
-        bgSprite.height = app.screen.height;
-        bgSprite.zIndex = 0;
-        app.stage.addChild(bgSprite);
+        const bgTexture = PIXI.Texture.from("assets/background.png");
+bgSprite = new PIXI.TilingSprite(bgTexture, app.screen.width, app.screen.height);
+bgSprite.tileScale.set(
+    app.screen.width / bgTexture.width,
+    app.screen.height / bgTexture.height
+);
+bgSprite.zIndex = 0;
+app.stage.addChild(bgSprite);
+
 
         targetSprite = PIXI.Sprite.from("assets/target.png");
         targetSprite.anchor.set(0.5);
@@ -85,10 +89,11 @@
 
     function getStuckArrowTexture(score) {
         if (score === 10) return "assets/arrow-stuck-yellow.png";
-        if (score === 9 || score === 8) return "assets/arrow-stuck-red.png";
-        if (score === 7) return "assets/arrow-stuck-blue.png";
-        if (score === 6) return "assets/arrow-stuck-black.png";
-        return "assets/arrow-stuck-white.png";
+        if (score === 9) return "assets/arrow-stuck-red.png";
+        if (score === 8) return "assets/arrow-stuck-blue.png";
+        if (score === 7) return "assets/arrow-stuck-black.png";
+        if (score === 6) return "assets/arrow-stuck-white.png";
+        return "assets/target-zoom.png";
     }
 
     function blockArrowUI() {
@@ -116,21 +121,30 @@
     }
 
     function resetTarget() {
-        targetSprite.texture = PIXI.Texture.from("assets/target.png");
-        targetSprite.scale.set(0.2);
-        if (stuckArrowSprite) {
-            app.stage.removeChild(stuckArrowSprite);
-            stuckArrowSprite = null;
-        }
-        arrowSprite.visible = true;
-        arrowSprite.x = 40;
-        arrowSprite.rotation = 0;
-        targetSprite.visible = true;
-        bgSprite.filters = [];
-        bgSprite.x = 0;
+    targetSprite.texture = PIXI.Texture.from("assets/target.png");
+    targetSprite.scale.set(0.2);
+    targetSprite.alpha = 1;
+    targetSprite.visible = true;
+    targetSprite.filters = [];
+
+    arrowSprite.visible = true;
+    arrowSprite.x = 40;
+    arrowSprite.y = app.screen.height / 2;
+    arrowSprite.rotation = 0;
+    arrowSprite.scale.set(0.25);
+    arrowSprite.filters = [];
+
+    if (stuckArrowSprite) {
+        app.stage.removeChild(stuckArrowSprite);
+        stuckArrowSprite = null;
     }
 
-    function startArrowGame() {
+    bgSprite.filters = [];
+    bgSprite.tilePosition.x = 0;
+}
+
+
+function startArrowGame() {
     if (arrowInProgress || !arrowSprite) return;
 
     resetTarget();
@@ -166,20 +180,43 @@
 
     const score = determineScore();
 
-    // Эффект вибрации
-    gsap.to(arrowSprite, {
-        rotation: 0.1,
-        duration: 0.1,
+    const vibrationTween = gsap.to(arrowSprite, {
+        rotation: 0.05,
+        y: "+=2",
+        duration: 0.05,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut"
     });
 
-    // Эффект полёта: размытие фона + приближение
-    const blur = new PIXI.filters.BlurFilter();
-    blur.blurX = 8;
-    bgSprite.filters = [blur];
-    gsap.to(bgSprite, { x: -50, duration: 1, ease: "linear" });
+    const arrowBlur = new PIXI.filters.BlurFilter();
+    arrowBlur.blurX = 0;
+    arrowBlur.blurY = 0;
+    arrowSprite.filters = [arrowBlur];
+
+    gsap.to(arrowBlur, {
+        blurX: 20,
+        duration: 0.3,
+        ease: "power2.out"
+    });
+
+    const motionBlur = new PIXI.filters.BlurFilter();
+    motionBlur.blurX = 0;
+    motionBlur.blurY = 0;
+    bgSprite.filters = [motionBlur];
+
+    gsap.to(motionBlur, {
+        blurX: 30,
+        blurY: 4,
+        duration: 0.3,
+        ease: "power2.out"
+    });
+
+    gsap.to(bgSprite.tilePosition, {
+        x: bgSprite.tilePosition.x + 0,
+        duration: 0.3,
+        ease: "power1.out"
+    });
 
     arrowSprite.scale.set(0.25);
     gsap.to(arrowSprite.scale, {
@@ -189,91 +226,145 @@
         ease: "sine.inOut"
     });
 
-    targetSprite.visible = false;
+    // МИШЕНЬ: появляется маленькой и с блюром
+    const targetBlur = new PIXI.filters.BlurFilter(8);
+    targetSprite.visible = true;
+    targetSprite.alpha = 1;
+    targetSprite.scale.set(0.05);
+    targetSprite.filters = [targetBlur];
 
-   const timeline = gsap.timeline({
-    onStart: () => {
-        setTimeout(() => {
-            targetSprite.visible = true;
-            targetSprite.alpha = 0;
-            const targetBlur = new PIXI.filters.BlurFilter(10);
-            targetSprite.filters = [targetBlur];
+    gsap.to(targetSprite.scale, {
+        x: 0.2,
+        y: 0.2,
+        duration: 2.2,
+        ease: "power1.inOut"
+    });
 
-            gsap.to(targetSprite, { alpha: 1, duration: 0.5, ease: "sine.inOut" });
-            gsap.to(targetBlur, { blur: 0, duration: 0.5, ease: "sine.inOut" });
-        }, 1500);
-    }
-});
+    setTimeout(() => {
+    gsap.to(targetSprite, {
+        alpha: 0,
+        duration: 0.3,
+        ease: "sine.in",
+        onComplete: () => {
+            targetSprite.visible = false;
+        }
+    });
+}, 2400); // или 1500 — как тебе по таймингу удобнее
 
-timeline.to(arrowSprite, {
-    duration: 3,
-    x: app.screen.width / 2,
+
+    const timeline = gsap.timeline();
+
+    // Полёт до центра
+    timeline.to(arrowSprite, {
+        duration: 2.2,
+        x: app.screen.width * 0.5,
+        ease: "power2.inOut"
+    });
+
+    timeline.to(bgSprite.tilePosition, {
+    x: "+=500", // сместить фон на 200 пикселей
+    duration: 2.2,
     ease: "power2.inOut"
-});
+}, "<"); // < — означает, что эта анимация запускается одновременно со стрелой
 
-timeline.to(arrowSprite, {
-    duration: 0.9, // объединённая длительность
-    x: targetSprite.x + 10,
-    y: targetSprite.y + 3,
-    rotation: Math.PI * 3,
-    scaleX: 0.4,
-    scaleY: 0.4,
-    ease: "power2.inOut",
-    onStart: () => {
-        bgSprite.filters = [];
-    },
-    onComplete: () => {
-        gsap.killTweensOf(arrowSprite);
-        arrowSprite.visible = false;
 
-        const texturePath = getStuckArrowTexture(score);
-        stuckArrowSprite = PIXI.Sprite.from(texturePath);
-        stuckArrowSprite.anchor.set(0.5);
-        stuckArrowSprite.x = targetSprite.x;
-        stuckArrowSprite.y = targetSprite.y;
-        stuckArrowSprite.scale.set(0.6);
-        stuckArrowSprite.zIndex = 3;
-        app.stage.addChild(stuckArrowSprite);
+    // Финальный бросок без вращения
+    timeline.to(arrowSprite, {
+        duration: 1.2,
+        x: targetSprite.x + 10,
+        y: targetSprite.y + 3,
+        rotation: 0,
+        scaleX: 0.4,
+        scaleY: 0.4,
+        ease: "power2.out",
+        onComplete: () => {
+            gsap.killTweensOf(arrowSprite);
+            vibrationTween.kill();
 
-        let winAmount = 0;
-        switch (score) {
-            case 10: winAmount = 10; break;
-            case 9:  winAmount = 5; break;
-            case 8:  winAmount = 4; break;
-            case 7:  winAmount = 2; break;
-            case 6:  winAmount = 0.5; break;
-            default: winAmount = 0;
-        }
+            gsap.to(arrowBlur, {
+                blurX: 0,
+                duration: 0.3,
+                ease: "power2.in",
+                onComplete: () => {
+                    arrowSprite.filters = [];
+                }
+            });
 
-        arrowResult = {
-            multiplier: winAmount,
-            label: score === 0 ? "❌ Мимо" : `🎯 Попадание: ${score}`
-        };
+            gsap.to(motionBlur, {
+                blurX: 0,
+                blurY: 0,
+                duration: 0.4,
+                ease: "power2.in",
+                onComplete: () => {
+                    bgSprite.filters = [];
+                }
+            });
 
-        if (arrowResult.multiplier > 0) {
-            document.getElementById('arrow-cashout')?.classList.remove('hidden');
-            document.getElementById('arrow-cashout')?.removeAttribute('disabled');
-        }
+            arrowSprite.visible = false;
+            targetSprite.visible = false; // скрываем обычную мишень
 
-        updateArrowResultUI(arrowResult, window.bet * arrowResult.multiplier);
-        arrowInProgress = false;
-        unblockArrowUI();
-    }
-});
+            const texturePath = getStuckArrowTexture(score);
+            stuckArrowSprite = PIXI.Sprite.from(texturePath);
+            stuckArrowSprite.anchor.set(0.5);
+            stuckArrowSprite.x = targetSprite.x;
+            stuckArrowSprite.y = targetSprite.y;
+            stuckArrowSprite.scale.set(0.6);
+            stuckArrowSprite.zIndex = 3;
+            app.stage.addChild(stuckArrowSprite);
 
+            let winAmount = 0;
+            switch (score) {
+                case 10: winAmount = 10; break;
+                case 9: winAmount = 5; break;
+                case 8: winAmount = 4; break;
+                case 7: winAmount = 2; break;
+                case 6: winAmount = 0.5; break;
+                default: winAmount = 0;
+            }
+
+            arrowResult = {
+                multiplier: winAmount,
+                label: score === 0 ? "❌ Мимо" : `🎯 Попадание: ${score}`
+            };
+
+            if (arrowResult.multiplier > 0) {
+    // Скрываем кнопку "Стрелять"
+    document.getElementById('btn-arrow-start')?.classList.add('hidden');
+
+    // Показываем кнопку "Забрать"
+    document.getElementById('arrow-cashout')?.classList.remove('hidden');
+    document.getElementById('arrow-cashout')?.removeAttribute('disabled');
 }
 
 
-    function collectArrowPrize() {
-        if (!arrowResult || cashoutPressed || arrowResult.multiplier <= 0) return;
+            updateArrowResultUI(arrowResult, window.bet * arrowResult.multiplier);
+            arrowInProgress = false;
+            unblockArrowUI();
+        }
+    });
+}
 
-        cashoutPressed = true;
-        const winAmount = parseFloat((window.bet * arrowResult.multiplier).toFixed(2));
-        fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] + winAmount).toFixed(2));
-        updateBalanceUI();
-        document.getElementById('arrow-cashout')?.setAttribute('disabled', 'true');
-        resetTarget();
-    }
+
+
+
+
+   function collectArrowPrize() {
+    if (!arrowResult || cashoutPressed || arrowResult.multiplier <= 0) return;
+
+    cashoutPressed = true;
+    const winAmount = parseFloat((window.bet * arrowResult.multiplier).toFixed(2));
+    fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] + winAmount).toFixed(2));
+    updateBalanceUI();
+
+    document.getElementById('arrow-cashout')?.setAttribute('disabled', 'true');
+    document.getElementById('arrow-cashout')?.classList.add('hidden');
+
+    // Показываем кнопку "Стрелять"
+    document.getElementById('btn-arrow-start')?.classList.remove('hidden');
+
+    resetTarget();
+}
+
 
     window.initArrowScene = initArrowScene;
     window.startArrowGame = startArrowGame;
