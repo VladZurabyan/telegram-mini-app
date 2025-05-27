@@ -2459,7 +2459,8 @@ button[disabled],
 }
 
 #arrow-canvas-container {
-    width: 100%;
+    margin-left: 150px;
+    width: 300px;
     height: 100vh;
     display: block;
     overflow: hidden;
