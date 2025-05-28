@@ -18,7 +18,7 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
+//tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
  window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
         ton: 10,
@@ -363,12 +363,26 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     updateBetUI();
 }
 
-    if (gameId === 'game-arrow') {
-   initArrowScene();
+   if (gameId === 'game-arrow') {
+    initArrowScene();
 
+    document.querySelector('#game-arrow .back-btn')?.addEventListener('click', () => {
+        resetTarget();                 // 💥 Полный сброс сцены
+        arrowResult = null;
+        cashoutPressed = false;
+        arrowInProgress = false;
+        document.getElementById('arrow-result').innerText = '';
+        document.getElementById('arrow-prize').innerText = '';
+        document.getElementById('arrow-cashout')?.classList.add('hidden');
+        document.getElementById('btn-arrow-start')?.classList.remove('hidden');
+        showMain();                    // ← Возврат в главное меню
+    });
 
-    document.querySelector('#game-arrow .back-btn')?.addEventListener('click', backToMain);
-    document.getElementById('btn-arrow-start')?.addEventListener('click', startArrowGame);
+    document.getElementById('btn-arrow-start')?.addEventListener('click', () => {
+        console.log('[DEBUG] Старт стрелы');  // отладка
+        startArrowGame();
+    });
+
     document.getElementById('arrow-cashout')?.addEventListener('click', collectArrowPrize);
 
     document.querySelectorAll('#game-arrow .bet-box button').forEach(btn => {
@@ -386,6 +400,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     setCurrency(selectedCurrency);
     updateBetUI();
 }
+
 
 
 

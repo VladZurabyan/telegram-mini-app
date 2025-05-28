@@ -102,14 +102,16 @@
 
 
     function determineScore() {
-        const r = Math.random();
-        if (r < 0.1) return 10;
-        if (r < 0.25) return 9;
-        if (r < 0.45) return 8;
-        if (r < 0.7) return 7;
-        if (r < 0.9) return 6;
-        return 0;
-    }
+    const r = Math.random();
+    if (r < 0.01) return 10;         // 1%
+    if (r < 0.02) return 9;          // 1%
+    if (r < 0.06) return 8;          // 4%
+    if (r < 0.26) return 7;          // 20%
+    if (r < 0.61) return 6;          // 35%
+    return 0;                        // 39%
+}
+
+
 
     function getStuckArrowTexture(score) {
         if (score === 10) return "assets/arrow-stuck-yellow.png";
@@ -208,7 +210,7 @@
         const balanceAvailable = selectedCurrency === 'ton'
             ? parseFloat(fakeBalance.ton.toFixed(2))
             : parseFloat(fakeBalance.usdt.toFixed(2));
-        if (window.bet > balanceAvailable) return alert(`Недостаточно средств`);
+        if (window.bet > balanceAvailable) return alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
         if (window.bet < minBet) return alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
 
         arrowInProgress = true;
@@ -340,9 +342,9 @@ function showStuckArrow(texture) {
 
                 let winAmount = 0;
                 if (score === 10) winAmount = 10;
-                else if (score === 9) winAmount = 5;
-                else if (score === 8) winAmount = 4;
-                else if (score === 7) winAmount = 2;
+                else if (score === 9) winAmount = 3;
+                else if (score === 8) winAmount = 2;
+                else if (score === 7) winAmount = 1;
                 else if (score === 6) winAmount = 0.5;
 
                 arrowResult = {
