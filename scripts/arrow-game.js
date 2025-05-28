@@ -61,6 +61,7 @@
             "assets/arrow-stuck-blue.png",
             "assets/arrow-stuck-black.png",
             "assets/arrow-stuck-white.png",
+            "assets/target-zoom.png",
             "assets/background.png"
         ]);
 
@@ -98,6 +99,8 @@
         app.render();
     }
 
+
+
     function determineScore() {
         const r = Math.random();
         if (r < 0.1) return 10;
@@ -122,6 +125,7 @@
         document.querySelectorAll('#game-arrow .bet-box button').forEach(btn => btn.disabled = true);
         document.getElementById('btn-arrow-start')?.setAttribute('disabled', 'true');
         document.querySelector('#game-arrow .back-btn')?.setAttribute('disabled', 'true');
+         document.querySelector('#game-arrow .bet-box')?.classList.add('disabled');
     }
 
     function unblockArrowUI() {
@@ -129,6 +133,7 @@
         document.querySelectorAll('#game-arrow .bet-box button').forEach(btn => btn.disabled = false);
         document.getElementById('btn-arrow-start')?.removeAttribute('disabled');
         document.querySelector('#game-arrow .back-btn')?.removeAttribute('disabled');
+        document.querySelector('#game-arrow .bet-box')?.classList.remove('disabled');
     }
 
     function updateArrowResultUI(result, winAmount) {
@@ -297,17 +302,40 @@
 
                 arrowSprite.visible = false;
                 targetSprite.visible = false;
-                app.ticker.remove(autoRender); // 🛑 остановка тика
-                app.stop();                    // 🛑 остановка рендера
 
-                const texturePath = getStuckArrowTexture(score);
-                stuckArrowSprite = PIXI.Sprite.from(texturePath);
-                stuckArrowSprite.anchor.set(0.5);
-                stuckArrowSprite.x = targetSprite.x;
-                stuckArrowSprite.y = targetSprite.y;
-                stuckArrowSprite.scale.set(0.6);
-                stuckArrowSprite.zIndex = 3;
-                app.stage.addChild(stuckArrowSprite);
+
+
+const texturePath = getStuckArrowTexture(score);
+const texture = PIXI.Texture.from(texturePath);
+
+if (!texture.baseTexture.valid) {
+    console.warn("⚠️ Текстура не готова, ждём загрузки:", texturePath);
+    texture.baseTexture.on('loaded', () => {
+        showStuckArrow(texture);
+    });
+} else {
+    showStuckArrow(texture);
+}
+
+function showStuckArrow(texture) {
+    stuckArrowSprite = new PIXI.Sprite(texture);
+    stuckArrowSprite.anchor.set(0.5);
+    stuckArrowSprite.x = targetSprite.x;
+    stuckArrowSprite.y = targetSprite.y;
+    stuckArrowSprite.scale.set(0.6);
+    stuckArrowSprite.zIndex = 3;
+    app.stage.addChild(stuckArrowSprite);
+    app.render();
+
+    // Обязательно завершение тика чуть позже (1 тик)
+    setTimeout(() => {
+        app.ticker.remove(autoRender);
+        app.stop();
+    }, 0);
+}
+
+
+
 
 
                 let winAmount = 0;
@@ -323,14 +351,22 @@
                 };
 
                 if (winAmount > 0) {
-                    document.getElementById('btn-arrow-start')?.classList.add('hidden');
-                    document.getElementById('arrow-cashout')?.classList.remove('hidden');
-                    document.getElementById('arrow-cashout')?.removeAttribute('disabled');
-                }
+    // Есть выигрыш
+    document.getElementById('btn-arrow-start')?.classList.add('hidden');
+    document.getElementById('arrow-cashout')?.classList.remove('hidden');
+    document.getElementById('arrow-cashout')?.removeAttribute('disabled');
+    blockArrowUI(); // остаётся заблокированным
+} else {
+    // Нет выигрыша
+    document.getElementById('btn-arrow-start')?.classList.remove('hidden');
+    unblockArrowUI(); // разблокировать
+}
+
+
 
                 updateArrowResultUI(arrowResult, window.bet * winAmount);
                 arrowInProgress = false;
-                unblockArrowUI();
+
                 app.ticker.remove(autoRender); // 🛑 остановить рендер
                 app.render();
             }
@@ -350,6 +386,7 @@
 
         resetTarget();
         app.render(); // обновление сцены после сброса
+        unblockArrowUI(); // ✅ разблокировка после забора приза
     }
 
     function destroyArrowScene() {
