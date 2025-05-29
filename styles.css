@@ -2697,6 +2697,14 @@ button[disabled],
     z-index: 1;
 }
 
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+#loader-text {
+  animation: blink 1s infinite;
+}
 
 
 
