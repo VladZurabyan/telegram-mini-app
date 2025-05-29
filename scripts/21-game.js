@@ -15,7 +15,7 @@
     if (percent > 100) percent = 100;
     text.innerText = `Загрузка: ${percent}%`;
     if (percent === 100) clearInterval(interval);
-  }, 100); // скорость счётчика
+  }, 90); // скорость счётчика
 }
 
 function hideLoader() {
