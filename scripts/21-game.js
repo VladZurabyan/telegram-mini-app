@@ -13,7 +13,7 @@
     async function initBlackjackScene() {
         const container = document.getElementById("blackjack-canvas-container");
         if (!container) return;
-
+showLoader(); // ✅ Показать красивый лоадер
         container.innerHTML = "";
         container.style.display = "block";
 
@@ -30,6 +30,7 @@
         container.appendChild(app.view);
         await loadCardAssets();
         setupScene();
+         hideLoader(); // ✅ Скрыть лоадер только когда всё готово
     }
 
     async function loadCardAssets() {
