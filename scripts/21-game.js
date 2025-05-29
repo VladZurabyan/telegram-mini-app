@@ -1,4 +1,17 @@
 (function () {
+
+
+     function showLoader() {
+    const loader = document.getElementById("blackjack-loader");
+    if (loader) loader.style.display = "flex";
+}
+
+function hideLoader() {
+    const loader = document.getElementById("blackjack-loader");
+    if (loader) loader.style.display = "none";
+}
+
+    
     let app = null;
     let deck = [];
     let playerCards = [];
@@ -13,6 +26,10 @@
     async function initBlackjackScene() {
         const container = document.getElementById("blackjack-canvas-container");
         if (!container) return;
+
+showLoader(); // ✅ Показать красивый лоадер
+         await new Promise(requestAnimationFrame); // ✅ Ждём 1 кадр, чтобы точно показался
+        
 
         container.innerHTML = "";
         container.style.display = "block";
@@ -30,7 +47,9 @@
         container.appendChild(app.view);
         await loadCardAssets();
         setupScene();
-        
+          // ✅ Дождись следующего кадра (гарантированная отрисовка)
+    await new Promise(requestAnimationFrame);
+        hideLoader(); // ✅ Скрыть лоадер только когда всё готово
     }
 
     async function loadCardAssets() {
