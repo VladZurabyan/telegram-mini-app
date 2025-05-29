@@ -54,9 +54,10 @@ function backToMain() {
     else if (game === 'game-chicken') resetChickenScreen();
     else if (game === 'game-dice') resetDiceScreen();
     else if (game === 'game-crash') resetCrashScreen();
-     else if (game === 'game-bombs') resetCrashScreen();
+     else if (game === 'game-bombs') resetBombsScreen();
      else if (game === 'game-wheel') resetWheelScreen();
-     else if (game === 'game-arrow') resetArrowScreen();
+    else if (game === 'game-arrow') resetTarget();
+     else if (game === 'game-21') reset21Screen();
         resetCoinScreen();
 
         showMain();
@@ -64,6 +65,7 @@ function backToMain() {
 
 function loadGame(gameId) {
         const path = {
+                'game-21': 'games/game-21.html',
                 'game-arrow': 'games/game-arrow.html',
                 'game-wheel': 'games/game-wheel.html',
                 'game-bombs': 'games/game-bombs.html',
@@ -400,6 +402,81 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     setCurrency(selectedCurrency);
     updateBetUI();
 }
+
+
+
+
+
+
+
+
+if (gameId === 'game-21') {
+    initBlackjackScene();
+
+
+
+
+    // Назад
+    document.querySelector('#game-21 .back-btn')?.addEventListener('click', () => {
+        reset21Screen();                     // 💥 сброс карт
+        destroyBlackjackScene();            // 🧹 очистка PixiJS сцены
+
+        document.getElementById('blackjack-result').innerText = '';
+        document.getElementById('blackjack-prize').innerText = '';
+
+        document.getElementById('btn-blackjack-start')?.classList.remove('hidden');
+        document.getElementById('btn-blackjack-hit')?.classList.add('hidden');
+        document.getElementById('btn-blackjack-stand')?.classList.add('hidden');
+
+        showMain();
+    });
+
+    // Начать игру
+    document.getElementById('btn-blackjack-start')?.addEventListener('click', () => {
+        console.log('[DEBUG] Blackjack старт');
+        startBlackjackGame(); // 👈 запускает раздачу
+    });
+
+    // Взять карту
+    document.getElementById('btn-blackjack-hit')?.addEventListener('click', () => {
+        console.log('[DEBUG] Взять карту');
+        hitCard(); // 👈 выдаёт карту игроку
+    });
+
+    // Открыть (стоп)
+    document.getElementById('btn-blackjack-stand')?.addEventListener('click', () => {
+        console.log('[DEBUG] Стоп');
+        revealDealerAndFinish(); // 👈 дилер добирает карты, финал
+    });
+
+    // Управление ставкой
+    document.querySelectorAll('#game-21 .bet-box button').forEach(btn => {
+        const text = btn.innerText.toLowerCase();
+        btn.addEventListener('click', () => {
+            if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+            else if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+        });
+    });
+
+    // Валюта
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+
+   setCurrency(selectedCurrency);
+
+    updateBalanceUI(); // чтобы сразу отображалось
+    updateBetUI();
+}
+
+
+
+
+
+
+
+
 
 
 
