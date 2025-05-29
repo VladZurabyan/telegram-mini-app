@@ -1,21 +1,9 @@
 (function () {
 
 
-     function showLoader() {
+    function showLoader() {
   const loader = document.getElementById("blackjack-loader");
-  const text = document.getElementById("loader-text");
-  if (!loader || !text) return;
-
-  loader.style.display = "flex";
-  text.innerText = "Загрузка: 0%";
-
-  let percent = 0;
-  const interval = setInterval(() => {
-    percent += Math.floor(Math.random() * 10) + 1;
-    if (percent > 100) percent = 100;
-    text.innerText = `Загрузка: ${percent}%`;
-    if (percent === 100) clearInterval(interval);
-  }, 400); // скорость счётчика
+  if (loader) loader.style.display = "flex";
 }
 
 function hideLoader() {
@@ -41,7 +29,7 @@ function hideLoader() {
         if (!container) return;
 
 showLoader(); // ✅ Показать красивый лоадер
-         await new Promise(requestAnimationFrame); // ✅ Ждём 1 кадр, чтобы точно показался
+        
         
 
         container.innerHTML = "";
@@ -66,17 +54,41 @@ showLoader(); // ✅ Показать красивый лоадер
     }
 
     async function loadCardAssets() {
-        const suits = ["H", "D", "C", "S"];
-        const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-        for (let suit of suits) {
-            for (let rank of ranks) {
-                const name = `${rank}${suit}`;
-                cardTextures[name] = await PIXI.Assets.load(`assets/cards/${name}.png`);
-            }
-        }
-        cardTextures["back"] = await PIXI.Assets.load("assets/cards/back.png");
-        cardTextures["table"] = await PIXI.Assets.load("assets/cards/table.png");
+  const loaderText = document.getElementById("loader-text");
+
+  const suits = ["H", "D", "C", "S"];
+  const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+  const allCards = [];
+
+  for (let suit of suits) {
+    for (let rank of ranks) {
+      allCards.push(`${rank}${suit}`);
     }
+  }
+
+  const total = allCards.length + 2; // все карты + back + table
+  let loaded = 0;
+
+  function updateLoader() {
+    const percent = Math.floor((loaded / total) * 100);
+    if (loaderText) loaderText.innerText = `Загрузка: ${percent}%`;
+  }
+
+  for (let id of allCards) {
+    cardTextures[id] = await PIXI.Assets.load(`assets/cards/${id}.png`);
+    loaded++;
+    updateLoader();
+  }
+
+  cardTextures["back"] = await PIXI.Assets.load("assets/cards/back.png");
+  loaded++;
+  updateLoader();
+
+  cardTextures["table"] = await PIXI.Assets.load("assets/cards/table.png");
+  loaded++;
+  updateLoader();
+}
+
 
     function setupScene() {
         const bg = new PIXI.Sprite(cardTextures["table"]);
