@@ -2,14 +2,27 @@
 
 
      function showLoader() {
-    const loader = document.getElementById("blackjack-loader");
-    if (loader) loader.style.display = "flex";
+  const loader = document.getElementById("blackjack-loader");
+  const text = document.getElementById("loader-text");
+  if (!loader || !text) return;
+
+  loader.style.display = "flex";
+  text.innerText = "Загрузка: 0%";
+
+  let percent = 0;
+  const interval = setInterval(() => {
+    percent += Math.floor(Math.random() * 10) + 1;
+    if (percent > 100) percent = 100;
+    text.innerText = `Загрузка: ${percent}%`;
+    if (percent === 100) clearInterval(interval);
+  }, 100); // скорость счётчика
 }
 
 function hideLoader() {
-    const loader = document.getElementById("blackjack-loader");
-    if (loader) loader.style.display = "none";
+  const loader = document.getElementById("blackjack-loader");
+  if (loader) loader.style.display = "none";
 }
+
 
     
     let app = null;
