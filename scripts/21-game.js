@@ -56,7 +56,7 @@
         cardContainerDealer.y = 100;
         cardContainerPlayer.y = 100;
         cardContainerDealer.x = 150;
-        cardContainerPlayer.x = 600;
+        cardContainerPlayer.x = 260;
 
         app.stage.addChild(cardContainerDealer);
         app.stage.addChild(cardContainerPlayer);
@@ -120,7 +120,7 @@
         deck = [];
 
         cardContainerDealer.x = 30;
-        cardContainerPlayer.x = 300;
+        cardContainerPlayer.x = 260;
 
         document.getElementById('blackjack-result').innerText = '';
         document.getElementById('blackjack-prize').innerText = '';
