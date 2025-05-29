@@ -75,16 +75,16 @@ showLoader(); // ✅ Показать красивый лоадер
   }
 
   for (let id of allCards) {
-    cardTextures[id] = await PIXI.Assets.load(`assets/cards/${id}.png`);
+    cardTextures[id] = await PIXI.Assets.load(`assets/cards/${id}.webp`);
     loaded++;
     updateLoader();
   }
 
-  cardTextures["back"] = await PIXI.Assets.load("assets/cards/back.png");
+  cardTextures["back"] = await PIXI.Assets.load("assets/cards/back.webp");
   loaded++;
   updateLoader();
 
-  cardTextures["table"] = await PIXI.Assets.load("assets/cards/table.png");
+  cardTextures["table"] = await PIXI.Assets.load("assets/cards/table.webp");
   loaded++;
   updateLoader();
 }
