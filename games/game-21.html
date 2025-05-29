@@ -1,0 +1,50 @@
+<div class="game-screen" id="game-21">
+    <!-- Баланс и валюты -->
+    <div class="balance">
+        <div class="currency-selector">
+            <button class="currency-btn active" id="btn-currency-ton">TON (<span id="bal-ton">0.00</span>)</button>
+            <button class="currency-btn" id="btn-currency-usdt">USDT (<span id="bal-usdt">0.00</span>)</button>
+        </div>
+    </div>
+
+    <!-- Название игры -->
+    <h2>21 ОЧКО</h2>
+
+    <!-- Контейнер PixiJS -->
+    <div id="blackjack-canvas-container"></div>
+
+
+
+    <!-- Результат -->
+    <div id="blackjack-result"></div>
+    <div id="blackjack-prize"></div>
+
+    <!-- Управление ставкой -->
+    <div class="bet-container">
+        <label>Введите ставку</label>
+        <div class="bet-box">
+            <button>min</button>
+            <button>-</button>
+            <span id="betValue">10</span>
+            <button>+</button>
+            <button>max</button>
+        </div>
+    </div>
+    <div class="win-multiplier">Возможный выигрыш: <strong>2x</strong></div>
+    <div class="win-multiplier" style="
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    margin-top: 8px;
+">
+    Блэкджек: <strong>3x</strong>
+</div>
+
+
+    <!-- Кнопки -->
+    <button class="play-btn" id="btn-blackjack-start">НАЧАТЬ</button>
+    <button class="play-btn hidden" id="btn-blackjack-hit">ВЗЯТЬ</button>
+    <button class="play-btn hidden" id="btn-blackjack-stand">СТОП</button>
+    <button class="back-btn">Назад</button>
+</div>
