@@ -66,7 +66,7 @@ showLoader(); // ✅ Показать красивый лоадер
     }
   }
 
-  const total = allCards.length + 2; // все карты + back + table
+  const total = allCards.length + 2;
   let loaded = 0;
 
   function updateLoader() {
@@ -74,20 +74,31 @@ showLoader(); // ✅ Показать красивый лоадер
     if (loaderText) loaderText.innerText = `Загрузка: ${percent}%`;
   }
 
-  for (let id of allCards) {
-    cardTextures[id] = await PIXI.Assets.load(`assets/cards/${id}.webp`);
-    loaded++;
-    updateLoader();
-  }
+  const promises = allCards.map(id =>
+    PIXI.Assets.load(`assets/cards/${id}.webp`).then(texture => {
+      cardTextures[id] = texture;
+      loaded++;
+      updateLoader();
+    })
+  );
 
-  cardTextures["back"] = await PIXI.Assets.load("assets/cards/back.webp");
-  loaded++;
-  updateLoader();
+  // добавляем back и table в очередь
+  promises.push(
+    PIXI.Assets.load("assets/cards/back.webp").then(texture => {
+      cardTextures["back"] = texture;
+      loaded++;
+      updateLoader();
+    }),
+    PIXI.Assets.load("assets/cards/table.webp").then(texture => {
+      cardTextures["table"] = texture;
+      loaded++;
+      updateLoader();
+    })
+  );
 
-  cardTextures["table"] = await PIXI.Assets.load("assets/cards/table.webp");
-  loaded++;
-  updateLoader();
+  await Promise.all(promises); // 🔥 Параллельная загрузка
 }
+
 
 
     function setupScene() {
