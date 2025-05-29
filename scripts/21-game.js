@@ -207,6 +207,8 @@
     }
 
     function drawCard(container, delay = 0, face = true) {
+        if (!app || !app.screen) return;
+
         const cardId = deck.pop();
         const texture = face ? cardTextures[cardId] : cardTextures["back"];
         const sprite = new PIXI.Sprite(texture);
@@ -214,7 +216,10 @@
         sprite.scale.set(0.15);
 
         const index = container.children.length;
-        let targetX = index < 3 ? index * 30 + 50 : (index - 3) * 30 + 60;
+        let cardSpacing = 40;
+let startX = app.screen.width * 0.1;
+let targetX = startX + index * cardSpacing;
+
         let targetY = index < 3 ? 0 : 50;
 
         sprite.x = app.screen.width / 2;
