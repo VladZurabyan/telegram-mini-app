@@ -14,6 +14,7 @@
         const container = document.getElementById("blackjack-canvas-container");
         if (!container) return;
 showLoader(); // ✅ Показать красивый лоадер
+        await new Promise(requestAnimationFrame);
         container.innerHTML = "";
         container.style.display = "block";
 
@@ -30,6 +31,7 @@ showLoader(); // ✅ Показать красивый лоадер
         container.appendChild(app.view);
         await loadCardAssets();
         setupScene();
+        await new Promise(requestAnimationFrame);
          hideLoader(); // ✅ Скрыть лоадер только когда всё готово
     }
 
