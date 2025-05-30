@@ -2786,9 +2786,10 @@ button[disabled],
   flex-direction: column;
   align-items: center;
   gap: 14px;
-   padding: 20px 16px 80px;   
+
   color: #fff;
   overflow-y: auto;
+  padding: 20px 16px 80px;
 }
 
 #game-deposit h2,
@@ -2835,7 +2836,7 @@ input[type="number"] {
 
 #game-deposit .play-btnn,
 #game-withdraw .play-btnn {
-  padding: 10px 45px;
+  padding: 10px 24px;
   font-size: 18px;
   border-radius: 14px;
   border: none;
@@ -2846,6 +2847,7 @@ input[type="number"] {
   box-shadow: 0 0 10px #00f2fe;
   text-align: center;
   margin: 20px auto;
+
 }
 
 #game-deposit .back-btn,
@@ -2867,7 +2869,7 @@ input[type="number"] {
   padding: 24px;
   box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
   width: 100%;
-  
+  max-width: 340px;
   text-align: center;
 }
 
@@ -2934,6 +2936,7 @@ input[type="number"] {
 #game-withdraw .currency-btn:hover {
   background: rgba(0, 242, 254, 0.1);
 }
+
 
 
 
