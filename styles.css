@@ -2589,7 +2589,7 @@ button[disabled],
   overflow-y: auto;
   height: 100vh;
   box-sizing: border-box;
-  
+
 }
 
 #game-21 .currency-selector {
@@ -2697,6 +2697,7 @@ button[disabled],
     z-index: 1;
 }
 
+
 #blackjack-loader {
   position: fixed;
   top: 0;
@@ -2777,6 +2778,335 @@ button[disabled],
 
 
 
+/* === Пополнение и Вывод === */
+#game-deposit,
+#game-withdraw {
+    height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+  color: #fff;
+  overflow-y: auto;
+}
+
+#game-deposit h2,
+#game-withdraw h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+#game-deposit .currency-selector,
+#game-withdraw .currency-selector {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+#game-deposit .currency-btn,
+#game-withdraw .currency-btn {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 2px solid #00f2fe;
+  background: transparent;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#game-deposit .currency-btn.active,
+#game-withdraw .currency-btn.active{
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  color: #000;
+}
+
+input[type="number"] {
+  padding: 10px 16px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+}
+
+#game-deposit .play-btn,
+#game-withdraw .play-btn {
+  padding: 10px 24px;
+  font-size: 18px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 0 10px #00f2fe;
+}
+
+#game-deposit .back-btn,
+#game-withdraw .back-btn{
+  background: #333;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+  border: 1px solid #888;
+}
+
+#game-deposit .deposit-wrapper,
+#game-withdraw  .deposit-wrapper{
+  background: linear-gradient(145deg, #1e1e1e, #2d5268);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+}
+
+
+#withdraw-address {
+  padding: 10px 16px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+  background: #222;
+  color: #fff;
+  margin-top: 10px;
+}
+
+
+
+ /* Контейнер выбора сети */
+#usdt-network-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* Текстовая метка */
+#usdt-network-container .network-label {
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* Кнопки сетей */
+#usdt-network-container .network-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.network-btn {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 2px solid #00f2fe;
+  background: transparent;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-bottom: 14px;
+}
+
+.network-btn.active {
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  color: #000;
+}
+
+
+
+  .network-btn:hover,
+#game-deposit .currency-btn:hover,
+#game-withdraw .currency-btn:hover {
+  background: rgba(0, 242, 254, 0.1);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Табы */
+.tab-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.tab-buttons button {
+  padding: 10px 55px;
+  border: none;
+  background-color: #eee;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.tab-buttons button.active {
+  background-color: #ffcc00;
+  color: #000;
+}
+
+.tab-buttons button:hover {
+  background-color: #ddd;
+}
+
+/* Контент вкладки */
+.tab-content {
+    color: #222; /* ⬅️ Цвет основного текста */
+  opacity: 0;
+  display: none;
+  transition: opacity 0.3s ease;
+  background: #fdfdfd;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  max-width: 800px;
+  margin: 0 auto;
+
+}
+
+.tab-content.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Заголовки */
+.tab-content h4 {
+  margin-top: 0;
+  color: #d9534f;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Списки с иконками */
+.tab-content ul,
+.tab-content ol {
+  padding-left: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.tab-content li {
+  margin-bottom: 10px;
+  padding-left: 24px;
+  position: relative;
+  line-height: 1.5;
+  font-size: 15px;
+  color: black;
+}
+
+/* ✔ Иконки перед пунктами */
+.tab-content li::before {
+  content: '✔';
+  position: absolute;
+  left: 0;
+  color: #28a745;
+  font-weight: bold;
+}
+
+/* Последний абзац */
+.tab-content p:last-child {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #444;
+}
+
+ .back-btn-rules {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.rulesname {
+  font-size: 26px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+  background: linear-gradient(145deg, #ff0000, #ffa816);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* 📱 Адаптация под мобильные экраны */
+@media (max-width: 600px) {
+  .tab-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tab-buttons button {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .tab-content {
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  .tab-content li {
+    font-size: 14px;
+  }
+}
+
+
+
+
+ .partners-placeholder__img {
+  width: 400px;
+
+  margin-bottom: 10px;
+
+}
+
+
+
+.partners-placeholder__title {
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: #838383;
+}
+
+.partners-placeholder__text {
+  font-size: 18px;
+  color: #838383;
+  margin-bottom: 32px;
+  line-height: 1.4;
+}
+
+
+.underline {
+  text-decoration: underline;
+}
+
+
+
 
 
 
@@ -2813,6 +3143,12 @@ button[disabled],
   .game-scroll-wrapper {
     height: 280px;
     padding: 20px;
+    display: inline-flex;
+    margin: 0 auto;
+  }
+
+  .game-scroll-content {
+      padding-right: 0;
   }
 
   .game-button {
@@ -2876,7 +3212,7 @@ body:-moz-full-screen {
 @media screen and (orientation: portrait) {
   #main,
   .game-screen,
-  #game-coin, #game-boxes, #game-dice, #game-crash, #game-chicken, #game-safe, #game-bombs, #game-wheel, #rules, #game-arrow, #game-21, #partners{
+  #game-coin, #game-boxes, #game-dice, #game-crash, #game-chicken, #game-safe, #game-bombs, #game-wheel, #rules, #game-arrow, #game-deposit, #game-withdraw, #partners{
     padding-top: calc(env(safe-area-inset-top, 20px) + 100px) !important;
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 60px) !important;
     min-height: 100vh;

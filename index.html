@@ -84,14 +84,15 @@
 
 
 <div class="actions">
-<button>ПОПОЛНИТЬ</button>
-<button>ВЫВЕСТИ</button>
+  <button onclick="openDeposit()">ПОПОЛНИТЬ</button>
+  <button onclick="openWithdraw()">ВЫВЕСТИ</button>
 </div>
+
 <footer>
 <p>
 <img src="assets/18plus.png"/>
-<span onclick="loadGame('rules')">ПРАВИЛА</span>  
-        <span onclick="loadGame('partners')">ПАРТНЁРАМ</span>
+<span class="underline" onclick="loadGame('rules')">ПРАВИЛА</span>  
+        <span class="underline" onclick="loadGame('partners')">ПАРТНЁРАМ</span>
 </p>
 <p>ВСЕ ПРАВА ЗАЩИЩЕНЫ</p>
 </footer>
@@ -116,7 +117,7 @@
 <script src="scripts/arrow-game.js"></script>
 <script src="scripts/wheel-game.js"></script>
 <script src="scripts/safe-game.js"></script>
-<script src="scripts/main.js"></script>  
+<script src="scripts/main.js"></script>
 
 
 <div id="custom-alert" class="custom-alert hidden">
