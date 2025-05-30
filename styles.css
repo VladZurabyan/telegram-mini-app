@@ -2790,7 +2790,7 @@ button[disabled],
   color: #fff;
   overflow-y: auto;
   padding: 20px 16px 80px;
-   -webkit-overflow-scrolling: touch; 
+    
 }
 
 #game-deposit h2,
