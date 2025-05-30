@@ -2835,7 +2835,7 @@ input[type="number"] {
 
 #game-deposit .play-btnn,
 #game-withdraw .play-btnn {
-  padding: 10px 24px;
+  padding: 10px 45px;
   font-size: 18px;
   border-radius: 14px;
   border: none;
@@ -2867,7 +2867,7 @@ input[type="number"] {
   padding: 24px;
   box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
   width: 100%;
-  max-width: 340px;
+  max-width: 500px;
   text-align: center;
 }
 
