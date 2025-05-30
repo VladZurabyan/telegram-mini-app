@@ -1,0 +1,38 @@
+<div id="game-withdraw">
+    <div class="deposit-wrapper">
+        <h2>Вывод средств</h2>
+
+        <div class="currency-selector">
+            <button id="withdraw-ton" class="currency-btn active">TON</button>
+            <button id="withdraw-usdt" class="currency-btn">USDT</button>
+        </div>
+
+       <div id="usdt-network-container" style="display:none;">
+    <div class="network-label">Выберите сеть:</div>
+    <div class="network-buttons">
+        <button class="network-btn active" data-network="bep20">BEP-20</button>
+        <button class="network-btn" data-network="trc20">TRC-20</button>
+    </div>
+</div>
+
+
+        <input
+            type="number"
+            id="withdraw-amount"
+            placeholder="Введите сумму"
+            min="0"
+            step="1"
+            inputmode="decimal"
+        />
+
+        <input
+            type="text"
+            id="withdraw-address"
+            placeholder="Адрес TON"
+            inputmode="text"
+        />
+
+        <button id="withdraw-submit" class="play-btn">Создать заявку</button>
+        <button class="back-btn" onclick="backToMain()">Назад</button>
+    </div>
+</div>
