@@ -153,7 +153,7 @@ function hideLoader() {
         cardContainerDealer.y = 100;
         cardContainerPlayer.y = 100;
         cardContainerDealer.x = 150;
-        cardContainerPlayer.x = 260;
+        cardContainerPlayer.x = 200;
 
         app.stage.addChild(cardContainerDealer);
         app.stage.addChild(cardContainerPlayer);
@@ -217,7 +217,7 @@ function hideLoader() {
         deck = [];
 
         cardContainerDealer.x = 30;
-        cardContainerPlayer.x = 260;
+        cardContainerPlayer.x = 200;
 
         document.getElementById('blackjack-result').innerText = '';
         document.getElementById('blackjack-prize').innerText = '';
