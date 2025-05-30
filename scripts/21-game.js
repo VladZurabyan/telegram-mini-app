@@ -1,15 +1,54 @@
 (function () {
 
 
-    function showLoader() {
-  const loader = document.getElementById("blackjack-loader");
-  if (loader) loader.style.display = "flex";
+     function showLoader() {
+    const loader = document.getElementById("blackjack-loader");
+    const cards = document.getElementById("loader-cards");
+
+    if (loader) {
+        loader.style.display = "flex";
+        loader.classList.remove("hide");
+    }
+
+    if (cards && cards.childElementCount === 0) {
+        const cardFaces = ["A", "K", "Q", "J", "10"];
+        for (let i = 0; i < 5; i++) {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.style.setProperty("--delay", `${i * 0.2}s`);
+
+            const inner = document.createElement("div");
+            inner.className = "card-inner";
+
+            const back = document.createElement("div");
+            back.className = "card-back";
+
+            const front = document.createElement("div");
+            front.className = "card-front";
+            front.style.backgroundImage = `url("assets/cards/${cardFaces[i]}H.webp")`;
+
+            inner.appendChild(back);
+            inner.appendChild(front);
+            card.appendChild(inner);
+            cards.appendChild(card);
+        }
+    }
 }
 
+
+
+
+
 function hideLoader() {
-  const loader = document.getElementById("blackjack-loader");
-  if (loader) loader.style.display = "none";
+    const loader = document.getElementById("blackjack-loader");
+    if (loader) {
+        loader.classList.add("hide");
+        setTimeout(() => {
+            loader.style.display = "none";
+        }, 400);
+    }
 }
+
 
 
     
@@ -29,7 +68,7 @@ function hideLoader() {
         if (!container) return;
 
 showLoader(); // ✅ Показать красивый лоадер
-        
+  await loadCardAssets();         
         
 
         container.innerHTML = "";
