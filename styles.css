@@ -2697,14 +2697,73 @@ button[disabled],
     z-index: 1;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0; }
+#blackjack-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #111, #000);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
-#loader-text {
-  animation: blink 1s infinite;
+.loader-cards {
+  display: flex;
+  gap: 12px;
+  position: relative;
 }
+
+.loader-cards .card {
+  width: 80px;
+  height: 120px;
+  perspective: 1000px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: flip-card 1.2s ease-in-out forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+}
+
+.card-back {
+  background-image: url("assets/cards/back.webp");
+}
+
+.card-front {
+  transform: rotateY(180deg);
+}
+
+@keyframes flip-card {
+  0% { transform: rotateY(0); }
+  100% { transform: rotateY(180deg); }
+}
+
+.loader-text {
+  margin-top: 20px;
+  color: white;
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+  text-shadow: 0 0 5px #fff;
+}
+
 
 
 
