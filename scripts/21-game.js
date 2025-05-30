@@ -42,6 +42,8 @@
 function hideLoader() {
     const loader = document.getElementById("blackjack-loader");
     if (loader) {
+        const cards = loader.querySelectorAll('.card-inner');
+        cards.forEach(card => card.style.animation = "none"); // ❌ остановить анимацию
         loader.classList.add("hide");
         setTimeout(() => {
             loader.style.display = "none";
