@@ -2967,9 +2967,7 @@ input[type="number"] {
   color: #000;
 }
 
-.tab-buttons button:hover {
-  background-color: #ddd;
-}
+
 
 /* Контент вкладки */
 .tab-content {
