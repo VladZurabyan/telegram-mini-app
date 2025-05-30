@@ -1,7 +1,6 @@
 (function () {
 
-
-     function showLoader() {
+       function showLoader() {
     const loader = document.getElementById("blackjack-loader");
     const cards = document.getElementById("loader-cards");
 
@@ -53,7 +52,9 @@ function hideLoader() {
 
 
 
-    
+
+
+
     let app = null;
     let deck = [];
     let playerCards = [];
@@ -69,9 +70,8 @@ function hideLoader() {
         const container = document.getElementById("blackjack-canvas-container");
         if (!container) return;
 
-showLoader(); // ✅ Показать красивый лоадер
-  await loadCardAssets();         
-        
+         showLoader(); // ✅ Показать красивый лоадер
+         await loadCardAssets();
 
         container.innerHTML = "";
         container.style.display = "block";
@@ -89,57 +89,57 @@ showLoader(); // ✅ Показать красивый лоадер
         container.appendChild(app.view);
         await loadCardAssets();
         setupScene();
-          // ✅ Дождись следующего кадра (гарантированная отрисовка)
+        // ✅ Дождись следующего кадра (гарантированная отрисовка)
     await new Promise(requestAnimationFrame);
         hideLoader(); // ✅ Скрыть лоадер только когда всё готово
     }
 
     async function loadCardAssets() {
-  const loaderText = document.getElementById("loader-text");
+    const loaderPercent = document.getElementById("loader-percent");
+    const loaderFill = document.getElementById("loader-fill");
 
-  const suits = ["H", "D", "C", "S"];
-  const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-  const allCards = [];
+    const suits = ["H", "D", "C", "S"];
+    const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+    const allCards = [];
 
-  for (let suit of suits) {
-    for (let rank of ranks) {
-      allCards.push(`${rank}${suit}`);
+    for (let suit of suits) {
+        for (let rank of ranks) {
+            allCards.push(`${rank}${suit}`);
+        }
     }
-  }
 
-  const total = allCards.length + 2;
-  let loaded = 0;
+    const total = allCards.length + 2;
+    let loaded = 0;
 
-  function updateLoader() {
-    const percent = Math.floor((loaded / total) * 100);
-    if (loaderText) loaderText.innerText = `Загрузка: ${percent}%`;
-  }
+    function updateLoader() {
+        const percent = Math.floor((loaded / total) * 100);
+        if (loaderPercent) loaderPercent.innerText = `${percent}%`;
+        if (loaderFill) loaderFill.style.width = `${percent}%`;
+    }
 
-  const promises = allCards.map(id =>
-    PIXI.Assets.load(`assets/cards/${id}.webp`).then(texture => {
-      cardTextures[id] = texture;
-      loaded++;
-      updateLoader();
-    })
-  );
+    const promises = allCards.map(id =>
+        PIXI.Assets.load(`assets/cards/${id}.webp`).then(texture => {
+            cardTextures[id] = texture;
+            loaded++;
+            updateLoader();
+        })
+    );
 
-  // добавляем back и table в очередь
-  promises.push(
-    PIXI.Assets.load("assets/cards/back.webp").then(texture => {
-      cardTextures["back"] = texture;
-      loaded++;
-      updateLoader();
-    }),
-    PIXI.Assets.load("assets/cards/table.webp").then(texture => {
-      cardTextures["table"] = texture;
-      loaded++;
-      updateLoader();
-    })
-  );
+    promises.push(
+        PIXI.Assets.load("assets/cards/back.webp").then(texture => {
+            cardTextures["back"] = texture;
+            loaded++;
+            updateLoader();
+        }),
+        PIXI.Assets.load("assets/cards/table.webp").then(texture => {
+            cardTextures["table"] = texture;
+            loaded++;
+            updateLoader();
+        })
+    );
 
-  await Promise.all(promises); // 🔥 Параллельная загрузка
+    await Promise.all(promises);
 }
-
 
 
     function setupScene() {
@@ -153,7 +153,7 @@ showLoader(); // ✅ Показать красивый лоадер
         cardContainerDealer.y = 100;
         cardContainerPlayer.y = 100;
         cardContainerDealer.x = 150;
-        cardContainerPlayer.x = 200;
+        cardContainerPlayer.x = 260;
 
         app.stage.addChild(cardContainerDealer);
         app.stage.addChild(cardContainerPlayer);
@@ -217,7 +217,7 @@ showLoader(); // ✅ Показать красивый лоадер
         deck = [];
 
         cardContainerDealer.x = 30;
-        cardContainerPlayer.x = 200;
+        cardContainerPlayer.x = 260;
 
         document.getElementById('blackjack-result').innerText = '';
         document.getElementById('blackjack-prize').innerText = '';

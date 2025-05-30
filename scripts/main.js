@@ -18,7 +18,7 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
+//tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
  window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
         ton: 10,
@@ -46,6 +46,154 @@ if (user) {
                 });
 }
 
+
+function openDeposit() {
+    loadGame('deposit');
+}
+
+function initDeposit() {
+    window.selectedCurrency = 'ton';
+
+    const tonBtn = document.getElementById('deposit-ton');
+    const usdtBtn = document.getElementById('deposit-usdt');
+    const input = document.getElementById('deposit-amount');
+    const submitBtn = document.getElementById('deposit-submit');
+
+    // Валюта переключение
+    tonBtn.addEventListener('click', () => setDepositCurrency('ton'));
+    usdtBtn.addEventListener('click', () => setDepositCurrency('usdt'));
+
+    // Автофокус
+    setTimeout(() => input.focus(), 300);
+
+    // Отправка
+    submitBtn.addEventListener('click', () => {
+        const raw = parseFloat(input.value);
+        const amount = Math.floor(raw);
+
+        if (!raw || raw <= 0) {
+            showCustomAlert("Введите сумму", "error");
+            return;
+        }
+
+        if (!Number.isInteger(raw)) {
+            showCustomAlert("Введите целое число без копеек", "error");
+            return;
+        }
+
+        if (window.selectedCurrency === 'ton' && amount < 2) {
+            showCustomAlert("Минимум 2 TON", "error");
+            return;
+        }
+
+        if (window.selectedCurrency === 'usdt' && amount < 10) {
+            showCustomAlert("Минимум 10 USDT", "error");
+            return;
+        }
+
+        const payload = {
+            user_id: window.Telegram.WebApp.initDataUnsafe?.user?.id || "unknown",
+            currency: window.selectedCurrency,
+            amount: amount
+        };
+
+        console.log("⏳ Запрос на пополнение:", payload);
+
+        showCustomAlert(
+            `✅ Запрос на пополнение отправлен\n\nВалюта: ${payload.currency.toUpperCase()}\nСумма: ${payload.amount}`,
+            "success"
+        );
+
+        // TODO: отправить на backend
+    });
+
+    function setDepositCurrency(curr) {
+        window.selectedCurrency = curr;
+        tonBtn.classList.toggle('active', curr === 'ton');
+        usdtBtn.classList.toggle('active', curr === 'usdt');
+        input.placeholder = `Введите сумму в ${curr.toUpperCase()}`;
+    }
+}
+
+
+
+
+function openWithdraw() {
+    loadGame('withdraw');
+}
+
+function initWithdraw() {
+    window.selectedCurrency = 'ton';
+    let selectedNetwork = 'bep20';
+
+    const tonBtn = document.getElementById('withdraw-ton');
+    const usdtBtn = document.getElementById('withdraw-usdt');
+    const networkContainer = document.getElementById('usdt-network-container');
+    const addressInput = document.getElementById('withdraw-address');
+
+    // Переключение валюты
+    tonBtn.addEventListener('click', () => {
+        window.selectedCurrency = 'ton';
+        tonBtn.classList.add('active');
+        usdtBtn.classList.remove('active');
+        networkContainer.style.display = 'none';
+        addressInput.placeholder = 'Адрес TON';
+    });
+
+    usdtBtn.addEventListener('click', () => {
+        window.selectedCurrency = 'usdt';
+        tonBtn.classList.remove('active');
+        usdtBtn.classList.add('active');
+        networkContainer.style.display = 'flex';
+        addressInput.placeholder = `Адрес USDT (${selectedNetwork.toUpperCase()})`;
+    });
+
+    // Селектор сети
+    const networkBtns = document.querySelectorAll('.network-btn');
+    networkBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            networkBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedNetwork = btn.dataset.network;
+            if (window.selectedCurrency === 'usdt') {
+                addressInput.placeholder = `Адрес USDT (${selectedNetwork.toUpperCase()})`;
+            }
+        });
+    });
+
+    // Отправка
+   document.getElementById('withdraw-submit').addEventListener('click', () => {
+    const rawAmount = parseFloat(document.getElementById('withdraw-amount').value);
+    const amount = Math.floor(rawAmount);
+    const address = addressInput.value.trim();
+
+    if (!rawAmount || rawAmount <= 0) return showCustomAlert("Введите сумму", "error");
+    if (!Number.isInteger(rawAmount)) return showCustomAlert("Введите целое число без копеек", "error");
+    if (window.selectedCurrency === 'ton' && amount < 2) return showCustomAlert("Минимум 2 TON", "error");
+    if (window.selectedCurrency === 'usdt' && amount < 10) return showCustomAlert("Минимум 10 USDT", "error");
+    if (!address) return showCustomAlert("Введите адрес", "error");
+
+    const payload = {
+        user_id: window.Telegram.WebApp.initDataUnsafe?.user?.id || "unknown",
+        currency: window.selectedCurrency,
+        amount: amount,
+        address: address,
+        network: window.selectedCurrency === 'usdt' ? selectedNetwork.toUpperCase() : 'TON'
+    };
+
+    console.log("⏳ Запрос на вывод:", payload);
+
+    // TODO: отправить на backend
+    showCustomAlert(`✅ Запрос отправлен\n\nВалюта: ${payload.currency.toUpperCase()}\nСумма: ${payload.amount}\nСеть: ${payload.network}\nАдрес: ${payload.address}`, "success");
+});
+
+}
+
+
+
+
+
+
 function backToMain() {
     const game = window.activeGameId;
     if (game === 'game-coin') resetCoinScreen();
@@ -65,6 +213,8 @@ function backToMain() {
 
 function loadGame(gameId) {
         const path = {
+            'withdraw': 'games/withdraw.html',
+                 'deposit': 'games/deposit.html',
                 'game-21': 'games/game-21.html',
                 'game-arrow': 'games/game-arrow.html',
                 'game-wheel': 'games/game-wheel.html',
@@ -96,6 +246,8 @@ function loadGame(gameId) {
                 })
                 .then(html => {
                         container.innerHTML = html;
+                        if (gameId === 'deposit') initDeposit();
+                        if (gameId === 'withdraw') initWithdraw();
 
                         const screen = document.getElementById(gameId);
                         if (screen) {
@@ -472,6 +624,53 @@ if (gameId === 'game-21') {
 
 
 
+   if (gameId === 'rules') {
+    const container = document.getElementById('rules');
+    container.querySelector('.back-btn')?.addEventListener('click', backToMain);
+
+    const tabs = ['tab-rules', 'tab-responsibility', 'tab-terms'];
+
+    function showTab(id) {
+        tabs.forEach(tabId => {
+            const tab = document.getElementById(tabId);
+            const btn = document.getElementById('btn-' + tabId.split('-')[1]);
+
+            if (tab) {
+                tab.classList.remove('active');
+                tab.style.display = 'none';
+            }
+            if (btn) {
+                btn.classList.remove('active');
+            }
+        });
+
+        const targetTab = document.getElementById(id);
+        const targetBtn = document.getElementById('btn-' + id.split('-')[1]);
+
+        if (targetTab) {
+            targetTab.style.display = 'block';
+            requestAnimationFrame(() => targetTab.classList.add('active'));
+        }
+
+        if (targetBtn) {
+            targetBtn.classList.add('active');
+        }
+    }
+
+    document.getElementById('btn-rules')?.addEventListener('click', () => showTab('tab-rules'));
+    document.getElementById('btn-responsibility')?.addEventListener('click', () => showTab('tab-responsibility'));
+    document.getElementById('btn-terms')?.addEventListener('click', () => showTab('tab-terms'));
+
+    showTab('tab-rules');
+}
+
+
+if (gameId === 'partners') {
+    const container = document.getElementById('partners');
+    container.querySelector('.back-btn')?.addEventListener('click', backToMain);
+
+    // Тут можешь добавить свою отдельную логику для partners
+}
 
 
 
@@ -486,9 +685,7 @@ if (gameId === 'game-21') {
 
 
 
-                        if (gameId === 'rules' || gameId === 'partners') {
-                                container.querySelector('.back-btn')?.addEventListener('click', backToMain);
-                        }
+
 
                         setTimeout(() => {
         hideLoader();
