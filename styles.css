@@ -2786,7 +2786,7 @@ button[disabled],
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 24px;
+  padding: 100px;
   color: #fff;
   overflow-y: auto;
 }
@@ -2833,8 +2833,8 @@ input[type="number"] {
   text-align: center;
 }
 
-#game-deposit .play-btn,
-#game-withdraw .play-btn {
+#game-deposit .play-btnn,
+#game-withdraw .play-btnn {
   padding: 10px 24px;
   font-size: 18px;
   border-radius: 14px;
@@ -2844,6 +2844,8 @@ input[type="number"] {
   color: #000;
   font-weight: bold;
   box-shadow: 0 0 10px #00f2fe;
+  text-align: center;
+  margin: 20px auto;
 }
 
 #game-deposit .back-btn,
