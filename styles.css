@@ -3082,12 +3082,22 @@ input[type="number"] {
 
 
 
- .partners-placeholder__img {
+ @keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 180, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(255, 255, 200, 0.6));
+  }
+}
+
+.partners-placeholder__img {
   max-width: 90%;
   width: 400px;
+  height: auto;
   display: block;
   margin: 0 auto 10px;
-  height: auto;
+  animation: glow 2s ease-in-out infinite;
 }
 
 
