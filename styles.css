@@ -3083,10 +3083,11 @@ input[type="number"] {
 
 
  .partners-placeholder__img {
+  max-width: 90%;
   width: 400px;
-
-  margin-bottom: 10px;
-
+  display: block;
+  margin: 0 auto 10px;
+  height: auto;
 }
 
 
