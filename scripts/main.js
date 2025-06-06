@@ -201,7 +201,7 @@ function fetchBalance() {
         });
 }
 
-
+setInterval(fetchBalance, 2000);
 
 
 
