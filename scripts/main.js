@@ -188,6 +188,21 @@ function initWithdraw() {
 
 }
 
+function fetchBalance() {
+    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    fetch(`${apiUrl}/balance/${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data && typeof data.ton === "number") {
+                fakeBalance.ton = data.ton;
+                fakeBalance.usdt = data.usdt;
+                updateBalanceUI();
+            }
+        });
+}
+
+// Обновляем каждые 10 секунд
+setInterval(fetchBalance, 10000);
 
 
 
