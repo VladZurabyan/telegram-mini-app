@@ -202,7 +202,7 @@ function fetchBalance() {
 }
 
 // Обновляем каждые 10 секунд
-setInterval(fetchBalance, 10000);
+setInterval(fetchBalance, 5000);
 
 
 
