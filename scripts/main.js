@@ -33,17 +33,16 @@ const user = tg.initDataUnsafe?.user;
 const apiUrl = "https://miniapp-backend.onrender.com";
 
 if (user) {
-        fetch(`${apiUrl}/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
-        });
-        fetch(`${apiUrl}/balance/${user.id}`)
-                .then(r => r.json())
-                .then(d => {
-                        document.querySelectorAll(".balance span")[0].textContent = d.ton.toFixed(2);
-                        document.querySelectorAll(".balance span")[1].textContent = d.usdt.toFixed(2);
-                });
+    fetch(`${apiUrl}/init`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+    })
+    .then(r => r.json())
+    .then(d => {
+        document.querySelectorAll(".balance span")[0].textContent = d.ton.toFixed(2);
+        document.querySelectorAll(".balance span")[1].textContent = d.usdt.toFixed(2);
+    });
 }
 
 
