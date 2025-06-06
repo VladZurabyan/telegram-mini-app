@@ -116,7 +116,17 @@ updateBalanceUI(); // сразу показать обновление
 
 
         updateBalanceUI();
-        recordGame('coin', bet, result, isWin);
+        if (typeof recordGame === 'function') {
+    recordGame(
+        "coin",                        // Название игры
+        window.bet,                   // Ставка
+        isWin ? "win" : "lose",       // Результат (строка)
+        isWin,                        // Победа: true / false
+        window.selectedCurrency,      // Валюта
+        isWin ? window.bet * 2 : 0    // Приз (если выиграл)
+    );
+}
+
 
         allBtns.forEach(el => el.disabled = false);
         currencyWrapper.classList.remove('disabled');
