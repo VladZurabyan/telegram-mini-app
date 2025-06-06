@@ -117,15 +117,14 @@ updateBalanceUI(); // сразу показать обновление
 
         updateBalanceUI();
         if (typeof recordGame === 'function') {
-    recordGame(
-        "coin",                        // Название игры
-        window.bet,                   // Ставка
-        isWin ? "win" : "lose",       // Результат (строка)
-        isWin,                        // Победа: true / false
-        window.selectedCurrency,      // Валюта
-        isWin ? window.bet * 2 : 0    // Приз (если выиграл)
-    );
-}
+                recordGame(
+                    "coin",
+                    window.bet,
+                    isWin ? "win" : "lose",
+                    isWin ? 2 : 0,
+                    window.selectedCurrency
+                );
+            }
 
 
         allBtns.forEach(el => el.disabled = false);
