@@ -291,7 +291,7 @@ function backToMain() {
      else if (game === 'game-21') reset21Screen();
 
 window.inGame = false;
-startBalanceUpdater(); // возобновить цикл
+
 
         showMain();
 }
