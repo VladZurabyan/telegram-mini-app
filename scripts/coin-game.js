@@ -137,16 +137,12 @@ if (typeof recordGame === 'function') {
 
             let winAmount = 0;
             if (isWin) {
-                winAmount = parseFloat((window.bet * 2).toFixed(2));
-                prizeBox.innerText = `Вы выиграли: ${formatAmount(winAmount)} ${currencyLabel}`;
-                window.fakeBalance[window.selectedCurrency] = parseFloat(
-                    (window.fakeBalance[window.selectedCurrency] + winAmount).toFixed(2)
-                );
-            } else {
-                prizeBox.innerText = "Желаем дальнейших успехов";
-            }
+    winAmount = parseFloat((window.bet * 2).toFixed(2));
+    prizeBox.innerText = `Вы выиграли: ${formatAmount(winAmount)} ${currencyLabel}`;
+} else {
+    prizeBox.innerText = "Желаем дальнейших успехов";
+}
 
-            updateBalanceUI();
 
             if (typeof recordGame === 'function') {
     recordGame(
