@@ -188,21 +188,25 @@ if (typeof recordGame === 'function') {
         );
 
         if (result instanceof Promise) {
-            result.then(() => {
-                if (typeof forceBalance === "function") {
-                    forceBalance(0);
-                }
-                setTimeout(unlockUI, 150);
+    result.then(() => {
+        if (typeof forceBalance === "function") {
+            forceBalance(0).then(() => {
+                unlockUI();
             });
         } else {
-            if (typeof forceBalance === "function") {
-                forceBalance(0);
-            }
-            setTimeout(unlockUI, 150);
+            unlockUI();
         }
+    });
+} else {
+    if (typeof forceBalance === "function") {
+        forceBalance(0).then(() => {
+            unlockUI();
+        });
     } else {
         unlockUI();
     }
+}
+
 }, { once: true });
 
 }
