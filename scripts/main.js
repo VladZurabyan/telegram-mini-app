@@ -205,21 +205,52 @@ function initWithdraw() {
 }
 
 // ✅ Автообновление баланса с защитой
-function fetchBalance() {
+let prevBalance = { ton: null, usdt: null };
+let isFetching = false;
+
+function startBalanceUpdater() {
+    if (window.inGame) return;
+
+    if (isFetching) return;
+    isFetching = true;
+
     const user = tg.initDataUnsafe?.user;
-    if (!user || window.inGame) return; // 🛡 не обновлять, если в игре
+    if (!user) {
+        isFetching = false;
+        return;
+    }
 
     fetch(`${apiUrl}/balance/${user.id}`)
         .then(res => res.json())
         .then(data => {
-            if (data && typeof data.ton === "number") {
+            if (
+                typeof data.ton === "number" &&
+                typeof data.usdt === "number" &&
+                (data.ton !== prevBalance.ton || data.usdt !== prevBalance.usdt)
+            ) {
                 window.fakeBalance.ton = data.ton;
                 window.fakeBalance.usdt = data.usdt;
                 updateBalanceUI();
+                prevBalance.ton = data.ton;
+                prevBalance.usdt = data.usdt;
+            }
+        })
+        .catch(console.error)
+        .finally(() => {
+            isFetching = false;
+            // Повторяем цикл только если не в игре
+            if (!window.inGame) {
+                setTimeout(startBalanceUpdater, 3000); // ⏳ пауза между циклами
             }
         });
 }
-window.balanceUpdater = setInterval(fetchBalance, 2000);
+
+// ✅ Первый запуск цикла
+startBalanceUpdater();
+
+// ✅ Когда выходим из игры — перезапускаем
+window.balanceUpdater = startBalanceUpdater;
+
 
 
 
