@@ -142,7 +142,7 @@
         document.getElementById('arrow-result').innerText = result.label;
         const prizeBox = document.getElementById('arrow-prize');
         if (result.multiplier > 0) {
-            prizeBox.innerText = `Выигрыш: ${formatAmount(winAmount)} ${selectedCurrency.toUpperCase()}`;
+            prizeBox.innerText = `Выигрыш: ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()}`;
         } else {
             prizeBox.innerText = 'Вы проиграли!';
         }
@@ -202,16 +202,30 @@
 
 
     function startArrowGame() {
+        const gameName = "Arrow";
         console.log("🎮 startArrowGame вызван");
         if (arrowInProgress || !arrowSprite) return;
         resetTarget();
 
-        if (!window.bet || isNaN(window.bet) || window.bet <= 0) return alert("Введите корректную ставку.");
-        const balanceAvailable = selectedCurrency === 'ton'
-            ? parseFloat(fakeBalance.ton.toFixed(2))
-            : parseFloat(fakeBalance.usdt.toFixed(2));
-        if (window.bet > balanceAvailable) return alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
-        if (window.bet < minBet) return alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
+        const balanceAvailable = window.selectedCurrency === 'ton'
+    ? parseFloat(window.fakeBalance.ton.toFixed(2))
+    : parseFloat(window.fakeBalance.usdt.toFixed(2));
+
+        if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
+    if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Некорректная ставка: ${window.bet}`);
+    return showCustomAlert("Введите корректную ставку.", "error");
+}
+if (window.bet > balanceAvailable) {
+    if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Недостаточно средств: ${window.bet} ${window.selectedCurrency.toUpperCase()} > ${balanceAvailable} ${window.selectedCurrency.toUpperCase()}`);
+    return showCustomAlert(`Недостаточно средств (${window.selectedCurrency.toUpperCase()})`, "error");
+}
+if (window.bet < window.minBet) {
+    if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Ставка меньше минимума: ${window.bet} < ${window.minBet}`);
+    return showCustomAlert(`Минимум ${window.minBet} ${selectedCurrency.toUpperCase()}`, "error");
+}
+
+
+
 
         arrowInProgress = true;
         cashoutPressed = false;
@@ -222,9 +236,17 @@
         document.getElementById('arrow-prize').innerText = '';
         document.getElementById('arrow-cashout')?.classList.add('hidden');
 
-        fakeBalance[selectedCurrency] = parseFloat((balanceAvailable - window.bet).toFixed(2));
+        window.fakeBalance[window.selectedCurrency] = parseFloat((balanceAvailable - window.bet).toFixed(2));
         updateBalanceUI();
         blockArrowUI();
+
+        if (typeof Player_join === 'function') {
+    Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
+}
+
+if (typeof Player_action === 'function') {
+    Player_action(gameName, "Ставка", `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`);
+}
 
         const score = determineScore();
 
@@ -367,6 +389,25 @@ function showStuckArrow(texture) {
 
 
                 updateArrowResultUI(arrowResult, window.bet * winAmount);
+
+                if (typeof recordGame === 'function') {
+    recordGame(
+        "arrow",
+        window.bet,
+        arrowResult,
+        window.bet * (arrowResult?.multiplier || 0),
+        window.selectedCurrency
+    );
+}
+                  if (typeof Player_leave === 'function' && arrowResult?.multiplier <= 0) {
+    Player_leave(
+        gameName,
+        `Проигрыш | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`
+    );
+}
+
+
+
                 arrowInProgress = false;
 
                 app.ticker.remove(autoRender); // 🛑 остановить рендер
@@ -379,7 +420,7 @@ function showStuckArrow(texture) {
         if (!arrowResult || cashoutPressed || arrowResult.multiplier <= 0) return;
         cashoutPressed = true;
         const winAmount = parseFloat((window.bet * arrowResult.multiplier).toFixed(2));
-        fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] + winAmount).toFixed(2));
+        window.fakeBalance[window.selectedCurrency] = parseFloat((window.fakeBalance[window.selectedCurrency] + winAmount).toFixed(2));
         updateBalanceUI();
 
         document.getElementById('arrow-cashout')?.setAttribute('disabled', 'true');
@@ -389,6 +430,15 @@ function showStuckArrow(texture) {
         resetTarget();
         app.render(); // обновление сцены после сброса
         unblockArrowUI(); // ✅ разблокировка после забора приза
+
+        if (typeof Player_leave === 'function') {
+    Player_leave(
+        "Arrow",
+        `Победа x${arrowResult.multiplier} (Выигрыш: ${winAmount} ${window.selectedCurrency.toUpperCase()}) | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`
+    );
+}
+
+
     }
 
     function destroyArrowScene() {

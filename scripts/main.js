@@ -11,6 +11,18 @@
 } */
 
 
+const activeGames = {
+    'game-coin': true,
+    'game-crash': true,
+    'game-boxes': true,
+    'game-dice': true,
+    'game-chicken': true,
+    'game-safe': true,
+    'game-bombs': true,
+    'game-arrow': false,     // 🔴 отключена
+    'game-21': true,
+    'game-wheel': true
+};
 
 
 
@@ -18,14 +30,14 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
+//tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
  window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
         ton: 10,
         usdt: 100
 };
 
-const winsCount = 10;
+const winsCount = 2;
 const lossesCount = 10;
 const totalCount = winsCount + lossesCount;
 
@@ -206,7 +218,6 @@ setInterval(fetchBalance, 2000);
 
 
 
-
 function backToMain() {
     const game = window.activeGameId;
     if (game === 'game-coin') resetCoinScreen();
@@ -219,7 +230,7 @@ function backToMain() {
      else if (game === 'game-wheel') resetWheelScreen();
     else if (game === 'game-arrow') resetTarget();
      else if (game === 'game-21') reset21Screen();
-        resetCoinScreen();
+
 
         showMain();
 }
@@ -244,13 +255,40 @@ function loadGame(gameId) {
 
         if (!path) return;
 
+         const container = document.getElementById('game-container');
+        // ✅ Проверка отключённой игры
+    if (!activeGames[gameId]) {
+        hideAll();
+        container.style.display = 'block';
+        container.innerHTML = `
+    <div id="disabled-screen" class="game-screen" style="min-height: 100vh; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white;">
+        <div class="disabled-wrapper" style="border: 2px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 30px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(6px); box-shadow: 0 0 10px rgba(0,0,0,0.4); max-width: 400px;">
+            <h2 style="font-size: 24px; margin-bottom: 10px;">⚙️ Игра недоступна</h2>
+            <p style="font-size: 16px;">Эта игра временно отключена администратором или находится в доработке.</p>
+        </div>
+        <button id="btn-disabled-back" class="back-btn" style="margin-top: 30px;">Назад</button>
+    </div>
+`;
+
+        // ⏳ Подождём, пока DOM вставится, затем назначим обработчик
+
+        document.getElementById('btn-disabled-back')?.addEventListener('click', backToMain);
+
+
+
+        return;
+    }
+
+
+
+
         bet = minBet;
 
         hideAll();
-        const container = document.getElementById('game-container');
-        showLoader();
+
         container.innerHTML = '';
         container.style.display = 'block';
+        showLoader();
 
         fetch(path)
                 .then(r => {
@@ -444,6 +482,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 
 
     if (gameId === 'game-safe') {
+        
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
         document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
         setCurrency(selectedCurrency);
@@ -629,7 +668,8 @@ if (gameId === 'game-21') {
     document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
     document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
 
-   setCurrency(selectedCurrency);
+   setCurrency(window.selectedCurrency);
+
 
     updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();

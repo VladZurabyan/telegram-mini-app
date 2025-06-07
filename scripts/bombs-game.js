@@ -8,6 +8,7 @@
     let bombClickLock = false;
 
     function startBombsGame() {
+          const gameName = "Bombs";
         if (bombsInProgress) return;
 
         cashoutPressed = false;
@@ -20,23 +21,33 @@
         document.getElementById('bomb-cashout')?.setAttribute('disabled', 'true');
         document.getElementById('bomb-cashout')?.classList.add('hidden');
 
-        if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
-            alert("Введите корректную ставку.");
+
+
+
+if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
+            if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Некорректная ставка: ${window.bet}`);
+            showCustomAlert("Введите корректную ставку.", "error");
             return;
         }
 
-        const balanceAvailable = selectedCurrency === 'ton'
-            ? parseFloat(fakeBalance.ton.toFixed(2))
-            : parseFloat(fakeBalance.usdt.toFixed(2));
+        const balanceAvailable = window.selectedCurrency === 'ton'
+            ? parseFloat(window.fakeBalance.ton.toFixed(2))
+            : parseFloat(window.fakeBalance.usdt.toFixed(2));
 
         if (window.bet > balanceAvailable) {
-            alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
+            if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} > Баланс: ${balanceAvailable} ${window.selectedCurrency.toUpperCase()}`);
+            showCustomAlert(`Недостаточно средств (${window.selectedCurrency.toUpperCase()})`, "error");
             return;
         }
 
-        if (window.bet < minBet) {
-            alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
+        if (window.bet < window.minBet) {
+            if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} < Минимум: ${window.minBet} ${window.selectedCurrency.toUpperCase()}`);
+            showCustomAlert(`Минимум ${window.minBet} ${window.selectedCurrency.toUpperCase()}`, "error");
             return;
+        }
+
+        if (typeof Player_join === 'function') {
+            Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
         }
 
         showEmptyBombGrid();
@@ -48,7 +59,7 @@
         revealedCells = 0;
         bombsGrid = [];
 
-        fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] - window.bet).toFixed(2));
+        window.fakeBalance[window.selectedCurrency] = parseFloat((window.fakeBalance[window.selectedCurrency] - window.bet).toFixed(2));
         updateBalanceUI();
         updateBombMultiplierUI();
 
@@ -113,6 +124,11 @@
 
                 document.querySelectorAll('#game-bombs .bomb-cell').forEach(c => (c.onclick = null));
 
+                if (typeof Player_action === 'function') {
+                    Player_action("Bombs", "Взрыв", `Проигрыш на ячейке ${index + 1}`);
+                }
+
+
                 setTimeout(() => {
                     bombsLives = 0;
                     endBombsGame(false);
@@ -123,6 +139,11 @@
                 bombsMultiplier += 0.3;
                 revealedCells++;
                 updateBombMultiplierUI();
+
+                if (typeof Player_action === 'function') {
+                    Player_action("Bombs", "Удачный клик", `Ячейка ${index + 1}, множитель: ${bombsMultiplier.toFixed(2)}x`);
+                }
+
 
                 if (revealedCells > 0 && !cashoutPressed) {
                     const btn = document.getElementById('bomb-cashout');
@@ -144,7 +165,12 @@
         document.getElementById('bomb-cashout')?.setAttribute('disabled', 'true');
 
         const winAmount = parseFloat((window.bet * bombsMultiplier).toFixed(2));
-        fakeBalance[selectedCurrency] = parseFloat((fakeBalance[selectedCurrency] + winAmount).toFixed(2));
+        window.fakeBalance[window.selectedCurrency] = parseFloat((window.fakeBalance[window.selectedCurrency] + winAmount).toFixed(2));
+
+        if (typeof Player_action === 'function') {
+            Player_action("Bombs", "Кэш-аут", `Вывел ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()} после ${revealedCells} ячеек`);
+        }
+
 
         updateBalanceUI();
         endBombsGame(true, winAmount);
@@ -155,7 +181,7 @@
 
         const resultBox = document.getElementById('bombResult');
         const prizeBox = document.getElementById('bombPrize');
-        const currencyLabel = selectedCurrency.toUpperCase();
+        const currencyLabel = window.selectedCurrency.toUpperCase();
 
         if (won) {
             if (resultBox) resultBox.innerText = "Победа!";
@@ -163,6 +189,8 @@
         } else {
             if (resultBox) resultBox.innerText = "Бомба 💥";
             if (prizeBox) prizeBox.innerText = "Желаем дальнейших успехов!";
+
+
         }
 
         bombsMultiplier = 1.0;
@@ -192,6 +220,20 @@
                 inner.classList.add('pop-flip');
             }
         });
+
+  if (typeof recordGame === 'function') {
+            recordGame("bombs", window.bet, won ? "win" : "lose", won ? bombsMultiplier : 0, window.selectedCurrency);
+        }
+
+
+        if (typeof Player_leave === 'function') {
+            const resultString = won ? `Победа, выиграл ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()}` : "Проигрыш";
+            const betString = `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`;
+            Player_leave("Bombs", `${resultString} | ${betString} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
+        }
+
+
+
 
         bombsGrid = [];
     }
@@ -227,7 +269,33 @@
         }
     }
 
+    function resetBombsGame() {
+    bombsInProgress = false;
+    bombsLives = 1;
+    bombsMultiplier = 1.0;
+    revealedCells = 0;
+    cashoutPressed = false;
+    bombClickLock = false;
+    bombsGrid = [];
+
+    const grid = document.querySelector('.bombs-grid');
+    if (grid) grid.innerHTML = '';
+
+    const resultBox = document.getElementById('bombResult');
+    const prizeBox = document.getElementById('bombPrize');
+    if (resultBox) resultBox.innerText = '';
+    if (prizeBox) prizeBox.innerText = '';
+
+    document.getElementById('bomb-cashout')?.classList.add('hidden');
+    document.getElementById('btn-bomb-start')?.classList.remove('hidden');
+
+    unblockBombUI();
+    updateBombMultiplierUI();
+}
+
+
     // Экспорт наружу
+    window.resetBombsScreen = resetBombsGame;
     window.startBombsGame = startBombsGame;
     window.collectBombsPrize = collectBombsPrize;
     window.showEmptyBombGrid = showEmptyBombGrid;

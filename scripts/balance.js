@@ -1,10 +1,15 @@
 
-let selectedCurrency = 'ton';
+// ✅ Всегда работаем с глобальной переменной
+window.selectedCurrency = 'ton';
 
 function setCurrency(cur) {
-    selectedCurrency = cur;
+    window.selectedCurrency = cur;
+
     document.getElementById('btn-currency-ton')?.classList.toggle('active', cur === 'ton');
     document.getElementById('btn-currency-usdt')?.classList.toggle('active', cur === 'usdt');
+
+    updateBalanceUI();
+    updateBetUI?.(); // если нужна отрисовка ставок
 }
 
 
@@ -33,4 +38,3 @@ function updateBalanceUI() {
 // Экспорт
 window.setCurrency = setCurrency;
 window.updateBalanceUI = updateBalanceUI;
-window.selectedCurrency = selectedCurrency;

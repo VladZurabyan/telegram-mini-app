@@ -21,3 +21,5 @@ function recordGame(game, bet, result, win, currency, prizeAmount = 0) {
         document.querySelectorAll(".balance span")[1].textContent = d.usdt.toFixed(2);
     });
 }
+
+window.recordGame = recordGame;

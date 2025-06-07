@@ -33,6 +33,22 @@ function hideLoader() {
     document.getElementById('loader').style.display = 'none';
 }
 
+// ✅ Фиктивные функции логирования — потом заменим на реальные
+function Player_join(game, extra = "") {
+    const log = `[LOG] Игрок вошёл в игру: ${game}${extra ? " | " + extra : ""}`;
+    console.log(log);
+}
+
+function Player_action(game, type, detail = "") {
+    const log = `[LOG] ${game} — ${type}${detail ? ": " + detail : ""}`;
+    console.log(log);
+}
+
+function Player_leave(game, extra = "") {
+    const log = `[LOG] Игрок покинул игру: ${game}${extra ? " | " + extra : ""}`;
+    console.log(log);
+}
+
 
 
 

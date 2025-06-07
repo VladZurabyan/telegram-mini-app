@@ -1,91 +1,169 @@
+(function () {
 let crashInProgress = false;
 let cashedOut = false;
 let multiplier = 1.0;
 let interval;
-let flightPoints = []; // ← добавили
- let animationMultiplier = 1.0;
-
-
-
-
-
-
-
-
-
-
+let flightPoints = [];
+let animationMultiplier = 1.0;
+let crashResultText = '';
+let crashWinAmount = 0;
 
 function playCrash() {
+    const gameName = "Crash";
 
-
-
-const prankChance = 0.1; // 10% шанс шутки
-const prank = Math.random() < prankChance;
-
-if (prank) {
-    document.getElementById('game-crash').style.display = 'none';
-    document.getElementById('crash-joke').style.display = 'block';
-
-    setTimeout(() => {
-        document.getElementById('crash-joke').style.display = 'none';
-        document.getElementById('game-crash').style.display = 'block';
-    }, 4000); // Показ шутки 4 секунды
-
-    return;
-}
-
-   if (crashInProgress) return;
-
-   if (!bet || isNaN(bet) || bet <= 0) {
-        alert("Введите корректную ставку.");
+    const prankChance = 0.1;
+    const prank = Math.random() < prankChance;
+    if (prank) {
+        document.getElementById('game-crash').style.display = 'none';
+        document.getElementById('crash-joke').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('crash-joke').style.display = 'none';
+            document.getElementById('game-crash').style.display = 'block';
+        }, 4000);
         return;
     }
 
+    if (crashInProgress) return;
 
+    if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
+        if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Некорректная ставка: ${window.bet}`);
+        showCustomAlert("Введите корректную ставку.", "error");
+        return;
+    }
 
+    const balanceAvailable = window.selectedCurrency === 'ton'
+        ? parseFloat(window.fakeBalance.ton.toFixed(2))
+        : parseFloat(window.fakeBalance.usdt.toFixed(2));
 
+    if (window.bet > balanceAvailable) {
+        if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Ставка: ${window.bet} > Баланс: ${balanceAvailable} (${window.selectedCurrency.toUpperCase()})`);
+        showCustomAlert(`Недостаточно средств (${window.selectedCurrency.toUpperCase()})`, "error");
+        return;
+    }
 
+    if (window.bet < window.minBet) {
+        if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Ставка: ${window.bet} < Минимум: ${window.minBet}`);
+        showCustomAlert(`Минимум ${window.minBet} ${window.selectedCurrency.toUpperCase()}`, "error");
+        return;
+    }
 
+    if (typeof Player_join === 'function') {
+        Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
+    }
 
+    if (typeof Player_action === 'function') {
+        Player_action(gameName, "Ставка", `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`);
+    }
 
-
-
-
-   
     crashInProgress = true;
     cashedOut = false;
     multiplier = 1.0;
     flightPoints = [];
     animationMultiplier = 0.0;
 
-
     document.querySelector('#game-crash .currency-selector')?.classList.add('disabled');
-document.querySelector('#game-crash .bet-box')?.classList.add('disabled');
-
-const backBtn = document.querySelector('#game-crash .back-btn');
-if (backBtn) {
-    backBtn.style.pointerEvents = 'none';
-    backBtn.style.opacity = '0.5';
-}
-
-
-
+    document.querySelector('#game-crash .bet-box')?.classList.add('disabled');
+    const backBtn = document.querySelector('#game-crash .back-btn');
+    if (backBtn) {
+        backBtn.style.pointerEvents = 'none';
+        backBtn.style.opacity = '0.5';
+    }
 
     const plane = document.getElementById('crashPlane');
     plane.classList.remove('crash', 'cashout');
     plane.style.transition = 'transform 0.1s linear';
     plane.style.transform = 'translate(0px, 0px)';
-
     const path = document.getElementById('flightPath');
     if (path) path.setAttribute('d', '');
 
-    const balanceAvailable = selectedCurrency === 'ton'
-    ? parseFloat(fakeBalance.ton.toFixed(2))
-    : parseFloat(fakeBalance.usdt.toFixed(2));
-    if (bet > balanceAvailable) {
-        alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
-        crashInProgress = false;
-        // 🔓 Разблокировать интерфейс
+    if (window.selectedCurrency === 'ton') window.fakeBalance.ton -= window.bet;
+    else window.fakeBalance.usdt -= window.bet;
+    updateBalanceUI();
+
+    const crashStatus = document.getElementById('crash-status');
+    crashStatus.classList.remove('crash-win', 'crash-lose');
+    document.getElementById('crash-multiplier').innerText = 'x1.00';
+    document.getElementById('crash-status').innerText = '✈️ Взлёт...';
+    document.getElementById('crash-result').innerText = '';
+    document.getElementById('crash-start').disabled = true;
+    document.getElementById('crash-cashout').disabled = false;
+
+    const crashPoint = parseFloat((Math.pow(Math.random(), 2.5) * 1.5 + 1.01).toFixed(2));
+
+
+    interval = setInterval(() => {
+        multiplier += 0.005;
+        animationMultiplier += 0.015;
+
+        document.getElementById('crash-multiplier').innerText = 'x' + multiplier.toFixed(2);
+
+        const x = animationMultiplier * 40;
+        const baseY = animationMultiplier * 10;
+        const wave = Math.sin(animationMultiplier * 5) * 5;
+        const y = baseY + wave;
+
+        plane.style.transform = `translate(${x}px, ${-y}px)`;
+        const drawX = x + 10;
+        const svg = document.querySelector('.flight-line');
+        const svgHeight = svg?.clientHeight || 200;
+        const drawY = svgHeight - y - 35;
+        flightPoints.push({ x: drawX, y: drawY });
+        const path = document.getElementById('flightPath');
+        if (path && flightPoints.length > 1) {
+            const d = flightPoints.map((pt, i) => `${i === 0 ? 'M' : 'L'}${pt.x},${pt.y}`).join(' ');
+            path.setAttribute('d', d);
+        }
+
+        const frame = document.querySelector('.crash-flight-frame');
+        if (frame) {
+            frame.style.backgroundPosition = `-${x}px 0`;
+        }
+
+        if (multiplier >= crashPoint) {
+            clearInterval(interval);
+            crashStatus.classList.remove('crash-win', 'crash-lose');
+            crashStatus.innerText = `💥 Самолёт упал на x${multiplier.toFixed(2)}`;
+            crashStatus.classList.add('crash-lose');
+
+            if (!cashedOut) {
+                updateCrashBalance(false);
+                plane.classList.add('crash');
+            }
+            endCrashRound();
+        }
+    }, 50);
+}
+
+function crashCashOut() {
+    const gameName = "Crash";
+    if (!crashInProgress || cashedOut) return;
+    cashedOut = true;
+    clearInterval(interval);
+
+    const crashStatus = document.getElementById('crash-status');
+    crashStatus.classList.remove('crash-win', 'crash-lose');
+    crashStatus.innerText = `✅ Забрано на x${multiplier.toFixed(2)}`;
+    crashStatus.classList.add('crash-win');
+
+    if (typeof Player_action === 'function') Player_action(gameName, "Кэш-аут", `Вывел на x${multiplier.toFixed(2)}`);
+
+    updateCrashBalance(true);
+    const plane = document.getElementById('crashPlane');
+    plane.classList.remove('crash');
+    plane.classList.add('cashout');
+    endCrashRound();
+}
+
+function endCrashRound() {
+    multiplier = 1.0;
+    animationMultiplier = 0.0;
+    cashedOut = false;
+
+    clearInterval(interval);
+    crashInProgress = false;
+    document.getElementById('crash-start').disabled = false;
+    document.getElementById('crash-cashout').disabled = true;
+
     document.querySelector('#game-crash .currency-selector')?.classList.remove('disabled');
     document.querySelector('#game-crash .bet-box')?.classList.remove('disabled');
     const backBtn = document.querySelector('#game-crash .back-btn');
@@ -94,187 +172,76 @@ if (backBtn) {
         backBtn.style.opacity = '1';
     }
 
-    return;
-    }
-
-
-
-
-    if (bet < minBet) {
-    alert(`Минимум ${minBet} TON`);
-    crashInProgress = false;
-
-    // 🔓 Разблокировка интерфейса после alert
-    document.querySelector('#game-crash .currency-selector')?.classList.remove('disabled');
-document.querySelector('#game-crash .bet-box')?.classList.remove('disabled');
-const backBtn = document.querySelector('#game-crash .back-btn');
-if (backBtn) {
-    backBtn.style.pointerEvents = 'auto';
-    backBtn.style.opacity = '1';
-}
-
-
-    return;
-}
-
-         // 💳 Списываем ставку из баланса
-    if (selectedCurrency === 'ton') {
-        fakeBalance.ton -= bet;
-    } else {
-        fakeBalance.usdt -= bet;
-    }
-
-    updateBalanceUI(); // ✅ ОБНОВЛЯЕМ интерфейс сразу после вычета
-
-    const crashStatus = document.getElementById('crash-status');
-crashStatus.classList.remove('crash-win', 'crash-lose');
-    document.getElementById('crash-multiplier').innerText = 'x1.00';
-    document.getElementById('crash-status').innerText = '✈️ Взлёт...';
-    document.getElementById('crash-result').innerText = '';
-    document.getElementById('crash-start').disabled = true;
-    document.getElementById('crash-cashout').disabled = false;
-
-    const crashPoint = parseFloat((Math.pow(Math.random(), 2) * 3 + 1.01).toFixed(2));
-
-
-
-
-
-interval = setInterval(() => {
-    multiplier += 0.005;              // игра идёт медленно
-    animationMultiplier += 0.015;      // самолёт летит быстрее
-
-    document.getElementById('crash-multiplier').innerText =
-        'x' + multiplier.toFixed(2);
-
-    const x = animationMultiplier * 40;
-    const baseY = animationMultiplier * 10;
-    const wave = Math.sin(animationMultiplier * 5) * 5;
-    const y = baseY + wave;
-
     const plane = document.getElementById('crashPlane');
-    plane.style.transform = `translate(${x}px, ${-y}px)`;
-
-    const drawX = x + 10;
-    const svg = document.querySelector('.flight-line');
-const svgHeight = svg?.clientHeight || 200;
-const drawY = svgHeight - y - 35;
-
-    flightPoints.push({ x: drawX, y: drawY });
-
-    const path = document.getElementById('flightPath');
-    if (path && flightPoints.length > 1) {
-        const d = flightPoints.map((pt, i) => `${i === 0 ? 'M' : 'L'}${pt.x},${pt.y}`).join(' ');
-        path.setAttribute('d', d);
-    }
-
-
-    // Двигаем фон влево, создавая эффект полёта
-const frame = document.querySelector('.crash-flight-frame');
-if (frame) {
-    frame.style.backgroundPosition = `-${x}px 0`;
-}
-
-
-
-    if (multiplier >= crashPoint) {
-        clearInterval(interval);
-        const crashStatus = document.getElementById('crash-status');
-        crashStatus.classList.remove('crash-win', 'crash-lose');
-        crashStatus.innerText = `💥 Самолёт упал на x${multiplier.toFixed(2)}`;
-        crashStatus.classList.add('crash-lose');
-
-        if (!cashedOut) {
-            updateCrashBalance(false);
-            plane.classList.add('crash');
-        }
-
-        endCrashRound();
-    }
-}, 50);
-
-
-}
-
-function crashCashOut() {
-   // const crashStatus = document.getElementById("crash-status");
-    if (!crashInProgress || cashedOut) return;
-    cashedOut = true;
-    clearInterval(interval);
-    const crashStatus = document.getElementById('crash-status');
-crashStatus.classList.remove('crash-win', 'crash-lose');
-crashStatus.innerText = `✅ Забрано на x${multiplier.toFixed(2)}`;
-crashStatus.classList.add('crash-win');
-
-    updateCrashBalance(true);
-
-    const plane = document.getElementById('crashPlane');
-    plane.classList.remove('crash');
-    plane.classList.add('cashout');
-
-    endCrashRound();
-}
-
-function endCrashRound() {
-multiplier = 1.0;
-animationMultiplier = 0.0;
-cashedOut = false;
-
-
-
-    clearInterval(interval);
-
-    crashInProgress = false;
-    document.getElementById('crash-start').disabled = false;
-    document.getElementById('crash-cashout').disabled = true;
-
-
-
-
-
-    document.querySelector('#game-crash .currency-selector')?.classList.remove('disabled');
-document.querySelector('#game-crash .bet-box')?.classList.remove('disabled');
-
-const backBtn = document.querySelector('#game-crash .back-btn');
-if (backBtn) {
-    backBtn.style.pointerEvents = 'auto';
-    backBtn.style.opacity = '1';
-}
-
-
-
-    const plane = document.getElementById('crashPlane');
-
-    // Очистка линии
     flightPoints = [];
-document.getElementById('flightPath')?.setAttribute('d', '');
-
-
+    document.getElementById('flightPath')?.setAttribute('d', '');
 
     setTimeout(() => {
         plane.classList.remove('crash', 'cashout');
         plane.style.transform = 'translate(0, 0)';
     }, 1000);
+
+    const betString = `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`;
+    const finalBalanceString = `Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`;
+    if (typeof Player_leave === 'function') {
+        Player_leave("Crash", `${crashResultText} | ${betString} | ${finalBalanceString}`);
+    }
 }
 
 function updateCrashBalance(isWin) {
     if (isWin) {
-        const payout = bet * multiplier;
-        if (selectedCurrency === 'ton') fakeBalance.ton += payout;
-        else fakeBalance.usdt += payout;
-
-        document.getElementById('crash-result').innerText =
-            `🎉 Вы выиграли ${formatAmount(payout)} ${selectedCurrency.toUpperCase()}`;
+        const payout = window.bet * multiplier;
+        if (window.selectedCurrency === 'ton') window.fakeBalance.ton += payout;
+        else window.fakeBalance.usdt += payout;
+        document.getElementById('crash-result').innerText = `🎉 Вы выиграли ${formatAmount(payout)} ${window.selectedCurrency.toUpperCase()}`;
+        crashResultText = `Победа на x${multiplier.toFixed(2)}`;
+        crashWinAmount = payout;
     } else {
-        document.getElementById('crash-result').innerText =
-            `😞 Вы проиграли. Попробуйте еще раз.`;
+        document.getElementById('crash-result').innerText = `😞 Вы проиграли. Попробуйте еще раз.`;
+        crashResultText = `Проигрыш на x${multiplier.toFixed(2)}`;
+        crashWinAmount = 0;
     }
 
     updateBalanceUI();
-
-    recordGame('crash', bet, isWin ? 'win' : 'lose', isWin);
+    if (typeof recordGame === 'function') {
+        recordGame('crash', window.bet, isWin ? 'win' : 'lose', isWin ? window.bet * multiplier : 0, window.selectedCurrency);
+    }
 }
 
+function resetCrashScreen() {
+    clearInterval(interval);
+    crashInProgress = false;
+    cashedOut = false;
+    multiplier = 1.0;
+    animationMultiplier = 0.0;
+    flightPoints = [];
 
+    document.getElementById('crash-multiplier').innerText = 'x1.00';
+    document.getElementById('crash-status').innerText = '';
+    document.getElementById('crash-status').className = '';
+    document.getElementById('crash-result').innerText = '';
+    document.getElementById('crash-start').disabled = false;
+    document.getElementById('crash-cashout').disabled = true;
+
+    const plane = document.getElementById('crashPlane');
+    plane.classList.remove('crash', 'cashout');
+    plane.style.transform = 'translate(0, 0)';
+    plane.style.transition = 'transform 0.1s linear';
+    document.getElementById('flightPath')?.setAttribute('d', '');
+
+    document.querySelector('#game-crash .currency-selector')?.classList.remove('disabled');
+    document.querySelector('#game-crash .bet-box')?.classList.remove('disabled');
+    const backBtn = document.querySelector('#game-crash .back-btn');
+    if (backBtn) {
+        backBtn.style.pointerEvents = 'auto';
+        backBtn.style.opacity = '1';
+    }
+
+    document.getElementById('crash-joke')?.style.setProperty('display', 'none');
+    document.getElementById('game-crash')?.style.setProperty('display', 'block');
+}
+
+window.resetCrashScreen = resetCrashScreen;
 window.playCrash = playCrash;
 window.crashCashOut = crashCashOut;
+})();

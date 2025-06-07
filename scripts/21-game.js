@@ -1,5 +1,8 @@
 (function () {
 
+const gameName = 'blackjack';
+
+
 
      function showLoader() {
     const loader = document.getElementById("blackjack-loader");
@@ -64,6 +67,8 @@ function hideLoader() {
     let canHit = true;
     let canPressButtons = false;
     let playerHasBlackjack = false;
+    let resizeHandler = null;
+
 
     async function initBlackjackScene() {
         const container = document.getElementById("blackjack-canvas-container");
@@ -87,10 +92,11 @@ showLoader(); // ✅ Показать красивый лоадер
         });
 
         container.appendChild(app.view);
-        await loadCardAssets();
-        setupScene();
+        //await loadCardAssets();
+
           // ✅ Дождись следующего кадра (гарантированная отрисовка)
     await new Promise(requestAnimationFrame);
+    setupScene();
         hideLoader(); // ✅ Скрыть лоадер только когда всё готово
     }
 
@@ -174,13 +180,20 @@ showLoader(); // ✅ Показать красивый лоадер
             fontFamily: 'Arial', fontSize: 20, fill: 'white', fontWeight: 'bold', stroke: '#000', strokeThickness: 4
         });
         playerText.anchor.set(1, 0);
-        playerText.x = app.screen.width - 16;
+       playerText.x = app.screen.width - 16;
         playerText.y = 10;
         app.stage.addChild(playerText);
 
-        window.addEventListener("resize", () => {
+
+        // ✅ Безопасный resize
+     resizeHandler = () => {
+        if (app && app.screen && playerText) {
             playerText.x = app.screen.width - 16;
-        });
+        }
+    };
+    window.addEventListener("resize", resizeHandler);
+
+
     }
 
 
@@ -197,11 +210,18 @@ showLoader(); // ✅ Показать красивый лоадер
         dealerCards = [];
         cardTextures = {};
 
+        if (resizeHandler) {
+    window.removeEventListener("resize", resizeHandler);
+    resizeHandler = null;
+}
+
+
         if (container) {
             container.innerHTML = "";
             container.style.display = "none";
         }
-    }
+
+            }
 
     function reset21Screen() {
         if (!app) return;
@@ -363,7 +383,7 @@ showLoader(); // ✅ Показать красивый лоадер
    function updateBlackjackResultUI(result, winAmount = 0, customPrize = null) {
     const resultBox = document.getElementById('blackjack-result');
     const prizeBox = document.getElementById('blackjack-prize');
-    const currency = selectedCurrency.toUpperCase();
+    const currency = window.selectedCurrency.toUpperCase();
 
     resultBox.innerText = result;
 
@@ -379,39 +399,72 @@ showLoader(); // ✅ Показать красивый лоадер
 
     // 💰 начисление выигрыша
     if (result === 'Ничья') {
-        fakeBalance[selectedCurrency] += window.bet;
+        window.fakeBalance[window.selectedCurrency] += window.bet;
     } else if (result === 'Blackjack!') {
        // winAmount = window.bet * 3;
-        fakeBalance[selectedCurrency] += winAmount;
+        window.fakeBalance[window.selectedCurrency] += winAmount;
     } else if (result === 'Вы выиграли!') {
         //winAmount = window.bet * 2;
-        fakeBalance[selectedCurrency] += winAmount;
+        window.fakeBalance[window.selectedCurrency] += winAmount;
     }
+
+// 🧠 лог действий
+if (typeof Player_action === 'function') {
+    const balanceStr = `TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`;
+    const res = result === 'Blackjack!' ? 'Blackjack'
+             : result === 'Вы выиграли!' ? 'Победа'
+             : result === 'Ничья' ? 'Ничья'
+             : 'Проигрыш';
+    const text = `${res} | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Выигрыш: ${winAmount} ${window.selectedCurrency.toUpperCase()} | Баланс: ${balanceStr}`;
+    Player_action(gameName, text);
+}
+
+
 
     updateBalanceUI();
 
     // 📦 запись игры
     if (typeof recordGame === 'function') {
-        recordGame("blackjack", window.bet, result, winAmount || 0);
-    }
+    recordGame("blackjack", window.bet, result, winAmount || 0, window.selectedCurrency);
+}
+
 }
 
 
 
     function startBlackjackGame() {
-        if (!app || blackjackInProgress) return;
 
-            if (!window.bet || isNaN(window.bet) || window.bet <= 0) return alert("Введите корректную ставку.");
-        const balanceAvailable = selectedCurrency === 'ton'
-            ? parseFloat(fakeBalance.ton.toFixed(2))
-            : parseFloat(fakeBalance.usdt.toFixed(2));
-        if (window.bet > balanceAvailable) return alert(`Недостаточно средств (${selectedCurrency.toUpperCase()})`);
-        if (window.bet < minBet) return alert(`Минимум ${minBet} ${selectedCurrency.toUpperCase()}`);
+    if (typeof Player_join === 'function') {
+    Player_join(gameName);
+}
+
+            if (!app || blackjackInProgress) return;
+
+            const balanceAvailable = selectedCurrency === 'ton'
+    ? parseFloat(fakeBalance.ton.toFixed(2))
+    : parseFloat(fakeBalance.usdt.toFixed(2));
+
+        if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
+    if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Некорректная ставка: ${window.bet}`);
+    return showCustomAlert("Введите корректную ставку.", "error");
+}
+if (window.bet > balanceAvailable) {
+    if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Недостаточно средств: ${window.bet} ${window.selectedCurrency.toUpperCase()} > ${balanceAvailable} ${window.selectedCurrency.toUpperCase()}`);
+    return showCustomAlert(`Недостаточно средств (${window.selectedCurrency.toUpperCase()})`, "error");
+}
+if (window.bet < window.minBet) {
+    if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Ставка меньше минимума: ${window.bet} < ${window.minBet}`);
+    return showCustomAlert(`Минимум ${window.minBet} ${window.selectedCurrency.toUpperCase()}`, "error");
+}
 
 // 💸 Вычитаем ставку
-fakeBalance[selectedCurrency] = parseFloat((balanceAvailable - window.bet).toFixed(2));
+window.fakeBalance[window.selectedCurrency] = parseFloat((window.balanceAvailable - window.bet).toFixed(2));
 updateBalanceUI();
 
+
+     if (typeof Player_action === 'function') {
+    Player_action(gameName, `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
+}
 
 
 
