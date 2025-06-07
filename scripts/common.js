@@ -49,24 +49,32 @@ function Player_leave(game, extra = "") {
     console.log(log);
 }
 
-function forceBalance() {
-    const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (!user) return;
+function forceBalance(delay = 500) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+            if (!user) return resolve(); // даже если нет юзера — завершаем
 
-    fetch(`${apiUrl}/balance/force`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: user.id })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (typeof data.ton === "number" && typeof data.usdt === "number") {
-            window.fakeBalance.ton = data.ton;
-            window.fakeBalance.usdt = data.usdt;
-            updateBalanceUI();
-        }
-    })
-    .catch(console.error);
+            fetch(`${apiUrl}/balance/force`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: user.id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (typeof data.ton === "number" && typeof data.usdt === "number") {
+                    window.fakeBalance.ton = data.ton;
+                    window.fakeBalance.usdt = data.usdt;
+                    updateBalanceUI();
+                }
+                resolve(); // 🔑 завершаем Promise после обновления
+            })
+            .catch((err) => {
+                console.error(err);
+                resolve(); // даже при ошибке завершаем, чтобы не зависло
+            });
+        }, delay);
+    });
 }
 
 
