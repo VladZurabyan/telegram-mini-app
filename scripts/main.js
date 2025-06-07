@@ -249,7 +249,12 @@ function startBalanceUpdater() {
 startBalanceUpdater();
 
 // ✅ Когда выходим из игры — перезапускаем
-window.balanceUpdater = startBalanceUpdater;
+window.balanceUpdater = () => {
+    if (!isFetching && !window.inGame) {
+        startBalanceUpdater();
+    }
+};
+
 
 
 
