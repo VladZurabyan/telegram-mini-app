@@ -60,6 +60,7 @@ if (user) {
         updateBalanceUI();
      // ⏳ Сразу обновим баланс, чтобы он был точным
         updateBalanceOnce();
+     startBalanceUpdater();
     });
 }
 
