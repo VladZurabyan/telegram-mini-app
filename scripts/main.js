@@ -32,7 +32,7 @@ const activeGames = {
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-//tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
+tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
  window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
         ton: 10,
