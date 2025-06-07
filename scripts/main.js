@@ -211,10 +211,6 @@ let balanceTimer = null;
 let isFetching = false;
 let lastBalanceCheck = { ton: null, usdt: null };
 
-let balanceTimer = null;
-let isFetching = false;
-let lastBalanceCheck = { ton: null, usdt: null };
-
 function startBalanceUpdater() {
     if (isFetching) return;
     isFetching = true;
