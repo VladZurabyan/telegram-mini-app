@@ -138,14 +138,16 @@
             updateBalanceUI();
 
             if (typeof recordGame === 'function') {
-                recordGame(
-                    "coin",
-                    window.bet,
-                    isWin ? "win" : "lose",
-                    isWin ? 2 : 0,
-                    window.selectedCurrency
-                );
-            }
+    recordGame(
+        "coin",                        // Название игры
+        window.bet,                   // Ставка
+        isWin ? "win" : "lose",       // Результат (строка)
+        isWin,                        // Победа: true / false
+        window.selectedCurrency,      // Валюта
+        isWin ? window.bet * 2 : 0    // Приз (если выиграл)
+    );
+}
+
 
             const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
             if (typeof Player_action === 'function') {
