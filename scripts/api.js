@@ -9,22 +9,13 @@ function recordGame(game, bet, result, win, currency, prizeAmount = 0, final = t
             user_id: u.id,
             game,
             bet,
-            result,            // "pending", "win", "lose"
+            result,
             win,
             currency,
             prize_amount: prizeAmount,
-            final              // 👈 новый флаг
+            final
         })
-    })
-    .then(r => r.json())
-    .then(d => {
-        if (typeof d.ton === "number" && typeof d.usdt === "number") {
-            window.fakeBalance.ton = d.ton;
-            window.fakeBalance.usdt = d.usdt;
-            updateBalanceUI();
-        } else {
-            setTimeout(fetchBalance, 500); // резерв
-        }
-    });
+    }).catch(console.error);
 }
+
 window.recordGame = recordGame;
