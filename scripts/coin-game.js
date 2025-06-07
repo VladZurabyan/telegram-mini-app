@@ -155,6 +155,9 @@ if (typeof recordGame === 'function') {
         true
     );
 }
+if (typeof forceBalance === "function") {
+    forceBalance();
+}
 
             const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
             if (typeof Player_action === 'function') {
