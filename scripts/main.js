@@ -35,8 +35,8 @@ tg.expand();
 tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
  window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
-        ton: 10,
-        usdt: 100
+        ton: 0,
+        usdt: 0
 };
 
 const winsCount = 2;
