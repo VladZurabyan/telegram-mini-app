@@ -211,8 +211,10 @@ let balanceTimer = null;
 let isFetching = false;
 let lastBalanceCheck = { ton: null, usdt: null };
 
+// 🔄 Автообновление баланса — с паузой и без спама
 function startBalanceUpdater() {
     if (isFetching) return;
+
     isFetching = true;
 
     const user = tg.initDataUnsafe?.user;
@@ -229,6 +231,7 @@ function startBalanceUpdater() {
             const tonChanged = data.ton !== lastBalanceCheck.ton;
             const usdtChanged = data.usdt !== lastBalanceCheck.usdt;
 
+            // ✅ обновим и в игре, и на главной — но только если баланс изменился
             if (tonChanged || usdtChanged) {
                 window.fakeBalance.ton = data.ton;
                 window.fakeBalance.usdt = data.usdt;
@@ -240,9 +243,12 @@ function startBalanceUpdater() {
         .catch(console.error)
         .finally(() => {
             isFetching = false;
-            balanceTimer = setTimeout(startBalanceUpdater, 5000); // повтор
+
+            // 🕓 продолжим цикл даже если мы в игре
+            balanceTimer = setTimeout(startBalanceUpdater, 5000);
         });
 }
+
 
 
 
@@ -364,7 +370,7 @@ function loadGame(gameId) {
 
                         if (gameId === 'game-coin') {
     window.inGame = true;
-    clearTimeout(balanceTimer); // ⛔ остановить цикл автообновления
+    
 
     document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
     document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
