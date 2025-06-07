@@ -1,0 +1,651 @@
+:root {
+    --bg-main: #1e1f24;
+    --bg-secondary: #2a2b32;
+    --text-primary: #ffffff;
+    --text-secondary: #c2c3c7;
+    --accent-blue: #3b82f6;
+    --success-green: #22c55e;
+    --danger-orange: #f97316;
+    --border-color: #3a3b41;
+    --radius: 12px;
+}
+
+body {
+    margin: 0;
+    padding: 24px;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', 'Inter', sans-serif;
+}
+
+.admin-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.tab-btn {
+    padding: 10px 18px;
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tab-btn.active {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.admin-section {
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+    padding: 20px;
+}
+
+.admin-section h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius);
+    overflow: hidden;
+    font-size: 15px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.admin-table th {
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: #888ea2;
+}
+
+.approve-btn {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: lowercase;
+}
+
+.badge.success {
+    background-color: var(--success-green);
+    color: #fff;
+}
+
+.badge.danger {
+    background-color: var(--danger-orange);
+    color: #fff;
+}
+
+
+/* ==== Раздел ЛОГИ ==== */
+.log-category {
+    background-color: #25252f;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-top: 20px;
+}
+
+.log-category h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 6px;
+}
+
+.log-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.log-list li {
+    padding: 10px 14px;
+    background-color: var(--bg-secondary);
+    border-left: 4px solid var(--accent-blue);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.log-list li strong {
+    color: var(--text-primary);
+    margin-right: 6px;
+}
+
+#uid-search,
+#user-select {
+    margin: 12px 0 20px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal {
+    background-color: var(--bg-secondary);
+    padding: 24px;
+    border-radius: 12px;
+    color: var(--text-primary);
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 20px #000;
+    max-height: 90vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.modal h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+
+.modal button {
+    margin-top: 20px;
+    background: var(--accent-blue);
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#pagination-controls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.player-controls {
+    margin-bottom: 12px;
+}
+
+.player-controls input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.action-btn {
+    margin: 2px;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+}
+
+.btn-danger {
+    background-color: #e74c3c !important; /* красный */
+    color: white;
+}
+
+.btn-success {
+    background-color: #2ecc71 !important; /* зелёный */
+    color: white;
+}
+
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.stats-card {
+    background: #1e1e2f;
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+}
+
+.stats-card h3 {
+    margin-bottom: 8px;
+    font-size: 18px;
+    color: #89f0ff;
+}
+
+.stats-card p {
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.action-btn[href*="t.me"] {
+    background-color: #0088cc;
+    color: white;
+    text-decoration: none;
+}
+
+.action-btn[href^="tg://user"] {
+    background-color: #444;
+    color: #fff;
+}
+
+
+#player-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+#player-pagination button {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    background-color: var(--accent-blue, #0088cc);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#player-pagination button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: 0.3s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+input:checked + .slider {
+    background-color: var(--success-green);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+
+
+/* Универсальный фикс */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Фон и центровка */
+.login-screen {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #203a43, #0f2027);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Контейнер */
+.login-box {
+    background: #1e1e1e;
+    border-radius: 18px;
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+}
+
+/* Заголовок */
+.login-box h2 {
+    margin-bottom: 24px;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+
+/* Кнопка */
+.login-box button {
+    width: 100%;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 114, 255, 0.3);
+}
+
+/* Ошибка */
+.login-error {
+    color: #ff4d4f;
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 16px 14px 10px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background: #2a2a2a;
+    color: #fff;
+    transition: 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #00bfff;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 191, 255, 0.25);
+}
+
+.input-group input::placeholder {
+    color: transparent;
+}
+
+.input-group label {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 16px;
+    pointer-events: none;
+
+    padding: 0 4px;
+    transition: 0.2s ease;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: 4px;
+    left: 10px;
+    font-size: 12px;
+    color: #00bfff;
+    background: #1e1e1e;
+}
+
+
+
+
+
+
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 22px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .admin-wrapper {
+        padding: 0 6px;
+    }
+
+    .admin-tabs {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .tab-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .admin-section {
+        padding: 16px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+
+    .admin-table th {
+        font-size: 12px;
+    }
+
+    .approve-btn {
+        width: 100%;
+        text-align: center;
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .log-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .modal {
+        padding: 16px;
+        font-size: 14px;
+    }
+
+    #pagination-controls {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    #page-info {
+        text-align: center;
+        font-size: 13px;
+    }
+     .admin-table {
+        border: 0;
+    }
+
+    .admin-table thead {
+        display: none;
+    }
+
+    .admin-table tr {
+        display: block;
+        margin-bottom: 16px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 10px;
+    }
+
+    .admin-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px;
+        font-size: 14px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .admin-table td:last-child {
+        border-bottom: none;
+    }
+
+    .admin-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--text-primary);
+        margin-right: 10px;
+    }
+
+    .approve-btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 4px;
+    }
+
+     .admin-table td .action-btn {
+    width: 100%;
+    margin: 4px 0;
+    font-size: 13px;
+}
+
+.admin-table td[data-label="Действия"] {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.admin-table td[data-label="Действия"] .action-btn {
+    width: 100%;
+    font-size: 13px;
+    text-align: center;
+}
+
+   #section-settings .admin-table tr {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+}
+
+#section-settings .admin-table td {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 👈 выравниваем по левому краю */
+            gap: 6px;
+            font-size: 14px;
+            padding: 6px 0;
+            border: none;
+    }
+
+#section-settings .admin-table td:first-child {
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+
+
+}

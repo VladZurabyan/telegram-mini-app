@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админ-панель</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="login-screen" class="login-screen">
+    <div class="login-box">
+        <h2>🔐 Вход в админку</h2>
+
+        <div class="input-group">
+            <input type="text" id="admin-login" placeholder=" " required />
+            <label for="admin-login">Логин</label>
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="admin-password" placeholder=" " required />
+            <label for="admin-password">Пароль</label>
+        </div>
+
+        <button onclick="submitLogin()">Войти</button>
+        <p id="login-error" class="login-error"></p>
+    </div>
+</div>
+
+
+
+
+    <div class="admin-wrapper" style="display: none;">
+        <h1>🎮 Панель администратора</h1>
+
+        <div class="admin-tabs">
+            <button class="tab-btn active">Пополнения</button>
+            <button class="tab-btn">Выводы</button>
+            <button class="tab-btn">Статистика</button>
+            <button class="tab-btn">Игроки</button>
+            <button class="tab-btn">Логи</button>
+            <button class="tab-btn">Настройки</button>
+
+        </div>
+
+        <!-- 📥 Пополнения -->
+<div class="admin-section" id="section-deposits">
+    <h2>Пополнения</h2>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>UID</th>
+                <th>Сумма</th>
+                <th>Валюта</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody id="deposits-body">
+            <!-- Динамически через JS -->
+        </tbody>
+    </table>
+</div>
+
+
+      <!-- 📤 Выводы -->
+<div class="admin-section" id="section-withdraws" style="display: none;">
+    <h2>Выводы</h2>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>UID</th>
+                <th>Сумма</th>
+                <th>Валюта</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody id="withdraws-body">
+            <!-- Заполняется через JS -->
+        </tbody>
+    </table>
+</div>
+
+
+
+        <!-- 📊 Статистика -->
+<div class="admin-section" id="section-stats" style="display: none;">
+    <h2>📊 Статистика</h2>
+    <div id="stats-content" class="stats-cards"></div>
+</div>
+
+
+       <!-- 👤 Игроки -->
+<div class="admin-section" id="section-players" style="display: none;">
+    <h2>Игроки</h2>
+
+    <div class="player-controls">
+        <input type="text" id="playerSearch" placeholder="Поиск по ID или username">
+    </div>
+
+    <table class="admin-table" id="playersTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>TON</th>
+                <th>USDT</th>
+                <th>Игры</th>
+                <th>Победы / Поражения</th>
+                <th>Последний вход</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Данные загружаются динамически -->
+        </tbody>
+    </table>
+    <div id="player-pagination" style="margin-top: 12px; display: flex; justify-content: center; gap: 12px;"></div>
+</div>
+
+
+        <!-- 📜 Логи -->
+<div class="admin-section" id="section-logs" style="display: none;">
+    <h2>Логи пользователя</h2>
+
+    <label for="user-select">Выберите UID:</label>
+    <select id="user-select">
+        <option disabled selected>Выберите пользователя</option>
+    </select>
+    <label for="uid-search">Поиск по UID вручную:</label>
+<input type="text" id="uid-search" placeholder="например: 12345" />
+
+    <div class="log-category" id="log-deposits">
+        <h3>📥 Пополнения</h3>
+        <ul class="log-list"></ul>
+    </div>
+
+    <div class="log-category" id="log-withdraws">
+        <h3>📤 Выводы</h3>
+        <ul class="log-list"></ul>
+    </div>
+
+    <div class="log-category" id="log-games">
+        <h3>🎮 Игры</h3>
+        <ul class="log-list"></ul>
+    </div>
+</div>
+        <!-- ⚙️ Настройки -->
+        <div class="admin-section" id="section-settings" style="display: none;">
+            <h2>⚙️ Настройки</h2>
+            <div class="settings-block">
+                <h2>Управление играми</h2>
+                <div class="games-toggle-list" id="gamesToggleList"></div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <div class="modal-overlay" id="game-modal" style="display: none;">
+    <div class="modal">
+        <h3>Фильтр логов по игре</h3>
+
+        <label>Дата:</label>
+        <!-- уже есть: -->
+<input type="date" id="filter-date" />
+
+<!-- 🔍 Новый фильтр по результату -->
+<select id="filter-result" style="margin-top: 10px;">
+    <option value="">Все результаты</option>
+    <option value="win">Выиграл</option>
+    <option value="lose">Проиграл</option>
+</select>
+
+<!-- 📊 Статистика -->
+<div id="game-summary" style="margin-top: 16px;"></div>
+
+<!-- 🔽 Здесь будут логи -->
+<div id="filtered-game-results" style="margin-top: 16px;"></div>
+    <!-- 📄 Пагинация -->
+<div id="pagination-controls" style="display: none; justify-content: space-between; align-items: center; margin-top: 10px;">
+    <button id="prev-page">←</button>
+    <span id="page-info">Страница 1</span>
+    <button id="next-page">→</button>
+</div>
+
+        <button onclick="closeGameModal()">Закрыть</button>
+    </div>
+</div>
+
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>

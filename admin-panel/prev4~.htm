@@ -1,0 +1,270 @@
+<!DOCTYPE html><html><head><title>Preview</title>
+<style type="text/css"><!--
+:root {
+    --bg-main: #1e1f24;
+    --bg-secondary: #2a2b32;
+    --text-primary: #ffffff;
+    --text-secondary: #c2c3c7;
+    --accent-blue: #3b82f6;
+    --success-green: #22c55e;
+    --danger-orange: #f97316;
+    --border-color: #3a3b41;
+    --radius: 12px;
+}
+
+body {
+    margin: 0;
+    padding: 24px;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', 'Inter', sans-serif;
+}
+
+.admin-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.tab-btn {
+    padding: 10px 18px;
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tab-btn.active {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.admin-section {
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+    padding: 20px;
+}
+
+.admin-section h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius);
+    overflow: hidden;
+    font-size: 15px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.admin-table th {
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: #888ea2;
+}
+
+.approve-btn {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: lowercase;
+}
+
+.badge.success {
+    background-color: var(--success-green);
+    color: #fff;
+}
+
+.badge.danger {
+    background-color: var(--danger-orange);
+    color: #fff;
+}
+
+
+/* ==== Ðàçäåë ËÎÃÈ ==== */
+.log-category {
+    background-color: #25252f;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-top: 20px;
+}
+
+.log-category h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 6px;
+}
+
+.log-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.log-list li {
+    padding: 10px 14px;
+    background-color: var(--bg-secondary);
+    border-left: 4px solid var(--accent-blue);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.log-list li strong {
+    color: var(--text-primary);
+    margin-right: 6px;
+}
+
+#uid-search,
+#user-select {
+    margin: 12px 0 20px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal {
+    background-color: var(--bg-secondary);
+    padding: 24px;
+    border-radius: 12px;
+    color: var(--text-primary);
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 20px #000;
+}
+
+.modal h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+
+.modal button {
+    margin-top: 20px;
+    background: var(--accent-blue);
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+
+
+--></style>
+</head>
+<body>
+<a name="0"></a><div style="position: static;">:root</div>
+<br style="clear: both">
+<a name="1"></a><br style="clear: both">
+<a name="2"></a><div style="position: static;" class="admin-wrapper">.admin-wrapper</div>
+<br style="clear: both">
+<a name="3"></a><h1 style="position: static;">h1</h1><br style="clear: both">
+<a name="4"></a><div style="position: static;" class="admin-tabs">.admin-tabs</div>
+<br style="clear: both">
+<a name="5"></a><div style="position: static;" class="tab-btn">.tab-btn</div>
+<br style="clear: both">
+<a name="6"></a><div style="position: static;" class="tab-btn active">.tab-btn.active</div>
+<br style="clear: both">
+<a name="7"></a><div style="position: static;" class="admin-section">.admin-section</div>
+<br style="clear: both">
+<a name="8"></a><div style="position: static;" class="admin-section"><h2 style="position: static;">.admin-section h2</h2></div><br style="clear: both">
+<a name="9"></a><div style="position: static;" class="admin-table">.admin-table</div>
+<br style="clear: both">
+<a name="10"></a><div style="position: static;" class="admin-table"><th style="position: static;">.admin-table th</th></div><br style="clear: both">
+<a name="11"></a><div style="position: static;" class="admin-table"><table><tr><td style="position: static;">.admin-table td</td></tr></table></div><br style="clear: both">
+<a name="12"></a><div style="position: static;" class="admin-table"><th style="position: static;">.admin-table th</th></div><br style="clear: both">
+<a name="13"></a><div style="position: static;" class="approve-btn">.approve-btn</div>
+<br style="clear: both">
+<a name="14"></a><div style="position: static;" class="badge">.badge</div>
+<br style="clear: both">
+<a name="15"></a><div style="position: static;" class="badge success">.badge.success</div>
+<br style="clear: both">
+<a name="16"></a><div style="position: static;" class="badge danger">.badge.danger</div>
+<br style="clear: both">
+<a name="17"></a><div style="position: static;" class="log-category">.log-category</div>
+<br style="clear: both">
+<a name="18"></a><div style="position: static;" class="log-category"><h3 style="position: static;">.log-category h3</h3></div><br style="clear: both">
+<a name="19"></a><div style="position: static;" class="log-list">.log-list</div>
+<br style="clear: both">
+<a name="20"></a><div style="position: static;" class="log-list"><ul><li style="position: static;">.log-list li</li></ul></div><br style="clear: both">
+<a name="21"></a><div style="position: static;" class="log-list"><li style="position: static;"><strong style="position: static;">.log-list li strong</strong></li></div><br style="clear: both">
+<a name="22"></a><div style="position: static;" id="uid-search">#uid-search</div>
+<br style="clear: both">
+<a name="23"></a><div style="position: static;" id="user-select">#user-select</div>
+<br style="clear: both">
+<a name="24"></a><div style="position: static;" class="modal-overlay">.modal-overlay</div>
+<br style="clear: both">
+<a name="25"></a><div style="position: static;" class="modal">.modal</div>
+<br style="clear: both">
+<a name="26"></a><div style="position: static;" class="modal"><h3 style="position: static;">.modal h3</h3></div><br style="clear: both">
+<a name="27"></a><div style="position: static;" class="modal"><button style="position: static;">.modal button</button></div><br style="clear: both">
+
+</body></html>
