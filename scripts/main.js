@@ -12,8 +12,6 @@
 
 
 const activeGames = {
-    'deposit': true,
-    'withdraw': true,
     'game-coin': true,
     'game-crash': true,
     'game-boxes': true,
@@ -32,7 +30,7 @@ const activeGames = {
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
+//tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
  window.Telegram.WebApp.disableVerticalSwipes()
 const fakeBalance = {
         ton: 10,
@@ -46,6 +44,7 @@ const totalCount = winsCount + lossesCount;
 const user = tg.initDataUnsafe?.user;
 const apiUrl = "https://miniapp-backend.onrender.com";
 
+// ✅ Синхронизация баланса при старте
 if (user) {
     fetch(`${apiUrl}/init`, {
         method: "POST",
@@ -54,8 +53,9 @@ if (user) {
     })
     .then(r => r.json())
     .then(d => {
-        document.querySelectorAll(".balance span")[0].textContent = d.ton.toFixed(2);
-        document.querySelectorAll(".balance span")[1].textContent = d.usdt.toFixed(2);
+        window.fakeBalance.ton = d.ton;
+        window.fakeBalance.usdt = d.usdt;
+        updateBalanceUI();
     });
 }
 
@@ -202,20 +202,23 @@ function initWithdraw() {
 
 }
 
+// ✅ Автообновление баланса с защитой
 function fetchBalance() {
-    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    const user = tg.initDataUnsafe?.user;
+    if (!user || window.inGame) return; // 🛡 не обновлять, если в игре
+
     fetch(`${apiUrl}/balance/${user.id}`)
         .then(res => res.json())
         .then(data => {
             if (data && typeof data.ton === "number") {
-                fakeBalance.ton = data.ton;
-                fakeBalance.usdt = data.usdt;
+                window.fakeBalance.ton = data.ton;
+                window.fakeBalance.usdt = data.usdt;
                 updateBalanceUI();
             }
         });
 }
+window.balanceUpdater = setInterval(fetchBalance, 2000);
 
-setInterval(fetchBalance, 2000);
 
 
 
