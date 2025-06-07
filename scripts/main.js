@@ -211,7 +211,10 @@ let balanceTimer = null;
 let isFetching = false;
 let lastBalanceCheck = { ton: null, usdt: null };
 
-// 🔄 Универсальный автообновлятор баланса
+let balanceTimer = null;
+let isFetching = false;
+let lastBalanceCheck = { ton: null, usdt: null };
+
 function startBalanceUpdater() {
     if (isFetching) return;
     isFetching = true;
@@ -241,7 +244,7 @@ function startBalanceUpdater() {
         .catch(console.error)
         .finally(() => {
             isFetching = false;
-            balanceTimer = setTimeout(startBalanceUpdater, 5000); // ⏱ снова через 5 сек
+            balanceTimer = setTimeout(startBalanceUpdater, 5000); // повтор
         });
 }
 
