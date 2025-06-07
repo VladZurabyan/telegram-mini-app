@@ -58,6 +58,8 @@ if (user) {
         window.fakeBalance.ton = d.ton;
         window.fakeBalance.usdt = d.usdt;
         updateBalanceUI();
+     // ⏳ Сразу обновим баланс, чтобы он был точным
+        updateBalanceOnce();
     });
 }
 
