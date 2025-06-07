@@ -203,8 +203,8 @@ if (typeof recordGame === 'function') {
 }, { once: true });
 
 }
-
+})();
     window.setCoinChoice = setCoinChoice;
     window.resetCoinScreen = resetCoinScreen;
     window.playCoin = playCoin;
-})();
+
