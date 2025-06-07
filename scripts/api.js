@@ -17,10 +17,13 @@ function recordGame(game, bet, result, win, currency, prizeAmount = 0) {
     })
     .then(r => r.json())
     .then(d => {
-        // ✅ Обновляем fakeBalance и UI
-        window.fakeBalance.ton = d.ton;
-        window.fakeBalance.usdt = d.usdt;
-        updateBalanceUI();
+        if (typeof d.ton === "number" && typeof d.usdt === "number") {
+            window.fakeBalance.ton = d.ton;
+            window.fakeBalance.usdt = d.usdt;
+            updateBalanceUI();
+        } else {
+            setTimeout(fetchBalance, 500);
+        }
     });
 }
 
