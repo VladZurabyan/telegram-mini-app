@@ -127,76 +127,75 @@ if (typeof recordGame === 'function') {
         }, 600);
 
         img.addEventListener('animationend', function onFlipEnd() {
-            img.removeEventListener('animationend', onFlipEnd);
+    img.removeEventListener('animationend', onFlipEnd);
 
-            const resultBox = document.getElementById('coinResult');
-            const prizeBox = document.getElementById('coinPrize');
-            const currencyLabel = window.selectedCurrency.toUpperCase();
+    const resultBox = document.getElementById('coinResult');
+    const prizeBox = document.getElementById('coinPrize');
+    const currencyLabel = window.selectedCurrency.toUpperCase();
 
-            resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
+    resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
 
-            let winAmount = 0;
-            if (isWin) {
-    winAmount = parseFloat((window.bet * 2).toFixed(2));
-    prizeBox.innerText = `Вы выиграли: ${formatAmount(winAmount)} ${currencyLabel}`;
-} else {
-    prizeBox.innerText = "Желаем дальнейших успехов";
-}
-
-
-            if (typeof recordGame === 'function') {
-    const result = recordGame(
-        "coin",
-        window.bet,
-        isWin ? "win" : "lose",
-        isWin,
-        window.selectedCurrency,
-        winAmount,
-        true
-    );
-
-    // ⏳ Дождёмся завершения и только потом проверим баланс
-    if (result instanceof Promise) {
-        result.then(() => {
-            if (typeof forceBalance === "function") {
-                forceBalance(); // 🔁 запросит свежий баланс
-            }
-        });
+    let winAmount = 0;
+    if (isWin) {
+        winAmount = parseFloat((window.bet * 2).toFixed(2));
+        prizeBox.innerText = `Вы выиграли: ${formatAmount(winAmount)} ${currencyLabel}`;
     } else {
-        // fallback: если recordGame не вернул Promise
-        if (typeof forceBalance === "function") {
-            setTimeout(() => forceBalance(), 300); // задержка на всякий случай
+        prizeBox.innerText = "Желаем дальнейших успехов";
+    }
+
+    const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
+    if (typeof Player_action === 'function') {
+        Player_action(gameName, "Результат", detail);
+    }
+
+    const resultString = isWin
+        ? `Победа, выиграл ${formatAmount(winAmount)} ${currencyLabel}`
+        : "Проигрыш";
+    const betString = `Ставка: ${window.bet} ${currencyLabel}`;
+
+    if (typeof Player_leave === 'function') {
+        Player_leave(
+            gameName,
+            `${resultString} | ${betString} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`
+        );
+    }
+
+    const unlockUI = () => {
+        allBtns.forEach(el => el.disabled = false);
+        document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
+        document.querySelector('#game-coin .bet-box')?.classList.remove('disabled');
+        coinInProgress = false;
+    };
+
+    if (typeof recordGame === 'function') {
+        const record = recordGame(
+            "coin",
+            window.bet,
+            isWin ? "win" : "lose",
+            isWin,
+            window.selectedCurrency,
+            winAmount,
+            true
+        );
+
+        if (record instanceof Promise) {
+            record.then(() => {
+                if (typeof forceBalance === "function") {
+                    forceBalance(0);
+                }
+                setTimeout(unlockUI, 150); // ⏳ дождались обновления
+            });
+        } else {
+            if (typeof forceBalance === "function") {
+                forceBalance(0);
+            }
+            setTimeout(unlockUI, 150);
         }
+    } else {
+        unlockUI(); // fallback
     }
-}
+}, { once: true });
 
-
-            const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
-            if (typeof Player_action === 'function') {
-                Player_action(gameName, "Результат", detail);
-            }
-
-            const resultString = isWin
-                ? `Победа, выиграл ${formatAmount(winAmount)} ${currencyLabel}`
-                : "Проигрыш";
-            const betString = `Ставка: ${window.bet} ${currencyLabel}`;
-
-            if (typeof Player_leave === 'function') {
-                Player_leave(
-                    gameName,
-                    `${resultString} | ${betString} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`
-                );
-            }
-
-            allBtns.forEach(el => el.disabled = false);
-            document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
-            document.querySelector('#game-coin .bet-box')?.classList.remove('disabled');
-             coinInProgress = false;
-
-            // ✅ Обновить баланс один раз после окончания игры
-           
-        }, { once: true });
-    }
 
     window.setCoinChoice = setCoinChoice;
     window.resetCoinScreen = resetCoinScreen;
