@@ -205,15 +205,13 @@ function initWithdraw() {
 }
 
 // ✅ Автообновление баланса с защитой
-let prevBalance = { ton: null, usdt: null };
 let isFetching = false;
+let balanceTimer = null;
 
 function startBalanceUpdater() {
-    if (window.inGame) return;
+    if (window.inGame || isFetching) return; // если в игре — не обновлять
 
-    if (isFetching) return;
     isFetching = true;
-
     const user = tg.initDataUnsafe?.user;
     if (!user) {
         isFetching = false;
@@ -223,37 +221,37 @@ function startBalanceUpdater() {
     fetch(`${apiUrl}/balance/${user.id}`)
         .then(res => res.json())
         .then(data => {
-            if (
-                typeof data.ton === "number" &&
-                typeof data.usdt === "number" &&
-                (data.ton !== prevBalance.ton || data.usdt !== prevBalance.usdt)
-            ) {
+            if (typeof data.ton === "number" && typeof data.usdt === "number") {
                 window.fakeBalance.ton = data.ton;
                 window.fakeBalance.usdt = data.usdt;
                 updateBalanceUI();
-                prevBalance.ton = data.ton;
-                prevBalance.usdt = data.usdt;
             }
         })
         .catch(console.error)
         .finally(() => {
             isFetching = false;
-            // Повторяем цикл только если не в игре
-            if (!window.inGame) {
-                setTimeout(startBalanceUpdater, 3000); // ⏳ пауза между циклами
-            }
+            balanceTimer = setTimeout(startBalanceUpdater, 3000); // снова через 3 секунды
         });
 }
 
-// ✅ Первый запуск цикла
-startBalanceUpdater();
 
-// ✅ Когда выходим из игры — перезапускаем
-window.balanceUpdater = () => {
-    if (!isFetching && !window.inGame) {
-        startBalanceUpdater();
-    }
-};
+function updateBalanceOnce() {
+    const user = tg.initDataUnsafe?.user;
+    if (!user) return;
+
+    fetch(`${apiUrl}/balance/${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (typeof data.ton === "number" && typeof data.usdt === "number") {
+                window.fakeBalance.ton = data.ton;
+                window.fakeBalance.usdt = data.usdt;
+                updateBalanceUI();
+            }
+        })
+        .catch(console.error);
+}
+window.updateBalanceOnce = updateBalanceOnce;
+
 
 
 
@@ -274,6 +272,8 @@ function backToMain() {
     else if (game === 'game-arrow') resetTarget();
      else if (game === 'game-21') reset21Screen();
 
+window.inGame = false;
+startBalanceUpdater(); // возобновить цикл
 
         showMain();
 }
@@ -352,35 +352,40 @@ function loadGame(gameId) {
                         updateBalanceUI();
 
                         if (gameId === 'game-coin') {
-                            window.inGame = true;
-                            clearInterval(window.balanceUpdater);
-                                document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
-                                document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
-                                setCurrency(selectedCurrency);
+    window.inGame = true;
+    clearTimeout(balanceTimer); // ⛔ остановить цикл автообновления
 
-                                const betBtns = document.querySelectorAll('#game-coin .bet-box button');
-                                betBtns.forEach(btn => {
-                                        btn.addEventListener('click', () => {
-                                                const text = btn.innerText.toLowerCase();
-                                                if (text === 'min') setBet('min');
-                                                else if (text === 'max') setBet('max');
-                                                else if (text === '+') changeBet(1);
-                                                else if (text === '-') changeBet(-1);
-                                        });
-                                });
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+    setCurrency(selectedCurrency);
 
-                                updateBalanceUI(); // чтобы сразу отображалось
-                                updateBetUI();
-                                window.inGame = false;
-                                window.balanceUpdater();
+    const betBtns = document.querySelectorAll('#game-coin .bet-box button');
+    betBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.innerText.toLowerCase();
+            if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+            else if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
+        });
+    });
 
-                                document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
-                                document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
-                                document.querySelector('.play-btn')?.addEventListener('click', function () { playCoin(this); });
-                                document.getElementById('btn-back-coin')?.addEventListener('click', backToMain);
+    updateBalanceUI();
+    updateBetUI();
 
+    // 🎯 Кнопки монеты
+    document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
+    document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
 
-                        }
+    document.querySelector('.play-btn')?.addEventListener('click', function () {
+        playCoin(this); // В конце playCoin должно быть: updateBalanceOnce();
+    });
+
+    document.getElementById('btn-back-coin')?.addEventListener('click', () => {
+        backToMain(); // внутри backToMain будет: window.inGame = false; startBalanceUpdater();
+    });
+}
+
 
                         if (gameId === 'game-boxes') {
                             window.inGame = true;
