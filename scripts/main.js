@@ -12,6 +12,8 @@
 
 
 const activeGames = {
+    'deposit': true,
+    'withdrow': true,
     'game-coin': true,
     'game-crash': true,
     'game-boxes': true,
