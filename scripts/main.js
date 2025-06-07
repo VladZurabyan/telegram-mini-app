@@ -273,7 +273,7 @@ function backToMain() {
     else if (game === 'game-arrow') resetTarget();
      else if (game === 'game-21') reset21Screen();
 
-startBalanceListener();
+
 
 
         showMain();
