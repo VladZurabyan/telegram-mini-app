@@ -316,6 +316,8 @@ function loadGame(gameId) {
                         updateBalanceUI();
 
                         if (gameId === 'game-coin') {
+                            window.inGame = true;
+                            clearInterval(window.balanceUpdater);
                                 document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
                                 document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
                                 setCurrency(selectedCurrency);
@@ -331,7 +333,11 @@ function loadGame(gameId) {
                                         });
                                 });
 
+                                updateBalanceUI(); // чтобы сразу отображалось
                                 updateBetUI();
+                                window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+
                                 document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
                                 document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
                                 document.querySelector('.play-btn')?.addEventListener('click', function () { playCoin(this); });
@@ -341,6 +347,8 @@ function loadGame(gameId) {
                         }
 
                         if (gameId === 'game-boxes') {
+                            window.inGame = true;
+                            clearInterval(window.balanceUpdater);
                                 document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
                                 document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
                                 setCurrency(selectedCurrency);
@@ -389,11 +397,16 @@ function loadGame(gameId) {
                                 });
 
                                 bet = minBet;
-                                updateBetUI();
+                                updateBalanceUI(); // чтобы сразу отображалось
+                                 updateBetUI();
+                                window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
                                 container.querySelector('.back-btn')?.addEventListener('click', backToMain);
                         }
 
         if (gameId === 'game-dice') {
+            window.inGame = true;
+                            clearInterval(window.balanceUpdater);
         // Добавляем обработчики валют
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
         document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
@@ -408,7 +421,10 @@ function loadGame(gameId) {
                         playDice(this);
                 });
         }
-
+        updateBalanceUI(); // чтобы сразу отображалось
+    updateBetUI();
+                                window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
         // Назад
         container.querySelector('.back-btn')?.addEventListener('click', backToMain);
 }
@@ -417,6 +433,8 @@ function loadGame(gameId) {
 
 
 if (gameId === 'game-crash') {
+    window.inGame = true;
+                            clearInterval(window.balanceUpdater);
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
 document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
 setCurrency(selectedCurrency); // выставить текущую валюту
@@ -448,7 +466,10 @@ setCurrency(selectedCurrency); // выставить текущую валюту
                 cashBtn.replaceWith(newCash);
                 newCash.addEventListener('click', () => crashCashOut());
         }
+        updateBalanceUI(); // чтобы сразу отображалось
 
+         window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
         // Назад
         document.getElementById('btn-back-crash')?.addEventListener('click', backToMain);
 }
@@ -456,6 +477,8 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 
 
         if (gameId === 'game-chicken') {
+            window.inGame = true;
+                            clearInterval(window.balanceUpdater);
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
         document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
         setCurrency(selectedCurrency); // выставить текущую валюту
@@ -471,7 +494,8 @@ setCurrency(selectedCurrency); // выставить текущую валюту
                         else if (text === '-') changeBet(-1);
                 });
         });
-        updateBetUI();
+        updateBalanceUI(); // чтобы сразу отображалось
+    updateBetUI();
 
         // Кнопка "Играть"
         const startBtn = document.getElementById('chickenStart');
@@ -480,7 +504,8 @@ setCurrency(selectedCurrency); // выставить текущую валюту
                 startBtn.replaceWith(newStart);
                 newStart.addEventListener('click', () => playChickenGame());
         }
-
+          window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
         // Кнопка "Назад"
         document.querySelector('#game-chicken .back-btn')?.addEventListener('click', backToMain);
 }
@@ -489,7 +514,8 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 
 
     if (gameId === 'game-safe') {
-        
+          window.inGame = true;
+                            clearInterval(window.balanceUpdater);
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
         document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
         setCurrency(selectedCurrency);
@@ -518,20 +544,24 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 
 
 
+
         // Кнопка Назад
         document.querySelector('#game-safe .back-btn')?.addEventListener('click', backToMain);
 
 
-
+                updateBetUI();
                 setupDigitClicks();
                 updateSafeDigits();
                 updateBalanceUI();
-
+           window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
 
 }
 
 
                    if (gameId === 'game-bombs') {
+                       window.inGame = true;
+                            clearInterval(window.balanceUpdater);
                        showEmptyBombGrid();
     document.querySelector('#game-bombs .back-btn')?.addEventListener('click', backToMain);
     document.getElementById('bomb-cashout')?.addEventListener('click', collectBombsPrize);
@@ -550,13 +580,18 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
     document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
     setCurrency(selectedCurrency);
+        updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
+    window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
 }
 
 
 
 
       if (gameId === 'game-wheel') {
+          window.inGame = true;
+                            clearInterval(window.balanceUpdater);
     document.querySelector('#game-wheel .back-btn')?.addEventListener('click', backToMain);
     document.getElementById('btn-wheel-spin')?.addEventListener('click', spinWheel);
 
@@ -573,10 +608,15 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
     document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
     setCurrency(selectedCurrency);
+    updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
+    window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
 }
 
    if (gameId === 'game-arrow') {
+       window.inGame = true;
+                            clearInterval(window.balanceUpdater);
     initArrowScene();
 
     document.querySelector('#game-arrow .back-btn')?.addEventListener('click', () => {
@@ -611,7 +651,10 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
     document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
     setCurrency(selectedCurrency);
+    updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
+    window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
 }
 
 
@@ -622,6 +665,8 @@ setCurrency(selectedCurrency); // выставить текущую валюту
 
 
 if (gameId === 'game-21') {
+     window.inGame = true;
+                            clearInterval(window.balanceUpdater);
     initBlackjackScene();
 
 
@@ -680,6 +725,8 @@ if (gameId === 'game-21') {
 
     updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
+    window.inGame = false;
+                                window.balanceUpdater = setInterval(fetchBalance, 2000);
 }
 
 
