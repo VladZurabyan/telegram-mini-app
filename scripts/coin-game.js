@@ -145,7 +145,7 @@ if (typeof recordGame === 'function') {
 
 
             if (typeof recordGame === 'function') {
-    recordGame(
+    const result = recordGame(
         "coin",
         window.bet,
         isWin ? "win" : "lose",
@@ -154,10 +154,22 @@ if (typeof recordGame === 'function') {
         winAmount,
         true
     );
+
+    // ⏳ Дождёмся завершения и только потом проверим баланс
+    if (result instanceof Promise) {
+        result.then(() => {
+            if (typeof forceBalance === "function") {
+                forceBalance(); // 🔁 запросит свежий баланс
+            }
+        });
+    } else {
+        // fallback: если recordGame не вернул Promise
+        if (typeof forceBalance === "function") {
+            setTimeout(() => forceBalance(), 300); // задержка на всякий случай
+        }
+    }
 }
-if (typeof forceBalance === "function") {
-    forceBalance();
-}
+
 
             const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
             if (typeof Player_action === 'function') {
