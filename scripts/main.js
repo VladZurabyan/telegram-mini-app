@@ -43,6 +43,15 @@ const winsCount = 2;
 const lossesCount = 10;
 const totalCount = winsCount + lossesCount;
 
+
+let lastActivityTime = Date.now();
+let isIdle = false;
+let isListening = false;
+let balanceAbortController = null;
+
+
+
+
 const user = tg.initDataUnsafe?.user;
 const apiUrl = "https://miniapp-backend.onrender.com";
 
@@ -208,14 +217,20 @@ function initWithdraw() {
 }
 
 async function startBalanceListener() {
+    if (isListening || isIdle) return;
+
+    isListening = true;
     const user = tg.initDataUnsafe?.user;
     if (!user) return;
 
-    while (true) {
+    while (isListening) {
         try {
+            balanceAbortController = new AbortController();
+
             const res = await fetch(`${apiUrl}/balance/subscribe`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                signal: balanceAbortController.signal,
                 body: JSON.stringify({
                     user_id: user.id,
                     current_ton: window.fakeBalance.ton,
@@ -232,11 +247,22 @@ async function startBalanceListener() {
                 updateBalanceUI();
             }
         } catch (e) {
-            console.error("Balance listener error:", e);
-            await new Promise(res => setTimeout(res, 3000));
+            if (e.name !== "AbortError") {
+                console.error("Balance listener error:", e);
+                await new Promise(res => setTimeout(res, 3000));
+            }
         }
     }
 }
+
+function stopBalanceListener() {
+    isListening = false;
+    if (balanceAbortController) {
+        balanceAbortController.abort();
+        balanceAbortController = null;
+    }
+}
+
 
 
 function updateBalanceOnce() {
@@ -257,6 +283,26 @@ function updateBalanceOnce() {
 window.updateBalanceOnce = updateBalanceOnce;
 
 
+function resetIdleTimer() {
+    lastActivityTime = Date.now();
+    if (isIdle) {
+        isIdle = false;
+        startBalanceListener(); // возобновить подписку
+    }
+}
+
+["click", "mousemove", "keydown", "touchstart"].forEach(evt =>
+    document.addEventListener(evt, resetIdleTimer)
+);
+
+// ⏱ Проверка на бездействие каждые 10 сек
+setInterval(() => {
+    if (!isIdle && Date.now() - lastActivityTime > 60000) {
+        isIdle = true;
+        stopBalanceListener();
+        console.log("🛑 Подписка остановлена по бездействию");
+    }
+}, 10000);
 
 
 
