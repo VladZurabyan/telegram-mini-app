@@ -84,10 +84,25 @@
             Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
         }
 
+                // ✅ Списываем локально
         window.fakeBalance[window.selectedCurrency] = parseFloat(
             (window.fakeBalance[window.selectedCurrency] - window.bet).toFixed(2)
         );
         updateBalanceUI();
+
+        // ✅ Отправляем на сервер, чтобы зафиксировать списание
+        if (typeof recordGame === 'function') {
+            recordGame(
+                "coin",
+                window.bet,
+                "pending", // ← статус ещё неизвестен
+                false,     // ← пока не победа
+                window.selectedCurrency,
+                0,
+                false          // ← приз 0
+            );
+        }
+
 
         const allBtns = [
             btn,
@@ -138,16 +153,15 @@
             updateBalanceUI();
 
             if (typeof recordGame === 'function') {
-    recordGame(
-        "coin",                        // Название игры
-        window.bet,                   // Ставка
-        isWin ? "win" : "lose",       // Результат (строка)
-        isWin,                        // Победа: true / false
-        window.selectedCurrency,      // Валюта
-        isWin ? window.bet * 2 : 0    // Приз (если выиграл)
-    );
-}
-
+                recordGame(
+                    "coin",
+                    window.bet,
+                    isWin ? "win" : "lose",
+                    isWin,
+                    window.selectedCurrency,
+                    winAmount, true
+                );
+            }
 
             const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
             if (typeof Player_action === 'function') {
