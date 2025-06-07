@@ -49,7 +49,7 @@ function Player_leave(game, extra = "") {
     console.log(log);
 }
 
-function forceBalance(0) {
+function forceBalance(delay = 500) {
     setTimeout(() => {
         const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
         if (!user) return;
