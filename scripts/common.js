@@ -49,27 +49,26 @@ function Player_leave(game, extra = "") {
     console.log(log);
 }
 
-function forceBalance(delay = 500) {
-    setTimeout(() => {
-        const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-        if (!user) return;
+function forceBalance() {
+    const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!user) return;
 
-        fetch(`${apiUrl}/balance/force`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: user.id })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (typeof data.ton === "number" && typeof data.usdt === "number") {
-                window.fakeBalance.ton = data.ton;
-                window.fakeBalance.usdt = data.usdt;
-                updateBalanceUI();
-            }
-        })
-        .catch(console.error);
-    }, delay);
+    fetch(`${apiUrl}/balance/force`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (typeof data.ton === "number" && typeof data.usdt === "number") {
+            window.fakeBalance.ton = data.ton;
+            window.fakeBalance.usdt = data.usdt;
+            updateBalanceUI();
+        }
+    })
+    .catch(console.error);
 }
+
 
 
 
