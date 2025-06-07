@@ -59,8 +59,8 @@ if (user) {
         window.fakeBalance.usdt = d.usdt;
         updateBalanceUI();
      // ⏳ Сразу обновим баланс, чтобы он был точным
-        updateBalanceOnce();
-     startBalanceUpdater();
+        startBalanceListener();
+     
     });
 }
 
@@ -207,51 +207,36 @@ function initWithdraw() {
 
 }
 
-// ✅ Автообновление баланса с защитой
-let balanceTimer = null;
-let isFetching = false;
-let lastBalanceCheck = { ton: null, usdt: null };
-
-// 🔄 Автообновление баланса — с паузой и без спама
-function startBalanceUpdater() {
-    if (isFetching) return;
-
-    isFetching = true;
-
+async function startBalanceListener() {
     const user = tg.initDataUnsafe?.user;
-    if (!user) {
-        isFetching = false;
-        return;
-    }
+    if (!user) return;
 
-    fetch(`${apiUrl}/balance/${user.id}`)
-        .then(res => res.json())
-        .then(data => {
-            if (!data || typeof data.ton !== "number" || typeof data.usdt !== "number") return;
+    while (true) {
+        try {
+            const res = await fetch(`${apiUrl}/balance/subscribe`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    current_ton: window.fakeBalance.ton,
+                    current_usdt: window.fakeBalance.usdt
+                })
+            });
 
-            const tonChanged = data.ton !== lastBalanceCheck.ton;
-            const usdtChanged = data.usdt !== lastBalanceCheck.usdt;
+            const data = await res.json();
+            if (data.update === false) continue;
 
-            // ✅ обновим и в игре, и на главной — но только если баланс изменился
-            if (tonChanged || usdtChanged) {
+            if (typeof data.ton === "number" && typeof data.usdt === "number") {
                 window.fakeBalance.ton = data.ton;
                 window.fakeBalance.usdt = data.usdt;
                 updateBalanceUI();
-                lastBalanceCheck.ton = data.ton;
-                lastBalanceCheck.usdt = data.usdt;
             }
-        })
-        .catch(console.error)
-        .finally(() => {
-            isFetching = false;
-
-            // 🕓 продолжим цикл даже если мы в игре
-            balanceTimer = setTimeout(startBalanceUpdater, 5000);
-        });
+        } catch (e) {
+            console.error("Balance listener error:", e);
+            await new Promise(res => setTimeout(res, 3000)); // пауза при ошибке
+        }
+    }
 }
-
-
-
 
 function updateBalanceOnce() {
     const user = tg.initDataUnsafe?.user;
@@ -275,8 +260,6 @@ window.updateBalanceOnce = updateBalanceOnce;
 
 
 
-
-
 function backToMain() {
     const game = window.activeGameId;
     if (game === 'game-coin') resetCoinScreen();
@@ -290,7 +273,7 @@ function backToMain() {
     else if (game === 'game-arrow') resetTarget();
      else if (game === 'game-21') reset21Screen();
 
-window.inGame = false;
+startBalanceListener();
 
 
         showMain();
@@ -370,13 +353,15 @@ function loadGame(gameId) {
                         updateBalanceUI();
 
                         if (gameId === 'game-coin') {
-    window.inGame = true;
-    
+    // При входе в игру сразу обновим баланс
+    if (typeof updateBalanceOnce === 'function') updateBalanceOnce();
 
+    // Валюта
     document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
     document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
     setCurrency(selectedCurrency);
 
+    // Кнопки ставки
     const betBtns = document.querySelectorAll('#game-coin .bet-box button');
     betBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -391,16 +376,18 @@ function loadGame(gameId) {
     updateBalanceUI();
     updateBetUI();
 
-    // 🎯 Кнопки монеты
+    // Выбор стороны
     document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
     document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
 
+    // Играть
     document.querySelector('.play-btn')?.addEventListener('click', function () {
-        playCoin(this); // В конце playCoin должно быть: updateBalanceOnce();
+        playCoin(this); // внутри playCoin — local fakeBalance списывается и recordGame()
     });
 
+    // Назад
     document.getElementById('btn-back-coin')?.addEventListener('click', () => {
-        backToMain(); // внутри backToMain будет: window.inGame = false; startBalanceUpdater();
+        backToMain(); // внутри backToMain: resetCoinScreen(), showMain(), ничего не сбрасывает поток
     });
 }
 
