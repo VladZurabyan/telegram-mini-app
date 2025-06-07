@@ -304,6 +304,36 @@ setInterval(() => {
     }
 }, 10000);
 
+// ⏱ Даже в idle-режиме проверка баланса раз в 60 сек
+setInterval(() => {
+    if (isIdle) {
+        const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        if (!user) return;
+
+        fetch(`${apiUrl}/balance/force`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: user.id })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (typeof data.ton === "number" && typeof data.usdt === "number") {
+                const changed =
+                    data.ton !== window.fakeBalance.ton ||
+                    data.usdt !== window.fakeBalance.usdt;
+
+                if (changed) {
+                    window.fakeBalance.ton = data.ton;
+                    window.fakeBalance.usdt = data.usdt;
+                    updateBalanceUI();
+                    console.log("📡 Баланс обновлён во время простоя");
+                }
+            }
+        })
+        .catch(console.error);
+    }
+}, 60000); // каждые 60 секунд
+
 
 
 
