@@ -367,7 +367,7 @@ function loadGame(gameId) {
                                 updateBalanceUI(); // чтобы сразу отображалось
                                 updateBetUI();
                                 window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
 
                                 document.getElementById('btn-heads')?.addEventListener('click', () => setCoinChoice('heads'));
                                 document.getElementById('btn-tails')?.addEventListener('click', () => setCoinChoice('tails'));
@@ -431,7 +431,7 @@ function loadGame(gameId) {
                                 updateBalanceUI(); // чтобы сразу отображалось
                                  updateBetUI();
                                 window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
                                 container.querySelector('.back-btn')?.addEventListener('click', backToMain);
                         }
 
@@ -455,7 +455,7 @@ function loadGame(gameId) {
         updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
                                 window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
         // Назад
         container.querySelector('.back-btn')?.addEventListener('click', backToMain);
 }
@@ -500,7 +500,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
         updateBalanceUI(); // чтобы сразу отображалось
 
          window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                               window.balanceUpdater();
         // Назад
         document.getElementById('btn-back-crash')?.addEventListener('click', backToMain);
 }
@@ -536,7 +536,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
                 newStart.addEventListener('click', () => playChickenGame());
         }
           window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
         // Кнопка "Назад"
         document.querySelector('#game-chicken .back-btn')?.addEventListener('click', backToMain);
 }
@@ -585,7 +585,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
                 updateSafeDigits();
                 updateBalanceUI();
            window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
 
 }
 
@@ -614,7 +614,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
         updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
     window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
 }
 
 
@@ -642,7 +642,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
     window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
 }
 
    if (gameId === 'game-arrow') {
@@ -685,7 +685,7 @@ setCurrency(selectedCurrency); // выставить текущую валюту
     updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
     window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
 }
 
 
@@ -757,7 +757,7 @@ if (gameId === 'game-21') {
     updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
     window.inGame = false;
-                                window.balanceUpdater = setInterval(fetchBalance, 2000);
+                                window.balanceUpdater();
 }
 
 
