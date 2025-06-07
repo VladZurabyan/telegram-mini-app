@@ -149,7 +149,6 @@ if (typeof recordGame === 'function') {
         prizeBox.innerText = "Желаем дальнейших успехов";
     }
 
-    // 🎯 Подготовка описания
     const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
     if (typeof Player_action === 'function') {
         Player_action(gameName, "Результат", detail);
@@ -167,7 +166,6 @@ if (typeof recordGame === 'function') {
         );
     }
 
-    // 🔓 Разблокировка после записи и обновления
     const unlockUI = () => {
         allBtns.forEach(el => el.disabled = false);
         document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
@@ -175,7 +173,7 @@ if (typeof recordGame === 'function') {
         coinInProgress = false;
     };
 
-    // 📡 Сначала лог, потом — обновление баланса, потом — UI
+    // ⏳ Сначала запись, потом баланс, потом UI
     if (typeof recordGame === 'function') {
         const result = recordGame(
             "coin",
@@ -188,26 +186,25 @@ if (typeof recordGame === 'function') {
         );
 
         if (result instanceof Promise) {
-    result.then(() => {
-        if (typeof forceBalance === "function") {
-            forceBalance(0).then(() => {
-                unlockUI();
+            result.then(() => {
+                if (typeof forceBalance === "function") {
+                    forceBalance(0).then(unlockUI);
+                } else {
+                    unlockUI();
+                }
             });
         } else {
-            unlockUI();
+            if (typeof forceBalance === "function") {
+                forceBalance(0).then(unlockUI);
+            } else {
+                unlockUI();
+            }
         }
-    });
-} else {
-    if (typeof forceBalance === "function") {
-        forceBalance(0).then(() => {
-            unlockUI();
-        });
     } else {
         unlockUI();
     }
-
-
 }, { once: true });
+
 
 }
 
