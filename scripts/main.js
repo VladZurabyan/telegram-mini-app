@@ -288,7 +288,7 @@ function resetIdleTimer() {
     if (isIdle) {
         isIdle = false;
         startBalanceListener(); // возобновить подписку
-        forceBalance(); // ← мгновенное обновление баланса
+        
     }
 }
 
