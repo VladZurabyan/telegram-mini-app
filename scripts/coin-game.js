@@ -205,7 +205,7 @@ if (typeof recordGame === 'function') {
     } else {
         unlockUI();
     }
-}
+
 
 }, { once: true });
 
