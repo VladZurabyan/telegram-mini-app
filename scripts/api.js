@@ -2,7 +2,7 @@ function recordGame(game, bet, result, win, currency, prizeAmount = 0, final = t
     const u = tg.initDataUnsafe?.user;
     if (!u) return;
 
-    fetch(`${apiUrl}/game/play`, {
+    fetch(`${apiUrl}/game`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
