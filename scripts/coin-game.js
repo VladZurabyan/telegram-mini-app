@@ -29,8 +29,11 @@
 
     function playCoin(btn) {
         const gameName = "Coin";
+        if (resultBox) resultBox.innerText = '';
+        if (prizeBox) prizeBox.innerText = '';
         if (coinInProgress) return;
         coinInProgress = true;
+        
 
         if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
             if (typeof Player_action === 'function') {
@@ -133,8 +136,8 @@ if (typeof recordGame === 'function') {
     const prizeBox = document.getElementById('coinPrize');
     const currencyLabel = window.selectedCurrency.toUpperCase();
 
+    // ⏱ СРАЗУ показываем результат
     resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
-
     let winAmount = 0;
     if (isWin) {
         winAmount = parseFloat((window.bet * 2).toFixed(2));
@@ -143,6 +146,7 @@ if (typeof recordGame === 'function') {
         prizeBox.innerText = "Желаем дальнейших успехов";
     }
 
+    // 🎯 Подготовка описания
     const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
     if (typeof Player_action === 'function') {
         Player_action(gameName, "Результат", detail);
@@ -160,6 +164,7 @@ if (typeof recordGame === 'function') {
         );
     }
 
+    // 🔓 Разблокировка после записи и обновления
     const unlockUI = () => {
         allBtns.forEach(el => el.disabled = false);
         document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
@@ -167,8 +172,9 @@ if (typeof recordGame === 'function') {
         coinInProgress = false;
     };
 
+    // 📡 Сначала лог, потом — обновление баланса, потом — UI
     if (typeof recordGame === 'function') {
-        const record = recordGame(
+        const result = recordGame(
             "coin",
             window.bet,
             isWin ? "win" : "lose",
@@ -178,12 +184,12 @@ if (typeof recordGame === 'function') {
             true
         );
 
-        if (record instanceof Promise) {
-            record.then(() => {
+        if (result instanceof Promise) {
+            result.then(() => {
                 if (typeof forceBalance === "function") {
                     forceBalance(0);
                 }
-                setTimeout(unlockUI, 150); // ⏳ дождались обновления
+                setTimeout(unlockUI, 150);
             });
         } else {
             if (typeof forceBalance === "function") {
@@ -192,9 +198,10 @@ if (typeof recordGame === 'function') {
             setTimeout(unlockUI, 150);
         }
     } else {
-        unlockUI(); // fallback
+        unlockUI();
     }
 }, { once: true });
+
 
 
     window.setCoinChoice = setCoinChoice;
