@@ -12,13 +12,15 @@ function recordGame(game, bet, result, win, currency, prizeAmount = 0) {
             result,
             win,
             currency,
-            prize_amount: prizeAmount // ⬅️ теперь передаём точную сумму выигрыша
+            prize_amount: prizeAmount
         })
     })
     .then(r => r.json())
     .then(d => {
-        document.querySelectorAll(".balance span")[0].textContent = d.ton.toFixed(2);
-        document.querySelectorAll(".balance span")[1].textContent = d.usdt.toFixed(2);
+        // ✅ Обновляем fakeBalance и UI
+        window.fakeBalance.ton = d.ton;
+        window.fakeBalance.usdt = d.usdt;
+        updateBalanceUI();
     });
 }
 
