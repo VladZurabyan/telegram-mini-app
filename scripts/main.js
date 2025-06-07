@@ -233,10 +233,11 @@ async function startBalanceListener() {
             }
         } catch (e) {
             console.error("Balance listener error:", e);
-            await new Promise(res => setTimeout(res, 3000)); // пауза при ошибке
+            await new Promise(res => setTimeout(res, 3000));
         }
     }
 }
+
 
 function updateBalanceOnce() {
     const user = tg.initDataUnsafe?.user;
