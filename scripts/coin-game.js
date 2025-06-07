@@ -183,7 +183,12 @@
             allBtns.forEach(el => el.disabled = false);
             document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
             document.querySelector('#game-coin .bet-box')?.classList.remove('disabled');
-            coinInProgress = false;
+             coinInProgress = false;
+
+            // ✅ Обновить баланс один раз после окончания игры
+            if (typeof updateBalanceOnce === "function") {
+                updateBalanceOnce();
+            }
         }, { once: true });
     }
 
