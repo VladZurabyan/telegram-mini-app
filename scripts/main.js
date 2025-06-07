@@ -207,13 +207,15 @@ function initWithdraw() {
 }
 
 // ✅ Автообновление баланса с защитой
-let isFetching = false;
 let balanceTimer = null;
+let isFetching = false;
+let lastBalanceCheck = { ton: null, usdt: null };
 
+// 🔄 Универсальный автообновлятор баланса
 function startBalanceUpdater() {
-    if (window.inGame || isFetching) return; // если в игре — не обновлять
-
+    if (isFetching) return;
     isFetching = true;
+
     const user = tg.initDataUnsafe?.user;
     if (!user) {
         isFetching = false;
@@ -223,18 +225,26 @@ function startBalanceUpdater() {
     fetch(`${apiUrl}/balance/${user.id}`)
         .then(res => res.json())
         .then(data => {
-            if (typeof data.ton === "number" && typeof data.usdt === "number") {
+            if (!data || typeof data.ton !== "number" || typeof data.usdt !== "number") return;
+
+            const tonChanged = data.ton !== lastBalanceCheck.ton;
+            const usdtChanged = data.usdt !== lastBalanceCheck.usdt;
+
+            if (tonChanged || usdtChanged) {
                 window.fakeBalance.ton = data.ton;
                 window.fakeBalance.usdt = data.usdt;
                 updateBalanceUI();
+                lastBalanceCheck.ton = data.ton;
+                lastBalanceCheck.usdt = data.usdt;
             }
         })
         .catch(console.error)
         .finally(() => {
             isFetching = false;
-            balanceTimer = setTimeout(startBalanceUpdater, 3000); // снова через 3 секунды
+            balanceTimer = setTimeout(startBalanceUpdater, 5000); // ⏱ снова через 5 сек
         });
 }
+
 
 
 function updateBalanceOnce() {
