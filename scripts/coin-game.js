@@ -29,8 +29,11 @@
 
     function playCoin(btn) {
         const gameName = "Coin";
-        if (resultBox) resultBox.innerText = '';
-        if (prizeBox) prizeBox.innerText = '';
+        const resultBox = document.getElementById('coinResult');
+    const prizeBox = document.getElementById('coinPrize');
+
+    if (resultBox) resultBox.innerText = '';
+    if (prizeBox) prizeBox.innerText = '';
         if (coinInProgress) return;
         coinInProgress = true;
         
