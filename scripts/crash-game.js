@@ -193,10 +193,10 @@ function endCrashRound() {
     flightPoints = [];
     document.getElementById('flightPath')?.setAttribute('d', '');
 
-    setTimeout(() => {
+    
         plane.classList.remove('crash', 'cashout');
         plane.style.transform = 'translate(0, 0)';
-    }, 1000);
+    
 
     if (typeof Player_leave === 'function') {
         Player_leave("Crash", `${crashResultText} | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`);
