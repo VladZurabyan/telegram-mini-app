@@ -217,14 +217,14 @@ function updateCrashBalance(isWin, onComplete) {
         const balancePromise = forceBalance?.(0);
         const updatePromise = balancePromise?.then(() => updateBalanceUI?.());
 
+        const delayedUnblock = () => setTimeout(() => {
+            if (typeof onComplete === 'function') onComplete();
+        }, 300); // 🕓 Тайм-аут 300мс перед разблокировкой
+
         if (updatePromise instanceof Promise) {
-            updatePromise.then(() => {
-                if (typeof onComplete === 'function') onComplete();
-            });
+            updatePromise.then(delayedUnblock);
         } else {
-            Promise.resolve().then(() => {
-                if (typeof onComplete === 'function') onComplete();
-            });
+            Promise.resolve().then(delayedUnblock);
         }
     };
 
