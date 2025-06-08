@@ -211,6 +211,8 @@ function playChickenGame() {
     collisionInterval = setInterval(checkCollision, 100);
 }
 
+
+
 document.addEventListener("click", function (e) {
     if (e.target.id === "chicken") {
         if (!gameStarted || gameOver) return;
@@ -224,72 +226,62 @@ document.addEventListener("click", function (e) {
         chickenStep++;
 
         if (chickenStep === stepHeights.length) {
-            const winChance = Math.random();
-            if (winChance <= 0.4) {
-                gameOver = true;
-                
-                updateBalanceUI();
-                if (typeof recordGame === 'function') {
-                    recordGame('chicken', window.bet, 'win', window.bet * 5, window.selectedCurrency);
+            gameOver = true;
+            clearTimeout(window.gameTimeout);
+            clearInterval(window.countdownInterval);
+            document.getElementById("chickenTimer").style.display = "none";
+
+            const win = Math.random() <= 0.4;
+
+            if (win) {
+                if (typeof Player_leave === 'function') {
+                    Player_leave(gameName, `Победа на x5 | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`);
                 }
-                if (winChance <= 0.4) {
-    gameOver = true;
-    clearInterval(window.countdownInterval);
-    document.getElementById("chickenTimer").style.display = "none";
 
-    if (typeof Player_leave === 'function') {
-        Player_leave("Chicken", `Победа на x5 | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`);
-    }
+                updateChickenBalance(true, () => {
+                    document.getElementById('boxPrize').innerText =
+                        `Вы выиграли ${formatAmount(window.bet * 5)} ${window.selectedCurrency.toUpperCase()}`;
+                    showCustomAlert("🏁 Победа! Курица перешла дорогу!", "success");
+                    resetGame();
+                    chicken.classList.remove("chicken-hit");
+                    unblockChickenUI();
+                });
 
-    updateChickenBalance(true, () => {
-        document.getElementById('boxPrize').innerText =
-            `Вы выиграли ${formatAmount(window.bet * 5)} ${window.selectedCurrency.toUpperCase()}`;
-        showCustomAlert("🏁 Победа! Курица перешла дорогу!", "success");
-        resetGame();
-        chicken.classList.remove("chicken-hit");
-        unblockChickenUI();
-    });
-} else {
-    gameOver = true;
+            } else {
+                if (typeof Player_leave === 'function') {
+                    Player_leave(gameName, `Проигрыш при шаге | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`);
+                }
 
-    if (typeof Player_leave === 'function') {
-        Player_leave("Chicken", `Проигрыш при шаге | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`);
-    }
+                chicken.classList.add("chicken-hit");
+                const fastCar = document.createElement("img");
+                fastCar.src = "assets/car1.png";
+                fastCar.classList.add("car");
+                fastCar.style.animationDuration = "0.9s";
+                const finalLane = document.querySelector(".lane-3");
+                if (finalLane) {
+                    finalLane.appendChild(fastCar);
+                    fastCar.addEventListener("animationend", () => fastCar.remove());
+                }
 
-    chicken.classList.add("chicken-hit");
-    const fastCar = document.createElement("img");
-    fastCar.src = "assets/car1.png";
-    fastCar.classList.add("car");
-    fastCar.style.animationDuration = "0.9s";
-    const finalLane = document.querySelector(".lane-3");
-    if (finalLane) {
-        finalLane.appendChild(fastCar);
-        fastCar.addEventListener("animationend", () => fastCar.remove());
-    }
+                const crash = document.createElement("img");
+                crash.src = "assets/explosion.png";
+                crash.classList.add("crash-effect");
+                crash.style.left = chicken.offsetLeft + "px";
+                crash.style.top = chicken.offsetTop + "px";
+                chicken.parentElement.appendChild(crash);
 
-    const crash = document.createElement("img");
-    crash.src = "assets/explosion.png";
-    crash.classList.add("crash-effect");
-    crash.style.left = chicken.offsetLeft + "px";
-    crash.style.top = chicken.offsetTop + "px";
-    chicken.parentElement.appendChild(crash);
-
-    clearTimeout(window.gameTimeout);
-    clearInterval(window.countdownInterval);
-
-    updateChickenBalance(false, () => {
-        showCustomAlert("💥 Почти дошли! Но сбили в последний момент...", "error");
-        resetGame();
-        chicken.classList.remove("chicken-hit");
-        crash.remove();
-        unblockChickenUI();
-    });
-}
-
+                updateChickenBalance(false, () => {
+                    showCustomAlert("💥 Почти дошли! Но сбили в последний момент...", "error");
+                    resetGame();
+                    chicken.classList.remove("chicken-hit");
+                    crash.remove();
+                    unblockChickenUI();
+                });
             }
         }
     }
 });
+
 
 
 function checkCollision() {
