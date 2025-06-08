@@ -530,46 +530,44 @@ function loadGame(gameId) {
 
 
 if (gameId === 'game-crash') {
-    window.inGame = true;
-                            clearInterval(window.balanceUpdater);
-        document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
-document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
-setCurrency(selectedCurrency); // выставить текущую валюту
+    if (typeof updateBalanceOnce === 'function') updateBalanceOnce();
 
+    document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
+    document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
+    setCurrency(selectedCurrency); // Выставить текущую валюту
+    updateBalanceUI(); // И сразу отобразить
 
-        // Обработчики кнопок ставок
-        const betBtns = document.querySelectorAll('#game-crash .bet-box button');
-        betBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                        const text = btn.innerText.toLowerCase();
-                        if (text === 'min') setBet('min');
-                        else if (text === 'max') setBet('max');
-                        else if (text === '+') changeBet(1);
-                        else if (text === '-') changeBet(-1);
-                });
+    // Обработчики кнопок ставок
+    const betBtns = document.querySelectorAll('#game-crash .bet-box button');
+    betBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.innerText.toLowerCase();
+            if (text === 'min') setBet('min');
+            else if (text === 'max') setBet('max');
+            else if (text === '+') changeBet(1);
+            else if (text === '-') changeBet(-1);
         });
-        updateBetUI();
+    });
+    updateBetUI();
 
-        // Кнопки "Играть" и "Забрать"
-        const startBtn = document.getElementById('crash-start');
-        const cashBtn = document.getElementById('crash-cashout');
-        if (startBtn) {
-                const newStart = startBtn.cloneNode(true);
-                startBtn.replaceWith(newStart);
-                newStart.addEventListener('click', () => playCrash());
-        }
-        if (cashBtn) {
-                const newCash = cashBtn.cloneNode(true);
-                cashBtn.replaceWith(newCash);
-                newCash.addEventListener('click', () => crashCashOut());
-        }
-        updateBalanceUI(); // чтобы сразу отображалось
+    // Кнопки "Играть" и "Забрать"
+    const startBtn = document.getElementById('crash-start');
+    const cashBtn = document.getElementById('crash-cashout');
+    if (startBtn) {
+        const newStart = startBtn.cloneNode(true);
+        startBtn.replaceWith(newStart);
+        newStart.addEventListener('click', () => playCrash());
+    }
+    if (cashBtn) {
+        const newCash = cashBtn.cloneNode(true);
+        cashBtn.replaceWith(newCash);
+        newCash.addEventListener('click', () => crashCashOut());
+    }
 
-         window.inGame = false;
-                               window.balanceUpdater();
-        // Назад
-        document.getElementById('btn-back-crash')?.addEventListener('click', backToMain);
+    // Назад
+    document.getElementById('btn-back-crash')?.addEventListener('click', backToMain);
 }
+
 
 
 
