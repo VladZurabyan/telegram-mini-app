@@ -87,8 +87,10 @@
 }
 
 
-        window.fakeBalance[window.selectedCurrency] = +(window.fakeBalance[window.selectedCurrency] - window.bet).toFixed(2);
-        updateBalanceUI();
+       // ✅ Pending запись и списание
+    if (typeof recordGame === 'function') {
+        recordGame("dice", window.bet, "pending", false, window.selectedCurrency, 0, false);
+    }
 
         btn.disabled = true;
         document.querySelector('#game-dice .back-btn')?.setAttribute('disabled', 'true');
@@ -129,8 +131,35 @@
             }
 
             if (typeof recordGame === 'function') {
-                recordGame("dice", window.bet, diceResult, win ? winAmount : 0, window.selectedCurrency);
+            const result = recordGame(
+                "dice",
+                window.bet,
+                win ? "win" : "lose",
+                win,
+                window.selectedCurrency,
+                winAmount,
+                true
+            );
+
+            if (result instanceof Promise) {
+                result.then(() => {
+                    if (typeof forceBalance === "function") {
+                        forceBalance(0).then(() => finishDiceUI(btn));
+                    } else {
+                        finishDiceUI(btn);
+                    }
+                });
+            } else {
+                if (typeof forceBalance === "function") {
+                    forceBalance(0).then(() => finishDiceUI(btn));
+                } else {
+                    finishDiceUI(btn);
+                }
             }
+        } else {
+            finishDiceUI(btn);
+        }
+
 
             if (typeof Player_action === 'function') {
                 Player_action(gameName, "Результат", win
@@ -145,15 +174,19 @@
                 Player_leave(gameName, `${resultString} | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
             }
 
-            btn.disabled = false;
-            document.querySelector('#game-dice .back-btn')?.removeAttribute('disabled');
-            document.getElementById('diceChoices')?.classList.remove('disabled');
-            document.querySelector('#game-dice .currency-selector')?.classList.remove('disabled');
-            document.getElementById('diceBetBox')?.classList.remove('disabled');
-
-            diceInProgress = false;
+            
         }, 1000);
     }
+
+    function finishDiceUI(btn) {
+    btn.disabled = false;
+    document.querySelector('#game-dice .back-btn')?.removeAttribute('disabled');
+    document.getElementById('diceChoices')?.classList.remove('disabled');
+    document.querySelector('#game-dice .currency-selector')?.classList.remove('disabled');
+    document.getElementById('diceBetBox')?.classList.remove('disabled');
+    diceInProgress = false;
+}
+
 
     window.setDiceChoice = setDiceChoice;
     window.playDice = playDice;
