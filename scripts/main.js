@@ -443,8 +443,9 @@ function loadGame(gameId) {
 
 
                         if (gameId === 'game-boxes') {
-                            window.inGame = true;
-                            clearInterval(window.balanceUpdater);
+                            // При входе в игру сразу обновим баланс
+    if (typeof updateBalanceOnce === 'function') updateBalanceOnce();
+
                                 document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
                                 document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
                                 setCurrency(selectedCurrency);
@@ -495,8 +496,7 @@ function loadGame(gameId) {
                                 bet = minBet;
                                 updateBalanceUI(); // чтобы сразу отображалось
                                  updateBetUI();
-                                window.inGame = false;
-                                window.balanceUpdater();
+                               
                                 container.querySelector('.back-btn')?.addEventListener('click', backToMain);
                         }
 
