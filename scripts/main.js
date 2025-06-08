@@ -12,6 +12,8 @@
 
 
 const activeGames = {
+    'partners': true,
+    'rules': true,
     'deposit': true,
     'withdrow': true,
     'game-coin': true,
