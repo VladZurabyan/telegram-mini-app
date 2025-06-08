@@ -2,6 +2,7 @@
     let boxInProgress = false;
     let boxTotalWins = 0;
 
+   
     function selectBox(choice) {
         const gameName = "Boxes";
         if (boxInProgress) return;
@@ -38,6 +39,19 @@
             boxInProgress = false;
             return;
         }
+
+        // ✅ Сначала логим и списываем pending
+    if (typeof recordGame === 'function') {
+        recordGame(
+            "boxes",
+            window.bet,
+            "pending",
+            false,
+            window.selectedCurrency,
+            0,
+            false
+        );
+    }
 
         if (typeof Player_join === 'function') {
             Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
