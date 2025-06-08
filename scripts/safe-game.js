@@ -62,7 +62,9 @@
 
   async function showHint() {
     const hintBtn = document.getElementById('hint-btn');
-    hintBtn?.setAttribute('disabled', 'true');
+    if (!hintBtn) return;
+    
+    hintBtn.setAttribute('disabled', 'true'); // 🔒 Блокируем кнопку при старте
 
     try {
         const res = await fetch(`${apiUrl}/safe/hint`, {
@@ -74,22 +76,28 @@
             })
         });
 
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.detail || "Ошибка при получении подсказки");
+        }
+
         const data = await res.json();
 
         if (typeof Player_action === 'function') {
-            Player_action(gameName, "Подсказка", `Подсказка: первая цифра ${data.hint}`);
+            Player_action(gameName, "Подсказка", `Первая цифра: ${data.hint}`);
         }
 
         showCustomAlert(`Первая цифра: ${data.hint}`, 'info');
 
+        // ✅ Подсказка успешно использована — кнопку не разблокируем
+
     } catch (e) {
         console.error(e);
-        showCustomAlert("Ошибка при получении подсказки", "error");
-    } finally {
-        hintBtn?.removeAttribute('disabled');
-        // UI НЕ разблокируем полностью!
+        showCustomAlert("❌ " + e.message, "error");
+        hintBtn.removeAttribute('disabled'); // 🔓 Разблокируем, если ошибка
     }
 }
+
 
 
     function changeSafeBet(delta) {
