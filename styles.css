@@ -1312,25 +1312,20 @@ button[disabled],
 
 .crash-joke {
   display: none;
-  padding: 20px;
-  height: 100vh;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  }
 
 .crash-joke-box {
-  padding: 60px 20px;
-  max-width: 600px;
-  width: 100%;
-  border-radius: 16px;
   text-align: center;
+  padding: 60px 20px;
   font-size: 22px;
   font-weight: 700;
-  background: radial-gradient(circle at center, #442222, #220000);
   color: #ffdddd;
+  background: radial-gradient(circle at center, #442222, #220000);
   border: 2px solid #ff4444;
+  border-radius: 16px;
+  max-width: 90%;
+  margin: 100px auto 60px;
+
   box-shadow: 0 0 20px rgba(255, 50, 50, 0.5);
   animation: jokeFadeIn 0.5s ease-in-out;
 }
