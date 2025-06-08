@@ -157,11 +157,13 @@ try {
     const data = await res.json();
     sessionId = data.session_id; 
     
-    if (!data.success || !data.session_id) {
-        showCustomAlert("Ошибка при запуске игры", "error");
-        unblockSafeUI();
-        return;
-    }
+    if (!data.session_id) {
+    console.warn("Ответ сервера:", data);
+    showCustomAlert("Ошибка при запуске игры", "error");
+    unblockSafeUI();
+    return;
+}
+
 
     // ✅ ВЫЗЫВАЕМ ТОЛЬКО ЕСЛИ УСПЕШНО
     if (typeof recordGame === 'function') {
@@ -309,7 +311,8 @@ try {
             }, 4000);
 
         } else {
-            showCustomAlert(`Неверно. Осталось попыток: ${attempts}`, 'error');
+            showCustomAlert(`Неверно. Осталось попыток: ${data.attempts_left}`, 'error');
+
             setTimeout(() => {
                 checkBtn?.removeAttribute('disabled');
                 isChecking = false;
