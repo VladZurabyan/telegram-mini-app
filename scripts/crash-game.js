@@ -100,8 +100,7 @@ function playCrash() {
     }
 }
 
-// если recordGame не возвращает Promise — запускаем сразу
-startCrashAnimation();
+
 
 
 
