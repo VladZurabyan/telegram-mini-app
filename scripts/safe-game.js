@@ -139,42 +139,50 @@
 
         blockSafeUI();
 
-        if (typeof recordGame === 'function') {
-    recordGame(
-        "safe",
-        window.bet,
-        "pending",
-        false,
-        window.selectedCurrency,
-        0,
-        false
-    );
+        
+
+try {
+    const res = await fetch(`${apiUrl}/safe/start`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            user_id: user.id,
+            currency: window.selectedCurrency,
+            bet: window.bet
+        })
+    });
+
+    const data = await res.json();
+
+    if (!data.success || !data.session_id) {
+        showCustomAlert("Ошибка при запуске игры", "error");
+        unblockSafeUI();
+        return;
+    }
+
+    // ✅ ВЫЗЫВАЕМ ТОЛЬКО ЕСЛИ УСПЕШНО
+    if (typeof recordGame === 'function') {
+        recordGame(
+            "safe",
+            window.bet,
+            "pending",
+            false,
+            window.selectedCurrency,
+            0,
+            false
+        );
+    }
+
+    // Сохраняем session_id, если надо:
+    window.safeSessionId = data.session_id;
+
+} catch (e) {
+    console.error(e);
+    showCustomAlert("Ошибка соединения", "error");
+    unblockSafeUI();
+    return;
 }
 
-
-
-        try {
-            const res = await fetch(`${apiUrl}/safe/start`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    user_id: user.id,
-                    currency: window.selectedCurrency,
-                    bet: window.bet
-                })
-            });
-            const data = await res.json();
-            if (!data.success) {
-                showCustomAlert("Ошибка при запуске игры", "error");
-                unblockSafeUI();
-                return;
-            }
-        } catch (e) {
-            console.error(e);
-            showCustomAlert("Ошибка соединения", "error");
-            unblockSafeUI();
-            return;
-        }
 
         resetSafeDigits();
         document.getElementById('checkSafeBtn')?.setAttribute('disabled', 'true');
