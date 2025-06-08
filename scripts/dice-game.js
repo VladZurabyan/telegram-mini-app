@@ -117,75 +117,66 @@
         }, 500);
 
         setTimeout(() => {
-            img.classList.remove('dice-safe-throw');
-            resultText.innerText = `Выпало: ${diceResult}`;
+    img.classList.remove('dice-safe-throw');
+    resultText.innerText = `Выпало: ${diceResult}`;
 
-            let winAmount = 0;
-            if (win) {
-                winAmount = +(window.bet * multiplier).toFixed(2);
-                window.fakeBalance[window.selectedCurrency] = +(window.fakeBalance[window.selectedCurrency] + winAmount).toFixed(2);
-                prizeBox.innerText = `🎉 Победа! Вы выиграли ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()}`;
-                updateBalanceUI();
-            } else {
-                prizeBox.innerText = `😞 Не угадали. Попробуйте еще раз.`;
-            }
-
-            if (typeof recordGame === 'function') {
-            const result = recordGame(
-                "dice",
-                window.bet,
-                win ? "win" : "lose",
-                win,
-                window.selectedCurrency,
-                winAmount,
-                true
-            );
-
-            if (result instanceof Promise) {
-                result.then(() => {
-                    if (typeof forceBalance === "function") {
-                        forceBalance(0).then(() => finishDiceUI(btn));
-                    } else {
-                        finishDiceUI(btn);
-                    }
-                });
-            } else {
-                if (typeof forceBalance === "function") {
-                    forceBalance(0).then(() => finishDiceUI(btn));
-                } else {
-                    finishDiceUI(btn);
-                }
-            }
-        } else {
-            finishDiceUI(btn);
-        }
-
-
-            if (typeof Player_action === 'function') {
-                Player_action(gameName, "Результат", win
-                    ? `Победа, выигрыш: ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()}`
-                    : `Проигрыш. Выпало ${diceResult}`);
-            }
-
-            if (typeof Player_leave === 'function') {
-                const resultString = win
-                    ? `Победа, выиграл ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()}`
-                    : "Проигрыш";
-                Player_leave(gameName, `${resultString} | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
-            }
-
-            
-        }, 1000);
+    let winAmount = 0;
+    if (win) {
+        winAmount = +(window.bet * multiplier).toFixed(2);
+        prizeBox.innerText = `🎉 Победа! Вы выиграли ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()}`;
+    } else {
+        prizeBox.innerText = `😞 Не угадали. Попробуйте еще раз.`;
     }
 
-    function finishDiceUI(btn) {
+    if (typeof recordGame === 'function') {
+        const result = recordGame("dice", window.bet, diceResult, win ? winAmount : 0, window.selectedCurrency);
+
+        if (result instanceof Promise) {
+            result.then(() => {
+                if (typeof forceBalance === 'function') {
+                    forceBalance(0).then(unlockUI);
+                } else {
+                    unlockUI();
+                }
+            });
+        } else {
+            if (typeof forceBalance === 'function') {
+                forceBalance(0).then(unlockUI);
+            } else {
+                unlockUI();
+            }
+        }
+    } else {
+        unlockUI();
+    }
+
+    if (typeof Player_action === 'function') {
+        Player_action(gameName, "Результат", win
+            ? `Победа, выигрыш: ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()}`
+            : `Проигрыш. Выпало ${diceResult}`);
+    }
+
+    if (typeof Player_leave === 'function') {
+        const resultString = win
+            ? `Победа, выиграл ${formatAmount(winAmount)} ${window.selectedCurrency.toUpperCase()}`
+            : "Проигрыш";
+        Player_leave(gameName, `${resultString} | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
+    }
+
+}, 1000);
+
+    }
+
+    function unlockUI() {
     btn.disabled = false;
     document.querySelector('#game-dice .back-btn')?.removeAttribute('disabled');
     document.getElementById('diceChoices')?.classList.remove('disabled');
     document.querySelector('#game-dice .currency-selector')?.classList.remove('disabled');
     document.getElementById('diceBetBox')?.classList.remove('disabled');
+    updateBalanceUI();
     diceInProgress = false;
 }
+
 
 
     window.setDiceChoice = setDiceChoice;
