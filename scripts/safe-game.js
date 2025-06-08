@@ -210,7 +210,7 @@
                 body: JSON.stringify({
                     user_id: user.id,
                     currency: window.selectedCurrency,
-                    digits: digits
+                    guess: digits
                 })
             });
             const data = await res.json();
