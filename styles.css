@@ -1312,31 +1312,29 @@ button[disabled],
 
 .crash-joke {
   display: none;
-  min-height: 100vh;
-  padding: 40px 20px;
-  box-sizing: border-box;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-}
+  }
 
 .crash-joke-box {
-  padding: 30px 20px;
-  max-width: 400px;
-  width: 100%;
-  border: 2px solid rgba(255, 100, 100, 0.4);
-  border-radius: 20px;
-  background: rgba(255, 50, 50, 0.05);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-  color: #ffdddd;
+  text-align: center;
+  padding: 60px 20px;
   font-size: 22px;
   font-weight: 700;
+  color: #ffdddd;
+  background: radial-gradient(circle at center, #442222, #220000);
+  border: 2px solid #ff4444;
+  border-radius: 16px;
+  max-width: 90%;
+  margin: 160px auto 60px;
+
+  box-shadow: 0 0 20px rgba(255, 50, 50, 0.5);
   animation: jokeFadeIn 0.5s ease-in-out;
 }
+
+
+
+
+
+
 
 .crash-joke-box small {
   display: block;
