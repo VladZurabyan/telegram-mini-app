@@ -129,7 +129,8 @@
     }
 
     if (typeof recordGame === 'function') {
-        const result = recordGame("dice", window.bet, diceResult, win ? winAmount : 0, window.selectedCurrency);
+        const result = recordGame("dice", window.bet, diceResult, win, window.selectedCurrency, win ? winAmount : 0, true);
+
 
         if (result instanceof Promise) {
     result.then(() => {
