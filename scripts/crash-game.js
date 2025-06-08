@@ -137,6 +137,7 @@ function playCrash() {
             crashStatus.classList.add('crash-lose');
 
             if (!cashedOut) {
+                document.getElementById('crash-cashout').disabled = true;
     plane.classList.add('crash');
     updateCrashBalance(false, endCrashRound); // передаём колбэк
 } else {
