@@ -2,6 +2,8 @@
     let digits = [0, 0, 0];
     let isChecking = false;
 
+    const gameName = "Safe";
+
     function blockSafeUI() {
         document.querySelectorAll('#game-safe .bet-box button').forEach(btn => btn.disabled = true);
         document.getElementById('safeStart')?.setAttribute('disabled', 'true');
@@ -17,39 +19,6 @@
         document.querySelector('#game-safe .currency-selector')?.classList.remove('disabled');
         document.querySelector('#game-safe .bet-box')?.classList.remove('disabled');
     }
-
-    const SafeGame = (() => {
-        let code = [];
-        let attempts = 3;
-        let inProgress = false;
-
-        function generateCode() {
-            code = [randDigit(), randDigit(), randDigit()];
-            attempts = 3;
-            inProgress = true;
-        }
-
-        function getAttempts() { return attempts; }
-        function isInProgress() { return inProgress; }
-        function getFirstDigit() { return code.length ? code[0] : null; }
-
-        function checkGuess(guess) {
-            if (!inProgress) return null;
-            if (guess.join('') === code.join('')) {
-                inProgress = false;
-                return 'win';
-            } else {
-                attempts--;
-                if (attempts <= 0) {
-                    inProgress = false;
-                    return 'lose';
-                }
-                return 'try';
-            }
-        }
-
-        return { generateCode, getAttempts, isInProgress, getFirstDigit, checkGuess };
-    })();
 
     function updateSafeDigits() {
         document.querySelectorAll('#game-safe .digit').forEach((el, i) => el.textContent = digits[i]);
@@ -90,18 +59,30 @@
         }
     }
 
-    function showHint() {
-        const hintCost = 1;
-        if (!SafeGame.isInProgress()) return alert("Сначала начните игру.");
-        if (window.fakeBalance[window.selectedCurrency] < hintCost) return alert("Недостаточно средств для подсказки.");
-        window.fakeBalance[window.selectedCurrency] -= hintCost;
-        updateBalanceUI();
+    async function showHint() {
+        blockSafeUI();
+        try {
+            const res = await fetch(`${apiUrl}/safe/hint`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: user.id,
+                    currency: window.selectedCurrency
+                })
+            });
+            const data = await res.json();
 
-        if (typeof Player_action === 'function') {
-            Player_action("Safe", "Подсказка", `Игрок использовал подсказку. Стоимость: ${hintCost} ${window.selectedCurrency.toUpperCase()}`);
+            if (typeof Player_action === 'function') {
+                Player_action(gameName, "Подсказка", `Подсказка: первая цифра ${data.hint}`);
+            }
+
+            showCustomAlert(`Первая цифра: ${data.hint}`, 'info');
+        } catch (e) {
+            console.error(e);
+            showCustomAlert("Ошибка при получении подсказки", "error");
+        } finally {
+            unblockSafeUI();
         }
-
-        alert(`Первая цифра: ${SafeGame.getFirstDigit()}`);
     }
 
     function changeSafeBet(delta) {
@@ -133,29 +114,22 @@
         resetSafeDigits();
     }
 
-    function playSafeGame() {
-        const gameName = "Safe";
+    async function playSafeGame() {
         window.bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
 
         if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
-            if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Некорректная ставка: ${window.bet}`);
-            alert("Введите корректную ставку.");
-            unblockSafeUI();
+            showCustomAlert("Введите корректную ставку", "error");
             return;
         }
 
         const balanceAvailable = window.selectedCurrency === 'ton' ? window.fakeBalance.ton : window.fakeBalance.usdt;
         if (window.bet > balanceAvailable) {
-            if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} > Баланс: ${balanceAvailable} ${window.selectedCurrency.toUpperCase()}`);
             showCustomAlert(`Недостаточно средств (${window.selectedCurrency.toUpperCase()})`, "error");
-            unblockSafeUI();
             return;
         }
 
         if (window.bet < minBet) {
-            if (typeof Player_action === 'function') Player_action(gameName, "Ошибка", `Ставка ниже минимума: ${window.bet}`);
-            alert(`Минимум ${minBet} ${window.selectedCurrency.toUpperCase()}`);
-            unblockSafeUI();
+            showCustomAlert(`Минимум ${minBet} ${window.selectedCurrency.toUpperCase()}`, "error");
             return;
         }
 
@@ -163,13 +137,33 @@
             Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
         }
 
-        SafeGame.generateCode();
-        resetSafeDigits();
-        document.getElementById('checkSafeBtn')?.setAttribute('disabled', 'true');
         blockSafeUI();
 
-        window.fakeBalance[window.selectedCurrency] = +(window.fakeBalance[window.selectedCurrency] - window.bet).toFixed(2);
-        updateBalanceUI();
+        try {
+            const res = await fetch(`${apiUrl}/safe/start`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: user.id,
+                    currency: window.selectedCurrency,
+                    bet: window.bet
+                })
+            });
+            const data = await res.json();
+            if (!data.success) {
+                showCustomAlert("Ошибка при запуске игры", "error");
+                unblockSafeUI();
+                return;
+            }
+        } catch (e) {
+            console.error(e);
+            showCustomAlert("Ошибка соединения", "error");
+            unblockSafeUI();
+            return;
+        }
+
+        resetSafeDigits();
+        document.getElementById('checkSafeBtn')?.setAttribute('disabled', 'true');
 
         const safeImg = document.getElementById('safeImage');
         safeImg.classList.add('safe-zoomed');
@@ -184,22 +178,40 @@
         }, 1900);
     }
 
-    function checkSafeGuess() {
-        const gameName = "Safe";
-        if (!SafeGame.isInProgress() || isChecking) return;
+    async function checkSafeGuess() {
+        if (isChecking) return;
         isChecking = true;
 
-        const result = SafeGame.checkGuess(digits);
         const safeImg = document.getElementById('safeImage');
         const digitsContainer = document.getElementById('safeDigitsContainer');
         const checkBtn = document.getElementById('checkSafeBtn');
         checkBtn?.setAttribute('disabled', 'true');
 
-        if (result === 'win') {
-            const prize = +(window.bet * 10).toFixed(2);
-            window.fakeBalance[window.selectedCurrency] = +(window.fakeBalance[window.selectedCurrency] + prize).toFixed(2);
-            updateBalanceUI();
+        let result, prize, attempts;
 
+        try {
+            const res = await fetch(`${apiUrl}/safe/guess`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: user.id,
+                    currency: window.selectedCurrency,
+                    digits: digits
+                })
+            });
+            const data = await res.json();
+            result = data.result;
+            prize = data.prize;
+            attempts = data.attempts;
+        } catch (e) {
+            console.error(e);
+            showCustomAlert("Ошибка проверки кода", "error");
+            unblockSafeUI();
+            isChecking = false;
+            return;
+        }
+
+        if (result === 'win') {
             safeImg.src = 'assets/safe-open.png';
             digitsContainer?.classList.add('hidden');
             setTimeout(() => {
@@ -210,7 +222,7 @@
 
             setTimeout(() => {
                 if (typeof recordGame === 'function') {
-                    recordGame("safe", window.bet, "win", 10, window.selectedCurrency);
+                    recordGame("safe", window.bet, "win", prize, window.selectedCurrency);
                 }
                 if (typeof Player_action === 'function') {
                     Player_action(gameName, "Результат", `Победа. Приз: ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()}`);
@@ -253,19 +265,12 @@
             }, 4000);
 
         } else {
-            if (typeof Player_action === 'function') {
-                Player_action(gameName, "Результат", `Неверно. Осталось попыток: ${SafeGame.getAttempts()}`);
-            }
-            showCustomAlert(`Неверно. Осталось попыток: ${SafeGame.getAttempts()}`, 'error');
+            showCustomAlert(`Неверно. Осталось попыток: ${attempts}`, 'error');
             setTimeout(() => {
                 checkBtn?.removeAttribute('disabled');
                 isChecking = false;
             }, 800);
         }
-    }
-
-    function randDigit() {
-        return Math.floor(Math.random() * 10);
     }
 
     window.updateSafeDigits = updateSafeDigits;
