@@ -214,11 +214,18 @@ function updateCrashBalance(isWin, onComplete) {
     crashWinAmount = prize;
 
     const finalize = () => {
-        forceBalance?.(0)
-            ?.then(() => updateBalanceUI?.())
-            ?.then(() => {
+        const balancePromise = forceBalance?.(0);
+        const updatePromise = balancePromise?.then(() => updateBalanceUI?.());
+
+        if (updatePromise instanceof Promise) {
+            updatePromise.then(() => {
                 if (typeof onComplete === 'function') onComplete();
             });
+        } else {
+            Promise.resolve().then(() => {
+                if (typeof onComplete === 'function') onComplete();
+            });
+        }
     };
 
     if (typeof recordGame === 'function') {
@@ -235,13 +242,13 @@ function updateCrashBalance(isWin, onComplete) {
         if (result instanceof Promise) {
             result.then(finalize);
         } else {
-            // Оборачиваем в Promise
             Promise.resolve().then(finalize);
         }
     } else {
         Promise.resolve().then(finalize);
     }
 }
+
 
 
 function resetCrashScreen() {
