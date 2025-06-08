@@ -3274,6 +3274,15 @@ body:-moz-full-screen {
     text-align: center;
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 30px); /* 🔧 под линию свайпа */
   }
+
+  .crash-joke-box {
+    max-width: 500px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 
