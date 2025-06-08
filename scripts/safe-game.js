@@ -140,8 +140,17 @@
         blockSafeUI();
 
         if (typeof recordGame === 'function') {
-    recordGame("safe", window.bet, "pending", 0, window.selectedCurrency);
+    recordGame(
+        "safe",
+        window.bet,
+        "pending",
+        false,
+        window.selectedCurrency,
+        0,
+        false
+    );
 }
+
 
 
         try {
