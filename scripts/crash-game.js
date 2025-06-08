@@ -76,9 +76,18 @@ function playCrash() {
     const path = document.getElementById('flightPath');
     if (path) path.setAttribute('d', '');
 
-    if (window.selectedCurrency === 'ton') window.fakeBalance.ton -= window.bet;
-    else window.fakeBalance.usdt -= window.bet;
-    updateBalanceUI();
+    if (typeof recordGame === 'function') {
+    recordGame(
+        "crash",
+        window.bet,
+        "pending",    // запись ожидания
+        false,        // пока win: false
+        window.selectedCurrency,
+        0,
+        false         // не финал
+    );
+}
+
 
     const crashStatus = document.getElementById('crash-status');
     crashStatus.classList.remove('crash-win', 'crash-lose');
@@ -166,6 +175,7 @@ function endCrashRound() {
 
     document.querySelector('#game-crash .currency-selector')?.classList.remove('disabled');
     document.querySelector('#game-crash .bet-box')?.classList.remove('disabled');
+
     const backBtn = document.querySelector('#game-crash .back-btn');
     if (backBtn) {
         backBtn.style.pointerEvents = 'auto';
@@ -181,32 +191,47 @@ function endCrashRound() {
         plane.style.transform = 'translate(0, 0)';
     }, 1000);
 
-    const betString = `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`;
-    const finalBalanceString = `Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`;
     if (typeof Player_leave === 'function') {
-        Player_leave("Crash", `${crashResultText} | ${betString} | ${finalBalanceString}`);
+        Player_leave("Crash", `${crashResultText} | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`);
     }
 }
+
 
 function updateCrashBalance(isWin) {
-    if (isWin) {
-        const payout = window.bet * multiplier;
-        if (window.selectedCurrency === 'ton') window.fakeBalance.ton += payout;
-        else window.fakeBalance.usdt += payout;
-        document.getElementById('crash-result').innerText = `🎉 Вы выиграли ${formatAmount(payout)} ${window.selectedCurrency.toUpperCase()}`;
-        crashResultText = `Победа на x${multiplier.toFixed(2)}`;
-        crashWinAmount = payout;
-    } else {
-        document.getElementById('crash-result').innerText = `😞 Вы проиграли. Попробуйте еще раз.`;
-        crashResultText = `Проигрыш на x${multiplier.toFixed(2)}`;
-        crashWinAmount = 0;
-    }
+    const prize = isWin ? +(window.bet * multiplier).toFixed(2) : 0;
 
-    updateBalanceUI();
+    document.getElementById('crash-result').innerText = isWin
+        ? `🎉 Вы выиграли ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()}`
+        : `😞 Вы проиграли. Попробуйте еще раз.`;
+
+    crashResultText = isWin
+        ? `Победа на x${multiplier.toFixed(2)}`
+        : `Проигрыш на x${multiplier.toFixed(2)}`;
+    crashWinAmount = prize;
+
     if (typeof recordGame === 'function') {
-        recordGame('crash', window.bet, isWin ? 'win' : 'lose', isWin ? window.bet * multiplier : 0, window.selectedCurrency);
+        const result = recordGame(
+            "crash",                  // game
+            window.bet,              // bet
+            isWin ? "win" : "lose",  // result
+            isWin,                   // win
+            window.selectedCurrency, // currency
+            prize,                   // prize
+            true                     // final
+        );
+
+        if (result instanceof Promise) {
+            result
+                .then(() => forceBalance?.(0))
+                .then(() => updateBalanceUI?.());
+        } else {
+            forceBalance?.(0)?.then(() => updateBalanceUI?.());
+        }
+    } else {
+        forceBalance?.(0)?.then(() => updateBalanceUI?.());
     }
 }
+
 
 function resetCrashScreen() {
     clearInterval(interval);
@@ -239,6 +264,8 @@ function resetCrashScreen() {
 
     document.getElementById('crash-joke')?.style.setProperty('display', 'none');
     document.getElementById('game-crash')?.style.setProperty('display', 'block');
+
+    if (typeof updateBalanceUI === 'function') updateBalanceUI();
 }
 
 window.resetCrashScreen = resetCrashScreen;
