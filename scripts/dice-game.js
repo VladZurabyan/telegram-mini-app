@@ -132,23 +132,24 @@
         const result = recordGame("dice", window.bet, diceResult, win ? winAmount : 0, window.selectedCurrency);
 
         if (result instanceof Promise) {
-            result.then(() => {
-                if (typeof forceBalance === 'function') {
-                    forceBalance(0).then(unlockUI);
-                } else {
-                    unlockUI();
-                }
-            });
+    result.then(() => {
+        if (typeof forceBalance === 'function') {
+            forceBalance(0).then(() => unlockUI(btn));
         } else {
-            if (typeof forceBalance === 'function') {
-                forceBalance(0).then(unlockUI);
-            } else {
-                unlockUI();
-            }
+            unlockUI(btn);
         }
+    });
+} else {
+    if (typeof forceBalance === 'function') {
+        forceBalance(0).then(() => unlockUI(btn));
     } else {
-        unlockUI();
+        unlockUI(btn);
     }
+}
+} else {
+    unlockUI(btn);
+}
+
 
     if (typeof Player_action === 'function') {
         Player_action(gameName, "Результат", win
@@ -167,7 +168,7 @@
 
     }
 
-    function unlockUI() {
+    function unlockUI(btn) {
     btn.disabled = false;
     document.querySelector('#game-dice .back-btn')?.removeAttribute('disabled');
     document.getElementById('diceChoices')?.classList.remove('disabled');
@@ -176,6 +177,7 @@
     updateBalanceUI();
     diceInProgress = false;
 }
+
 
 
 
