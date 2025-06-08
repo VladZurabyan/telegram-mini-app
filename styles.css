@@ -3278,6 +3278,8 @@ body:-moz-full-screen {
   .crash-joke-box {
     max-width: 500px;
     width: 100%;
+    margin-top: 100px;
+margin-bottom: 60px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 20px;
