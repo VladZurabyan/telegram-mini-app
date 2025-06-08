@@ -132,8 +132,39 @@
 
             // 📦 Запись игры
             if (typeof recordGame === 'function') {
-                recordGame("boxes", window.bet, isWin ? "win" : "lose", isWin ? 2 : 0, window.selectedCurrency);
+    const result = recordGame(
+        "boxes",
+        window.bet,
+        isWin ? "win" : "lose",
+        isWin,
+        window.selectedCurrency,
+        isWin ? window.bet * 2 : 0,
+        true
+    );
+
+    if (result instanceof Promise) {
+        result.then(() => {
+            if (typeof forceBalance === "function") {
+                forceBalance(0).then(() => {
+                    finishUI();
+                });
+            } else {
+                finishUI();
             }
+        });
+    } else {
+        if (typeof forceBalance === "function") {
+            forceBalance(0).then(() => {
+                finishUI();
+            });
+        } else {
+            finishUI();
+        }
+    }
+} else {
+    finishUI();
+}
+
 
             // 🧠 Лог действия
             const detail = `Открыл коробку ${choice + 1}, приз был в ${prize + 1} — ${isWin ? 'Победа' : 'Промах'}`;
@@ -150,11 +181,17 @@
                 Player_leave(gameName, `${resultStr} | ${betStr} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
             }
 
-            document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
-            if (backBtn) backBtn.disabled = false;
-            boxInProgress = false;
+           
+
         }, 1000);
     }
+
+     function finishUI() {
+    document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
+    const backBtn = document.querySelector('#game-boxes .back-btn');
+    if (backBtn) backBtn.disabled = false;
+    boxInProgress = false;
+}
 
     function resetBoxesScreen() {
         const boxImgs = document.querySelectorAll('#game-boxes .boxes img');
