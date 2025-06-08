@@ -608,8 +608,7 @@ if (gameId === 'game-crash') {
 
 
     if (gameId === 'game-safe') {
-          window.inGame = true;
-                            clearInterval(window.balanceUpdater);
+          if (typeof updateBalanceOnce === 'function') updateBalanceOnce();
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
         document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
         setCurrency(selectedCurrency);
@@ -647,8 +646,7 @@ if (gameId === 'game-crash') {
                 setupDigitClicks();
                 updateSafeDigits();
                 updateBalanceUI();
-           window.inGame = false;
-                                window.balanceUpdater();
+           
 
 }
 
