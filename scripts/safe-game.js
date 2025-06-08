@@ -66,7 +66,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    id: user.id,
+                    user_id: user.id,
                     currency: window.selectedCurrency
                 })
             });
@@ -158,7 +158,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    id: user.id,
+                    user_id: user.id,
                     currency: window.selectedCurrency,
                     bet: window.bet
                 })
@@ -208,7 +208,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    id: user.id,
+                    user_id: user.id,
                     currency: window.selectedCurrency,
                     digits: digits
                 })
