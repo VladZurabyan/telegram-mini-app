@@ -139,6 +139,11 @@
 
         blockSafeUI();
 
+        if (typeof recordGame === 'function') {
+    recordGame("safe", window.bet, "pending", 0, window.selectedCurrency);
+}
+
+
         try {
             const res = await fetch(`${apiUrl}/safe/start`, {
                 method: "POST",
