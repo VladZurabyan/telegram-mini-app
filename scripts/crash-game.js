@@ -77,29 +77,16 @@ function playCrash() {
     if (path) path.setAttribute('d', '');
 
     if (typeof recordGame === 'function') {
-    const result = recordGame(
+    recordGame(
         "crash",
         window.bet,
-        "pending",       // ожидание
-        false,           // win
+        "pending",    // запись ожидания
+        false,        // пока win: false
         window.selectedCurrency,
-        0,               // prize
-        false            // не финал
+        0,
+        false         // не финал
     );
-
-    if (result instanceof Promise) {
-        result
-            .then(() => {
-                startCrashAnimation(); // 🎯 запуск игры и анимации
-            })
-            .catch(() => {
-                crashInProgress = false;
-                showCustomAlert("❌ Ошибка сервера. Попробуйте ещё раз.", "error");
-            });
-        return; // ⛔ не запускать игру до получения ответа
-    }
 }
-
 
 
 
@@ -150,10 +137,12 @@ function playCrash() {
             crashStatus.classList.add('crash-lose');
 
             if (!cashedOut) {
-                updateCrashBalance(false);
-                plane.classList.add('crash');
-            }
-            endCrashRound();
+    plane.classList.add('crash');
+    updateCrashBalance(false, endCrashRound); // передаём колбэк
+} else {
+    endCrashRound(); // если кэш-аут был, просто завершаем
+}
+
         }
     }, 50);
 }
@@ -171,11 +160,11 @@ function crashCashOut() {
 
     if (typeof Player_action === 'function') Player_action(gameName, "Кэш-аут", `Вывел на x${multiplier.toFixed(2)}`);
 
-    updateCrashBalance(true);
+    
     const plane = document.getElementById('crashPlane');
     plane.classList.remove('crash');
     plane.classList.add('cashout');
-    endCrashRound();
+    updateCrashBalance(true, endCrashRound); // передаём колбэк
 }
 
 function endCrashRound() {
@@ -212,7 +201,7 @@ function endCrashRound() {
 }
 
 
-function updateCrashBalance(isWin) {
+function updateCrashBalance(isWin, onComplete) {
     const prize = isWin ? +(window.bet * multiplier).toFixed(2) : 0;
 
     document.getElementById('crash-result').innerText = isWin
@@ -224,26 +213,33 @@ function updateCrashBalance(isWin) {
         : `Проигрыш на x${multiplier.toFixed(2)}`;
     crashWinAmount = prize;
 
+    const finalize = () => {
+        forceBalance?.(0)
+            ?.then(() => updateBalanceUI?.())
+            ?.then(() => {
+                if (typeof onComplete === 'function') onComplete();
+            });
+    };
+
     if (typeof recordGame === 'function') {
         const result = recordGame(
-            "crash",                  // game
-            window.bet,              // bet
-            isWin ? "win" : "lose",  // result
-            isWin,                   // win
-            window.selectedCurrency, // currency
-            prize,                   // prize
-            true                     // final
+            "crash",
+            window.bet,
+            isWin ? "win" : "lose",
+            isWin,
+            window.selectedCurrency,
+            prize,
+            true
         );
 
         if (result instanceof Promise) {
-            result
-                .then(() => forceBalance?.(0))
-                .then(() => updateBalanceUI?.());
+            result.then(finalize);
         } else {
-            forceBalance?.(0)?.then(() => updateBalanceUI?.());
+            // Оборачиваем в Promise
+            Promise.resolve().then(finalize);
         }
     } else {
-        forceBalance?.(0)?.then(() => updateBalanceUI?.());
+        Promise.resolve().then(finalize);
     }
 }
 
