@@ -64,13 +64,14 @@
         blockSafeUI();
         try {
             const res = await fetch(`${apiUrl}/safe/hint`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    user_id: user.id,
-                    currency: window.selectedCurrency
-                })
-            });
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        session_id: sessionId,
+        user_id: user.id
+    })
+});
+
             const data = await res.json();
 
             if (typeof Player_action === 'function') {
