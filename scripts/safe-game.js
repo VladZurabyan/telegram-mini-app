@@ -1,6 +1,7 @@
 (function () {
     let digits = [0, 0, 0];
     let isChecking = false;
+    let sessionId = null;
 
     const gameName = "Safe";
 
@@ -153,7 +154,8 @@ try {
     });
 
     const data = await res.json();
-
+    sessionId = data.session_id; 
+    
     if (!data.success || !data.session_id) {
         showCustomAlert("Ошибка при запуске игры", "error");
         unblockSafeUI();
@@ -216,10 +218,11 @@ try {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    user_id: user.id,
-                    currency: window.selectedCurrency,
-                    guess: digits
-                })
+    user_id: user.id,
+    session_id: sessionId,      // ← обязательно
+    guess: digits               // ← должен быть массив чисел
+})
+
             });
             const data = await res.json();
             result = data.result;
