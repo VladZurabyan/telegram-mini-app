@@ -503,8 +503,8 @@ function loadGame(gameId) {
                         }
 
         if (gameId === 'game-dice') {
-            window.inGame = true;
-                            clearInterval(window.balanceUpdater);
+           // При входе в игру сразу обновим баланс
+    if (typeof updateBalanceOnce === 'function') updateBalanceOnce();
         // Добавляем обработчики валют
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
         document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
@@ -521,8 +521,7 @@ function loadGame(gameId) {
         }
         updateBalanceUI(); // чтобы сразу отображалось
     updateBetUI();
-                                window.inGame = false;
-                                window.balanceUpdater();
+                               
         // Назад
         container.querySelector('.back-btn')?.addEventListener('click', backToMain);
 }
