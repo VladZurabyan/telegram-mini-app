@@ -205,9 +205,9 @@ function playChickenGame() {
     spawnCarSmart(".lane-1");
     spawnCarSmart(".lane-2");
     spawnCarSmart(".lane-3");
-    startCarStream(".lane-1", 500, 2000);
-    startCarStream(".lane-2", 700, 2200);
-    startCarStream(".lane-3", 900, 2500);
+    startCarStream(".lane-1", 50, 10000);
+    startCarStream(".lane-2", 7, 220000);
+    startCarStream(".lane-3", 9, 2000500);
     collisionInterval = setInterval(checkCollision, 100);
 }
 
