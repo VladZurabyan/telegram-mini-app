@@ -89,8 +89,16 @@
 
        // ✅ Pending запись и списание
     if (typeof recordGame === 'function') {
-        recordGame("dice", window.bet, "pending", false, window.selectedCurrency, 0, false);
-    }
+    recordGame(
+        "dice",
+        window.bet,
+        "pending",       // ← статус ожидания
+        false,           // win: false
+        window.selectedCurrency,
+        0,
+        false            // final: false
+    );
+}
 
         btn.disabled = true;
         document.querySelector('#game-dice .back-btn')?.setAttribute('disabled', 'true');
@@ -129,7 +137,17 @@
     }
 
     if (typeof recordGame === 'function') {
-        const result = recordGame("dice", window.bet, diceResult, win, window.selectedCurrency, win ? winAmount : 0, true);
+    const result = recordGame(
+        "dice",                             // game
+        window.bet,                         // bet
+        win ? "win" : "lose",               // result
+        win,                                // win (bool)
+        window.selectedCurrency,            // currency
+        win ? winAmount : 0,                // prize_amount
+        true                                // final
+    );
+}
+
 
 
         if (result instanceof Promise) {
