@@ -83,7 +83,7 @@
             console.error(e);
             showCustomAlert("Ошибка при получении подсказки", "error");
         } finally {
-            unblockSafeUI();
+            document.getElementById('hint-btn')?.removeAttribute('disabled');
         }
     }
 
