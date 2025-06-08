@@ -215,6 +215,9 @@ try {
             checkBtn?.classList.remove('hidden');
             checkBtn?.removeAttribute('disabled');
             setupDigitClicks();
+            const hintBtn = document.getElementById('hint-btn');
+hintBtn?.removeAttribute('disabled'); // 🔓 Разрешаем подсказку при каждой новой игре
+
         }, 1900);
     }
 
