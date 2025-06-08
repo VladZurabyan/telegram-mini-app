@@ -43,9 +43,7 @@
             Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
         }
 
-        // 💳 Списание
-        window.fakeBalance[window.selectedCurrency] = parseFloat((window.fakeBalance[window.selectedCurrency] - window.bet).toFixed(2));
-        updateBalanceUI();
+        
 
         const boxImgs = document.querySelectorAll('#game-boxes .boxes img');
         if (boxImgs.length !== 3) {
@@ -124,14 +122,10 @@
                 }
             }
 
-            // 💰 Выплата
-            if (isWin) {
-                window.fakeBalance[window.selectedCurrency] = parseFloat((window.fakeBalance[window.selectedCurrency] + window.bet * 2).toFixed(2));
-                updateBalanceUI();
-            }
+            
 
             // 📦 Запись игры
-            if (typeof recordGame === 'function') {
+    if (typeof recordGame === 'function') {
     const result = recordGame(
         "boxes",
         window.bet,
@@ -164,6 +158,7 @@
 } else {
     finishUI();
 }
+
 
 
             // 🧠 Лог действия
