@@ -77,16 +77,32 @@ function playCrash() {
     if (path) path.setAttribute('d', '');
 
     if (typeof recordGame === 'function') {
-    recordGame(
+    const result = recordGame(
         "crash",
         window.bet,
-        "pending",    // запись ожидания
-        false,        // пока win: false
+        "pending",       // ожидание
+        false,           // win
         window.selectedCurrency,
-        0,
-        false         // не финал
+        0,               // prize
+        false            // не финал
     );
+
+    if (result instanceof Promise) {
+        result
+            .then(() => {
+                startCrashAnimation(); // 🎯 запуск игры и анимации
+            })
+            .catch(() => {
+                crashInProgress = false;
+                showCustomAlert("❌ Ошибка сервера. Попробуйте ещё раз.", "error");
+            });
+        return; // ⛔ не запускать игру до получения ответа
+    }
 }
+
+// если recordGame не возвращает Promise — запускаем сразу
+startCrashAnimation();
+
 
 
     const crashStatus = document.getElementById('crash-status');
