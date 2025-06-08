@@ -276,31 +276,36 @@ hintBtn?.removeAttribute('disabled'); // 🔓 Разрешаем подсказ�
             }, 4000);
 
         } else if (result === 'lose') {
-            safeImg.src = 'assets/safe-closed.png';
-            document.getElementById('game-safe')?.classList.add('safe-fail');
-            digitsContainer?.classList.add('hidden');
+    safeImg.src = 'assets/safe-closed.png';
+    document.getElementById('game-safe')?.classList.add('safe-fail');
+    digitsContainer?.classList.add('hidden');
 
-            setTimeout(() => {
-                if (typeof recordGame === 'function') {
-                    recordGame("safe", window.bet, "lose", false, window.selectedCurrency, 0, true);
-                }
-                if (typeof Player_action === 'function') {
-                    Player_action(gameName, "Результат", "Проигрыш");
-                }
-                if (typeof Player_leave === 'function') {
-                    Player_leave(gameName, `Проигрыш | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
-                }
-                showCustomAlert(`❌ Вы не угадали.`, 'error');
-            }, 2000);
+    setTimeout(() => {
+        safeImg.classList.remove('hidden');
+        safeImg.classList.add('safe-door-closed');
+    }, 400);
 
-            setTimeout(() => {
-                document.getElementById('game-safe')?.classList.remove('safe-fail');
-                resetSafeScreen();
-                unblockSafeUI();
-                isChecking = false;
-            }, 4000);
+    setTimeout(() => {
+        if (typeof recordGame === 'function') {
+            recordGame("safe", window.bet, "lose", false, window.selectedCurrency, 0, true);
+        }
+        if (typeof Player_action === 'function') {
+            Player_action(gameName, "Результат", "Проигрыш");
+        }
+        if (typeof Player_leave === 'function') {
+            Player_leave(gameName, `Проигрыш | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
+        }
+        showCustomAlert(`❌ Вы не угадали.`, 'error');
+    }, 2000);
 
-        } else {
+    setTimeout(() => {
+        document.getElementById('game-safe')?.classList.remove('safe-fail');
+        resetSafeScreen();
+        unblockSafeUI();
+        isChecking = false;
+    }, 4000);
+}
+ else {
             const attemptsLeft = data.attempts_left !== undefined ? data.attempts_left : '?';
             showCustomAlert(`Неверно. Осталось попыток: ${attemptsLeft}`, 'error');
 
