@@ -572,8 +572,8 @@ if (gameId === 'game-crash') {
 
 
         if (gameId === 'game-chicken') {
-            window.inGame = true;
-                            clearInterval(window.balanceUpdater);
+           if (typeof updateBalanceOnce === 'function') updateBalanceOnce();
+ 
         document.getElementById('btn-currency-ton')?.addEventListener('click', () => setCurrency('ton'));
         document.getElementById('btn-currency-usdt')?.addEventListener('click', () => setCurrency('usdt'));
         setCurrency(selectedCurrency); // выставить текущую валюту
@@ -599,8 +599,7 @@ if (gameId === 'game-crash') {
                 startBtn.replaceWith(newStart);
                 newStart.addEventListener('click', () => playChickenGame());
         }
-          window.inGame = false;
-                                window.balanceUpdater();
+         
         // Кнопка "Назад"
         document.querySelector('#game-chicken .back-btn')?.addEventListener('click', backToMain);
 }
