@@ -60,32 +60,37 @@
         }
     }
 
-    async function showHint() {
-        blockSafeUI();
-        try {
-            const res = await fetch(`${apiUrl}/safe/hint`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-        session_id: sessionId,
-        user_id: user.id
-    })
-});
+  async function showHint() {
+    const hintBtn = document.getElementById('hint-btn');
+    hintBtn?.setAttribute('disabled', 'true');
 
-            const data = await res.json();
+    try {
+        const res = await fetch(`${apiUrl}/safe/hint`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                session_id: sessionId,
+                user_id: user.id
+            })
+        });
 
-            if (typeof Player_action === 'function') {
-                Player_action(gameName, "Подсказка", `Подсказка: первая цифра ${data.hint}`);
-            }
+        const data = await res.json();
 
-            showCustomAlert(`Первая цифра: ${data.hint}`, 'info');
-        } catch (e) {
-            console.error(e);
-            showCustomAlert("Ошибка при получении подсказки", "error");
-        } finally {
-            document.getElementById('hint-btn')?.removeAttribute('disabled');
+        if (typeof Player_action === 'function') {
+            Player_action(gameName, "Подсказка", `Подсказка: первая цифра ${data.hint}`);
         }
+
+        showCustomAlert(`Первая цифра: ${data.hint}`, 'info');
+
+    } catch (e) {
+        console.error(e);
+        showCustomAlert("Ошибка при получении подсказки", "error");
+    } finally {
+        hintBtn?.removeAttribute('disabled');
+        // UI НЕ разблокируем полностью!
     }
+}
+
 
     function changeSafeBet(delta) {
         const display = document.getElementById("safe-bet-display");
@@ -206,42 +211,34 @@ try {
     }
 
     async function checkSafeGuess() {
-        if (isChecking) return;
-        isChecking = true;
+    if (isChecking) return;
+    isChecking = true;
 
-        const safeImg = document.getElementById('safeImage');
-        const digitsContainer = document.getElementById('safeDigitsContainer');
-        const checkBtn = document.getElementById('checkSafeBtn');
-        checkBtn?.setAttribute('disabled', 'true');
+    const safeImg = document.getElementById('safeImage');
+    const digitsContainer = document.getElementById('safeDigitsContainer');
+    const checkBtn = document.getElementById('checkSafeBtn');
+    checkBtn?.setAttribute('disabled', 'true');
 
-        let result, prize, attempts;
+    try {
+        const res = await fetch(`${apiUrl}/safe/guess`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                user_id: user.id,
+                session_id: sessionId,
+                guess: digits
+            })
+        });
 
-        try {
-            const res = await fetch(`${apiUrl}/safe/guess`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-    user_id: user.id,
-    session_id: sessionId,      // ← обязательно
-    guess: digits               // ← должен быть массив чисел
-})
+        const data = await res.json();
 
-            });
-            const data = await res.json();
-            result = data.result;
-            prize = data.prize;
-            attempts = data.attempts;
-        } catch (e) {
-            console.error(e);
-            showCustomAlert("Ошибка проверки кода", "error");
-            unblockSafeUI();
-            isChecking = false;
-            return;
-        }
+        const result = data.result;
+        const prize = data.prize;
 
         if (result === 'win') {
             safeImg.src = 'assets/safe-open.png';
             digitsContainer?.classList.add('hidden');
+
             setTimeout(() => {
                 safeImg.classList.remove('hidden');
                 safeImg.classList.add('safe-door-open');
@@ -250,17 +247,8 @@ try {
 
             setTimeout(() => {
                 if (typeof recordGame === 'function') {
-    recordGame(
-        "safe",
-        window.bet,
-        "win",
-        true,
-        window.selectedCurrency,
-        prize,
-        true
-    );
-}
-
+                    recordGame("safe", window.bet, "win", true, window.selectedCurrency, prize, true);
+                }
                 if (typeof Player_action === 'function') {
                     Player_action(gameName, "Результат", `Победа. Приз: ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()}`);
                 }
@@ -283,17 +271,8 @@ try {
 
             setTimeout(() => {
                 if (typeof recordGame === 'function') {
-    recordGame(
-        "safe",
-        window.bet,
-        "lose",
-        false,
-        window.selectedCurrency,
-        0,
-        true
-    );
-}
-
+                    recordGame("safe", window.bet, "lose", false, window.selectedCurrency, 0, true);
+                }
                 if (typeof Player_action === 'function') {
                     Player_action(gameName, "Результат", "Проигрыш");
                 }
@@ -311,14 +290,23 @@ try {
             }, 4000);
 
         } else {
-            showCustomAlert(`Неверно. Осталось попыток: ${data.attempts_left}`, 'error');
+            const attemptsLeft = data.attempts_left !== undefined ? data.attempts_left : '?';
+            showCustomAlert(`Неверно. Осталось попыток: ${attemptsLeft}`, 'error');
 
             setTimeout(() => {
                 checkBtn?.removeAttribute('disabled');
                 isChecking = false;
             }, 800);
         }
+
+    } catch (e) {
+        console.error(e);
+        showCustomAlert("Ошибка проверки кода", "error");
+        unblockSafeUI();
+        isChecking = false;
     }
+}
+
 
     window.updateSafeDigits = updateSafeDigits;
     window.showHint = showHint;
