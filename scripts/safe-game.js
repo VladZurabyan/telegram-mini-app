@@ -236,8 +236,17 @@
 
             setTimeout(() => {
                 if (typeof recordGame === 'function') {
-                    recordGame("safe", window.bet, "win", prize, window.selectedCurrency);
-                }
+    recordGame(
+        "safe",
+        window.bet,
+        "win",
+        true,
+        window.selectedCurrency,
+        prize,
+        true
+    );
+}
+
                 if (typeof Player_action === 'function') {
                     Player_action(gameName, "Результат", `Победа. Приз: ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()}`);
                 }
@@ -260,8 +269,17 @@
 
             setTimeout(() => {
                 if (typeof recordGame === 'function') {
-                    recordGame("safe", window.bet, "lose", 0, window.selectedCurrency);
-                }
+    recordGame(
+        "safe",
+        window.bet,
+        "lose",
+        false,
+        window.selectedCurrency,
+        0,
+        true
+    );
+}
+
                 if (typeof Player_action === 'function') {
                     Player_action(gameName, "Результат", "Проигрыш");
                 }
