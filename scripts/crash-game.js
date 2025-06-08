@@ -153,6 +153,8 @@ function crashCashOut() {
     cashedOut = true;
     clearInterval(interval);
 
+    document.getElementById('crash-cashout').disabled = true; // 🔒 Блокируем повторный клик
+    
     const crashStatus = document.getElementById('crash-status');
     crashStatus.classList.remove('crash-win', 'crash-lose');
     crashStatus.innerText = `✅ Забрано на x${multiplier.toFixed(2)}`;
