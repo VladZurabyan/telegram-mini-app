@@ -146,28 +146,29 @@
         win ? winAmount : 0,                // prize_amount
         true                                // final
     );
-}
 
-
-
-        if (result instanceof Promise) {
-    result.then(() => {
+    if (result instanceof Promise) {
+        result.then(() => {
+            if (typeof forceBalance === 'function') {
+                forceBalance(0).then(() => unlockUI(btn));
+            } else {
+                unlockUI(btn);
+            }
+        }).catch(() => {
+            // В случае ошибки на сервере всё равно разблокируем UI
+            unlockUI(btn);
+        });
+    } else {
         if (typeof forceBalance === 'function') {
             forceBalance(0).then(() => unlockUI(btn));
         } else {
             unlockUI(btn);
         }
-    });
-} else {
-    if (typeof forceBalance === 'function') {
-        forceBalance(0).then(() => unlockUI(btn));
-    } else {
-        unlockUI(btn);
     }
-}
 } else {
     unlockUI(btn);
 }
+
 
 
     if (typeof Player_action === 'function') {
