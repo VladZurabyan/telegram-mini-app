@@ -1,4 +1,4 @@
-(function () {
+(async function () {
     const initDataExists = !!window.Telegram?.WebApp?.initData;
     const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
 
@@ -8,61 +8,25 @@
     const isWebTelegram = !isMobileTelegram && !isDesktopTelegram;
 
     if (!initDataExists || !isUserValid || isWebTelegram) {
-    document.body.innerHTML = `
-    <div style="
-        position: fixed;
-        inset: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: rgba(15, 15, 15, 0.85);
-        backdrop-filter: blur(10px);
-        z-index: 99999;
-        font-family: 'Segoe UI', sans-serif;
-        color: #fff;
-    ">
-        <div style="
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 30px 40px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-            animation: fadeIn 0.5s ease-out;
-        ">
-            <h2 style="font-size: 28px; margin-bottom: 16px; color: #ff4e4e;">⛔ Доступ запрещён</h2>
-            <p style="font-size: 18px; line-height: 1.5;">
-                Откройте игру из <b>Telegram Mini App</b><br>
-                на телефоне или через Telegram Desktop.
-            </p>
+        document.body.innerHTML = `
+        <div style="position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(10px); z-index: 99999; font-family: 'Segoe UI', sans-serif; color: #fff;">
+            <div style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); animation: fadeIn 0.5s ease-out;">
+                <h2 style="font-size: 28px; margin-bottom: 16px; color: #ff4e4e;">⛔ Доступ запрещён</h2>
+                <p style="font-size: 18px; line-height: 1.5;">Откройте игру из <b>Telegram Mini App</b><br>на телефоне или через Telegram Desktop.</p>
+            </div>
         </div>
-    </div>
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-    </style>
-`;
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; transform: scale(0.95); }
+                to { opacity: 1; transform: scale(1); }
+            }
+        </style>`;
+        throw new Error("⛔ Запрещён запуск вне Telegram-клиента");
+    }
 
-    throw new Error("⛔ Запрещён запуск вне Telegram-клиента");
-}
-
-})();
-
-
-
-
-
-
-(function () {
-    // 🔒 Блокировка F12, Ctrl+Shift+I/J/C, Ctrl+U
+    // 🔒 Защита от DevTools
     document.addEventListener("keydown", function (e) {
-        if (
-            e.key === "F12" ||
-            (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
-            (e.ctrlKey && e.key === "U")
-        ) {
+        if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) || (e.ctrlKey && e.key === "U")) {
             e.preventDefault();
             if (typeof showCustomAlert === 'function') {
                 showCustomAlert("⛔ DevTools запрещены", "error");
@@ -71,34 +35,22 @@
         }
     });
 
-    // 🔒 Блокировка правого клика
     document.addEventListener("contextmenu", function (e) {
         e.preventDefault();
     });
 
-    // 🛡️ Проверка на открытие DevTools через изменение размера
-let devtoolsTriggered = false;
-
-setInterval(() => {
-    const isDevToolsOpen =
-        window.outerHeight - window.innerHeight > 160 ||
-        window.outerWidth - window.innerWidth > 160;
-
-    if (isDevToolsOpen && !devtoolsTriggered) {
-        devtoolsTriggered = true;
-
-        // Показываем предупреждение, но не блокируем всё
-        showCustomAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
-        if (typeof Player_action === 'function') {
-            Player_action("Security", "DevTools", "DevTools замечены через resize");
+    let devtoolsTriggered = false;
+    setInterval(() => {
+        const isDevToolsOpen = window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160;
+        if (isDevToolsOpen && !devtoolsTriggered) {
+            devtoolsTriggered = true;
+            showCustomAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
+            if (typeof Player_action === 'function') {
+                Player_action("Security", "DevTools", "DevTools замечены через resize");
+            }
         }
+    }, 1000);
 
-       
-    }
-}, 1000);
-
-
-    // 🔒 Обнаружение через debugger
     setInterval(() => {
         const start = performance.now();
         debugger;
@@ -107,76 +59,52 @@ setInterval(() => {
             document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ DevTools запрещены</h1>";
         }
     }, 2000);
-})();
 
-function showDatabaseErrorOverlay() {
-    document.body.innerHTML = `
-        <div style="
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', sans-serif;
-            z-index: 99999;
-        ">
-            <h2 style="font-size: 28px; color: #ff4e4e;">⛔ База данных недоступна</h2>
-            <p style="font-size: 18px; margin: 20px 0;">Попробуйте позже или нажмите кнопку ниже.</p>
-            <button onclick="location.reload()" style="
-                padding: 12px 24px;
-                font-size: 16px;
-                border-radius: 8px;
-                border: none;
-                background: #4caf50;
-                color: white;
-                cursor: pointer;
-            ">🔄 Повторить</button>
-        </div>
-    `;
-}
-
-async function checkBackendHealth() {
-    try {
-        const res = await fetch(`${apiUrl}/health`);
-        const data = await res.json();
-        if (data.status !== "ok") {
-            throw new Error("Database unavailable");
-        }
-    } catch (err) {
-        showDatabaseErrorOverlay();
-        throw new Error("⛔ Бэкенд не доступен");
+    function showDatabaseErrorOverlay() {
+        document.body.innerHTML = `
+            <div style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; z-index: 99999;">
+                <h2 style="font-size: 28px; color: #ff4e4e;">⛔ База данных недоступна</h2>
+                <p style="font-size: 18px; margin: 20px 0;">Попробуйте позже или нажмите кнопку ниже.</p>
+                <button onclick="location.reload()" style="padding: 12px 24px; font-size: 16px; border-radius: 8px; border: none; background: #4caf50; color: white; cursor: pointer;">🔄 Повторить</button>
+            </div>`;
     }
-}
 
-const activeGames = {
-    'partners': true,
-    'rules': true,
-    'deposit': true,
-    'withdraw': true,
-    'game-coin': true,
-    'game-crash': true,
-    'game-boxes': true,
-    'game-dice': true,
-    'game-chicken': true,
-    'game-safe': true,
-    'game-bombs': true,
-    'game-arrow': false,
-    'game-21': true,
-    'game-wheel': true
-};
+    async function checkBackendHealth() {
+        try {
+            const res = await fetch(`${apiUrl}/health`);
+            const data = await res.json();
+            if (data.status !== "ok") {
+                throw new Error("Database unavailable");
+            }
+        } catch (err) {
+            showDatabaseErrorOverlay();
+            throw new Error("⛔ Бэкенд не доступен");
+        }
+    }
 
-
+    const activeGames = {
+        'partners': true,
+        'rules': true,
+        'deposit': true,
+        'withdraw': true,
+        'game-coin': true,
+        'game-crash': true,
+        'game-boxes': true,
+        'game-dice': true,
+        'game-chicken': true,
+        'game-safe': true,
+        'game-bombs': true,
+        'game-arrow': false,
+        'game-21': true,
+        'game-wheel': true
+    };
 
     const tg = window.Telegram.WebApp;
     tg.ready();
 
     try {
-        await checkBackendHealth();        // ✅ проверка здоровья backend
-        checkBackendConnection();          // 🎯 если ок — продолжаем
+        await checkBackendHealth();      // ✅ теперь await допустим
+        checkBackendConnection();        // 🔄 продолжение инициализации
         tg.expand();
         tg.requestFullscreen();
         tg.disableVerticalSwipes();
@@ -184,6 +112,7 @@ const activeGames = {
         console.error(err.message);
     }
 })();
+
 
 
 
