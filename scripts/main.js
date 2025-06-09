@@ -10,6 +10,49 @@
     `;
 } */
 
+(function () {
+    // 🔒 Блокировка F12, Ctrl+Shift+I/J/C, Ctrl+U
+    document.addEventListener("keydown", function (e) {
+        if (
+            e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+            (e.ctrlKey && e.key === "U")
+        ) {
+            e.preventDefault();
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert("⛔ DevTools запрещены", "error");
+            }
+            return false;
+        }
+    });
+
+    // 🔒 Блокировка правого клика
+    document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+    });
+
+    // 🔒 Проверка изменения размеров (включён DevTools)
+    setInterval(() => {
+        if (
+            window.outerHeight - window.innerHeight > 160 ||
+            window.outerWidth - window.innerWidth > 160
+        ) {
+            document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ DevTools запрещены</h1>";
+        }
+    }, 1000);
+
+    // 🔒 Обнаружение через debugger
+    setInterval(() => {
+        const start = performance.now();
+        debugger;
+        const end = performance.now();
+        if (end - start > 100) {
+            document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ DevTools запрещены</h1>";
+        }
+    }, 2000);
+})();
+
+
 
 const activeGames = {
     'partners': true,
