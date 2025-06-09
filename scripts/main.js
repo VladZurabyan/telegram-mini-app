@@ -11,6 +11,25 @@
 } */
 
 (function () {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const isTelegram = /Telegram/i.test(ua);
+    const isWebApp = window.Telegram?.WebApp?.initData;
+
+    if (!isTelegram || !isWebApp) {
+        document.body.innerHTML = `
+            <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
+                <div>
+                    <h2>⛔ Доступ запрещён</h2>
+                    <p>Эта игра доступна только в Telegram Mini App</p>
+                </div>
+            </div>
+        `;
+        throw new Error("❌ Not in Telegram Mini App");
+    }
+})();
+
+
+(function () {
     // 🔒 Блокировка F12, Ctrl+Shift+I/J/C, Ctrl+U
     document.addEventListener("keydown", function (e) {
         if (
