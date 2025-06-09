@@ -137,7 +137,7 @@
 
     async function playSafeGame() {
        
-
+console.log('[SAFE] Запуск playSafeGame');
         window.bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
 
         if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
@@ -172,7 +172,7 @@
                     bet: window.bet
                 })
             });
-
+console.log('[SAFE] Отправлен запрос на /safe/start');
             const data = await res.json();
             sessionId = data.session_id;
             hintUsed = false;
