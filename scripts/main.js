@@ -1,14 +1,17 @@
- if (!window.Telegram?.WebApp?.initData || !window.Telegram?.WebApp?.initDataUnsafe?.user) {
+ const isWebTelegram = navigator.userAgent.includes("TelegramWeb");
+
+if (!window.Telegram?.WebApp?.initData || !window.Telegram.WebApp.initDataUnsafe?.user || isWebTelegram) {
     document.body.innerHTML = `
         <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
             <div>
-                <h2>⛔ Эта игра доступна только через Telegram</h2>
-                <p>Пожалуйста, откройте её из Telegram Mini App</p>
+                <h2>⛔ Эта игра доступна только в Telegram-приложении</h2>
+                <p>Пожалуйста, откройте её в официальном приложении Telegram</p>
             </div>
         </div>
     `;
-    throw new Error("Не в Telegram Mini App");
+    throw new Error("Запуск из браузера Telegram запрещён");
 }
+
 
 
 
