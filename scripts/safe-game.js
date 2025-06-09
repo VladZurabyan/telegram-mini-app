@@ -2,6 +2,8 @@
     let digits = [0, 0, 0];
     let isChecking = false;
     let sessionId = null;
+    let hintUsed = false;
+
 
     const gameName = "Safe";
 
@@ -61,9 +63,14 @@
     }
 
   async function showHint() {
+    if (hintUsed) {
+        showCustomAlert("Подсказка уже использована", "warning");
+        return;
+    }
+
     const hintBtn = document.getElementById('hint-btn');
     if (!hintBtn) return;
-    
+
     hintBtn.setAttribute('disabled', 'true'); // 🔒 Блокируем кнопку при старте
 
     try {
@@ -89,7 +96,7 @@
 
         showCustomAlert(`Первая цифра: ${data.hint}`, 'info');
 
-        // ✅ Подсказка успешно использована — кнопку не разблокируем
+        hintUsed = true; // ✅ Отмечаем, что использована
 
     } catch (e) {
         console.error(e);
@@ -97,6 +104,7 @@
         hintBtn.removeAttribute('disabled'); // 🔓 Разблокируем, если ошибка
     }
 }
+
 
 
 
@@ -169,6 +177,8 @@ try {
 
     const data = await res.json();
     sessionId = data.session_id; 
+    hintUsed = false;
+
     
     if (!data.session_id) {
     console.warn("Ответ сервера:", data);
@@ -198,8 +208,9 @@ try {
     console.error(e);
     showCustomAlert("Ошибка соединения", "error");
     unblockSafeUI();
+    hintUsed = false;
     return;
-}
+    }
 
 
         resetSafeDigits();
