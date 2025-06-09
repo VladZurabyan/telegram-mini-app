@@ -626,14 +626,13 @@ if (gameId === 'game-crash') {
 
         document.getElementById('hint-btn')?.addEventListener('click', () => showHint());
 
-        // Кнопка Играть
+       
+// Кнопка Играть
        const startBtn = document.getElementById('safeStart');
 if (startBtn) {
-    startBtn.onclick = null; // сбрасываем старые
-    startBtn.addEventListener('click', () => {
-        console.log("✅ Кнопка ИГРАТЬ нажата");
-        playSafeGame();
-    });
+    const newStart = startBtn.cloneNode(true);
+    startBtn.replaceWith(newStart);
+    newStart.addEventListener('click', () => playSafeGame());
 }
 
 
