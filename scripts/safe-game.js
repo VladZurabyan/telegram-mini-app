@@ -1,3 +1,4 @@
+Вы сказали:
 (function () {
     let digits = [0, 0, 0];
     let isChecking = false;
@@ -53,10 +54,10 @@
             money.style.top = '50%';
             money.style.transform = 'translate(-50%, -50%)';
             money.style.zIndex = '9999';
-            money.style.setProperty('--x', `${Math.random() * window.innerWidth - window.innerWidth / 2}px`);
-            money.style.setProperty('--y', `${Math.random() * -window.innerHeight}px`);
-            money.style.setProperty('--r', `${Math.random() * 720 - 360}deg`);
-            money.style.setProperty('--s', `${Math.random() * 0.5 + 0.8}`);
+            money.style.setProperty('--x', ${Math.random() * window.innerWidth - window.innerWidth / 2}px);
+            money.style.setProperty('--y', ${Math.random() * -window.innerHeight}px);
+            money.style.setProperty('--r', ${Math.random() * 720 - 360}deg);
+            money.style.setProperty('--s', ${Math.random() * 0.5 + 0.8});
             document.body.appendChild(money);
             setTimeout(() => money.remove(), 1600);
         }
@@ -74,7 +75,7 @@
     hintBtn.setAttribute('disabled', 'true'); // 🔒 Блокируем кнопку при старте
 
     try {
-        const res = await fetch(`${apiUrl}/safe/hint`, {
+        const res = await fetch(${apiUrl}/safe/hint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -91,10 +92,10 @@
         const data = await res.json();
 
         if (typeof Player_action === 'function') {
-            Player_action(gameName, "Подсказка", `Первая цифра: ${data.hint}`);
+            Player_action(gameName, "Подсказка", Первая цифра: ${data.hint});
         }
 
-        showCustomAlert(`Первая цифра: ${data.hint}`, 'info');
+        showCustomAlert(Первая цифра: ${data.hint}, 'info');
 
         hintUsed = true; // ✅ Отмечаем, что использована
 
@@ -137,13 +138,8 @@
         resetSafeDigits();
     }
 
-  let safeGameInProgress = false;
-
-async function playSafeGame() {
-    if (safeGameInProgress) return;
-    safeGameInProgress = true;
-
-    try {
+    async function playSafeGame() {
+        
         window.bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
 
         if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
@@ -153,47 +149,72 @@ async function playSafeGame() {
 
         const balanceAvailable = window.selectedCurrency === 'ton' ? window.fakeBalance.ton : window.fakeBalance.usdt;
         if (window.bet > balanceAvailable) {
-            showCustomAlert(`Недостаточно средств (${window.selectedCurrency.toUpperCase()})`, "error");
+            showCustomAlert(Недостаточно средств (${window.selectedCurrency.toUpperCase()}), "error");
             return;
         }
 
         if (window.bet < minBet) {
-            showCustomAlert(`Минимум ${minBet} ${window.selectedCurrency.toUpperCase()}`, "error");
+            showCustomAlert(Минимум ${minBet} ${window.selectedCurrency.toUpperCase()}, "error");
             return;
         }
 
         if (typeof Player_join === 'function') {
-            Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
+            Player_join(gameName, TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt});
         }
 
         blockSafeUI();
 
-        const res = await fetch(`${apiUrl}/safe/start`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                user_id: user.id,
-                currency: window.selectedCurrency,
-                bet: window.bet
-            })
-        });
+        
 
-        const data = await res.json();
-        sessionId = data.session_id;
-        hintUsed = false;
+try {
+    const res = await fetch(${apiUrl}/safe/start, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            user_id: user.id,
+            currency: window.selectedCurrency,
+            bet: window.bet
+        })
+    });
 
-        if (!data.session_id) {
-            console.warn("Ответ сервера:", data);
-            showCustomAlert("Ошибка при запуске игры", "error");
-            unblockSafeUI();
-            return;
-        }
+    const data = await res.json();
+    sessionId = data.session_id; 
+    hintUsed = false;
 
-        if (typeof recordGame === 'function') {
-            recordGame("safe", window.bet, "pending", false, window.selectedCurrency, 0, false);
-        }
+    
+    if (!data.session_id) {
+    console.warn("Ответ сервера:", data);
+    showCustomAlert("Ошибка при запуске игры", "error");
+    unblockSafeUI();
+    return;
+}
 
-        window.safeSessionId = data.session_id;
+
+    // ✅ ВЫЗЫВАЕМ ТОЛЬКО ЕСЛИ УСПЕШНО
+    if (typeof recordGame === 'function') {
+        recordGame(
+            "safe",
+            window.bet,
+            "pending",
+            false,
+            window.selectedCurrency,
+            0,
+            false
+        );
+    }
+
+    // Сохраняем session_id, если надо:
+    window.safeSessionId = data.session_id;
+
+} catch (e) {
+    console.error(e);
+    showCustomAlert("Ошибка соединения", "error");
+    unblockSafeUI();
+    
+    hintUsed = false;
+    return;
+    }
+
 
         resetSafeDigits();
         document.getElementById('checkSafeBtn')?.setAttribute('disabled', 'true');
@@ -209,19 +230,10 @@ async function playSafeGame() {
             checkBtn?.removeAttribute('disabled');
             setupDigitClicks();
             const hintBtn = document.getElementById('hint-btn');
-            hintBtn?.removeAttribute('disabled');
+hintBtn?.removeAttribute('disabled'); // 🔓 Разрешаем подсказку при каждой новой игре
+
         }, 1900);
-
-    } catch (e) {
-        console.error(e);
-        showCustomAlert("Ошибка соединения", "error");
-        unblockSafeUI();
-        hintUsed = false;
-    } finally {
-        safeGameInProgress = false; // ✅ ВСЕГДА сбрасываем
     }
-}
-
 
     async function checkSafeGuess() {
     if (isChecking) return;
@@ -233,7 +245,7 @@ async function playSafeGame() {
     checkBtn?.setAttribute('disabled', 'true');
 
     try {
-        const res = await fetch(`${apiUrl}/safe/guess`, {
+        const res = await fetch(${apiUrl}/safe/guess, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -263,12 +275,12 @@ async function playSafeGame() {
                     recordGame("safe", window.bet, "win", true, window.selectedCurrency, prize, true);
                 }
                 if (typeof Player_action === 'function') {
-                    Player_action(gameName, "Результат", `Победа. Приз: ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()}`);
+                    Player_action(gameName, "Результат", Победа. Приз: ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()});
                 }
                 if (typeof Player_leave === 'function') {
-                    Player_leave(gameName, `Победа | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
+                    Player_leave(gameName, Победа | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt});
                 }
-                showCustomAlert(`🎉 Вы выиграли ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()}!`, 'success');
+                showCustomAlert(🎉 Вы выиграли ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()}!, 'success');
             }, 2000);
 
             setTimeout(() => {
@@ -296,9 +308,9 @@ async function playSafeGame() {
             Player_action(gameName, "Результат", "Проигрыш");
         }
         if (typeof Player_leave === 'function') {
-            Player_leave(gameName, `Проигрыш | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
+            Player_leave(gameName, Проигрыш | Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt});
         }
-        showCustomAlert(`❌ Вы не угадали.`, 'error');
+        showCustomAlert(❌ Вы не угадали., 'error');
     }, 2000);
 
     setTimeout(() => {
@@ -310,7 +322,7 @@ async function playSafeGame() {
 }
  else {
             const attemptsLeft = data.attempts_left !== undefined ? data.attempts_left : '?';
-            showCustomAlert(`Неверно. Осталось попыток: ${attemptsLeft}`, 'error');
+            showCustomAlert(Неверно. Осталось попыток: ${attemptsLeft}, 'error');
 
             setTimeout(() => {
                 checkBtn?.removeAttribute('disabled');
