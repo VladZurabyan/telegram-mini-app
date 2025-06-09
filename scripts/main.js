@@ -1,5 +1,4 @@
-  if (!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.initData) {
-    // Не в Telegram — показываем заглушку или редирект
+ if (!window.Telegram?.WebApp?.initData || !window.Telegram?.WebApp?.initDataUnsafe?.user) {
     document.body.innerHTML = `
         <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
             <div>
@@ -8,7 +7,9 @@
             </div>
         </div>
     `;
-} 
+    throw new Error("Не в Telegram Mini App");
+}
+
 
 
 
