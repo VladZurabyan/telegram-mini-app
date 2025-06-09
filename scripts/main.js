@@ -1,16 +1,25 @@
- const isWebTelegram = navigator.userAgent.includes("TelegramWeb");
+(function checkTelegramApp() {
+    const userAgent = navigator.userAgent.toLowerCase();
 
-if (!window.Telegram?.WebApp?.initData || !window.Telegram.WebApp.initDataUnsafe?.user || isWebTelegram) {
-    document.body.innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
-            <div>
-                <h2>⛔ Эта игра доступна только в Telegram-приложении</h2>
-                <p>Пожалуйста, откройте её в официальном приложении Telegram</p>
+    const isDesktopTelegram = userAgent.includes("telegramdesktop");
+    const isMobileTelegram = userAgent.includes("telegram");
+    const isWebTelegram = userAgent.includes("telegramweb");
+
+    const hasTelegramInit = window.Telegram?.WebApp?.initData && window.Telegram.WebApp.initDataUnsafe?.user;
+
+    if (!hasTelegramInit || isWebTelegram || (!isDesktopTelegram && !isMobileTelegram)) {
+        document.body.innerHTML = `
+            <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
+                <div>
+                    <h2>⛔ Доступ запрещён</h2>
+                    <p>Пожалуйста, откройте игру через Telegram-приложение</p>
+                </div>
             </div>
-        </div>
-    `;
-    throw new Error("Запуск из браузера Telegram запрещён");
-}
+        `;
+        throw new Error("⛔ Запуск из неподдерживаемой среды");
+    }
+})();
+
 
 
 
