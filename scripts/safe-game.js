@@ -1,4 +1,3 @@
-Вы сказали:
 (function () {
     let digits = [0, 0, 0];
     let isChecking = false;
@@ -190,18 +189,7 @@ try {
 }
 
 
-    // ✅ ВЫЗЫВАЕМ ТОЛЬКО ЕСЛИ УСПЕШНО
-    if (typeof recordGame === 'function') {
-        recordGame(
-            "safe",
-            window.bet,
-            "pending",
-            false,
-            window.selectedCurrency,
-            0,
-            false
-        );
-    }
+    
 
     // Сохраняем session_id, если надо:
     window.safeSessionId = data.session_id;
