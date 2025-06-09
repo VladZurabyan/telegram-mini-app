@@ -137,8 +137,13 @@
         resetSafeDigits();
     }
 
-    async function playSafeGame() {
-        
+  let safeGameInProgress = false;
+
+async function playSafeGame() {
+    if (safeGameInProgress) return;
+    safeGameInProgress = true;
+
+    try {
         window.bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
 
         if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
@@ -163,57 +168,32 @@
 
         blockSafeUI();
 
-        
+        const res = await fetch(`${apiUrl}/safe/start`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                user_id: user.id,
+                currency: window.selectedCurrency,
+                bet: window.bet
+            })
+        });
 
-try {
-    const res = await fetch(`${apiUrl}/safe/start`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            user_id: user.id,
-            currency: window.selectedCurrency,
-            bet: window.bet
-        })
-    });
+        const data = await res.json();
+        sessionId = data.session_id;
+        hintUsed = false;
 
-    const data = await res.json();
-    sessionId = data.session_id; 
-    hintUsed = false;
+        if (!data.session_id) {
+            console.warn("Ответ сервера:", data);
+            showCustomAlert("Ошибка при запуске игры", "error");
+            unblockSafeUI();
+            return;
+        }
 
-    
-    if (!data.session_id) {
-    console.warn("Ответ сервера:", data);
-    showCustomAlert("Ошибка при запуске игры", "error");
-    unblockSafeUI();
-    return;
-}
+        if (typeof recordGame === 'function') {
+            recordGame("safe", window.bet, "pending", false, window.selectedCurrency, 0, false);
+        }
 
-
-    // ✅ ВЫЗЫВАЕМ ТОЛЬКО ЕСЛИ УСПЕШНО
-    if (typeof recordGame === 'function') {
-        recordGame(
-            "safe",
-            window.bet,
-            "pending",
-            false,
-            window.selectedCurrency,
-            0,
-            false
-        );
-    }
-
-    // Сохраняем session_id, если надо:
-    window.safeSessionId = data.session_id;
-
-} catch (e) {
-    console.error(e);
-    showCustomAlert("Ошибка соединения", "error");
-    unblockSafeUI();
-    
-    hintUsed = false;
-    return;
-    }
-
+        window.safeSessionId = data.session_id;
 
         resetSafeDigits();
         document.getElementById('checkSafeBtn')?.setAttribute('disabled', 'true');
@@ -229,10 +209,19 @@ try {
             checkBtn?.removeAttribute('disabled');
             setupDigitClicks();
             const hintBtn = document.getElementById('hint-btn');
-hintBtn?.removeAttribute('disabled'); // 🔓 Разрешаем подсказку при каждой новой игре
-
+            hintBtn?.removeAttribute('disabled');
         }, 1900);
+
+    } catch (e) {
+        console.error(e);
+        showCustomAlert("Ошибка соединения", "error");
+        unblockSafeUI();
+        hintUsed = false;
+    } finally {
+        safeGameInProgress = false; // ✅ ВСЕГДА сбрасываем
     }
+}
+
 
     async function checkSafeGuess() {
     if (isChecking) return;
