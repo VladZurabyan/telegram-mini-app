@@ -1,3 +1,21 @@
+async function checkBackendHealth() {
+    try {
+        const res = await fetch(`${apiUrl}/health`);
+        const data = await res.json();
+        if (data.status !== "ok") {
+            throw new Error("Database unavailable");
+        }
+    } catch (err) {
+        showDatabaseErrorOverlay(); // показать блок с кнопкой "Повторить"
+        throw new Error("⛔ Бэкенд не доступен");
+    }
+}
+
+
+
+
+
+
 
 (function () {
     const initDataExists = !!window.Telegram?.WebApp?.initData;
@@ -135,10 +153,12 @@ const activeGames = {
 const tg = window.Telegram.WebApp;
 tg.ready();
 
-tg.expand();
-tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
- window.Telegram.WebApp.disableVerticalSwipes()
-
+checkBackendHealth().then(() => {
+    checkBackendConnection(); // 👈 только если база доступна
+    tg.expand();
+    tg.requestFullscreen();
+    window.Telegram.WebApp.disableVerticalSwipes();
+});
 
 
 
