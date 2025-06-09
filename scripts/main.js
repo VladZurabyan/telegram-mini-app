@@ -103,13 +103,13 @@ const apiUrl = "https://miniapp-backend.onrender.com";
 
     const tg = window.Telegram.WebApp;
     tg.ready();
-
+    tg.expand();
+        tg.requestFullscreen();
+        tg.disableVerticalSwipes();
     try {
         await checkBackendHealth();      // ✅ теперь await допустим
         checkBackendConnection();        // 🔄 продолжение инициализации
-        tg.expand();
-        tg.requestFullscreen();
-        tg.disableVerticalSwipes();
+        
     } catch (err) {
         console.error(err.message);
     }
