@@ -1,19 +1,25 @@
-if (
-    !window.Telegram ||
-    !window.Telegram.WebApp ||
-    !window.Telegram.WebApp.initData ||
-    !window.Telegram.WebApp.initDataUnsafe?.user
-) {
+const initDataExists = window.Telegram?.WebApp?.initData;
+const isRealTelegram = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
+
+// Распознавание Telegram Web (web.telegram.org)
+const isWebTelegram =
+    navigator.userAgent.includes("Mozilla") &&
+    !navigator.userAgent.includes("Android") &&
+    !navigator.userAgent.includes("iPhone") &&
+    location.hostname.includes("web.telegram.org");
+
+if (!initDataExists || !isRealTelegram || isWebTelegram) {
     document.body.innerHTML = `
         <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
             <div>
-                <h2>⛔ Эта игра доступна только через Telegram</h2>
-                <p>Пожалуйста, откройте её из Telegram Mini App</p>
+                <h2>⛔ Доступ запрещён</h2>
+                <p>Пожалуйста, откройте игру только из Telegram на телефоне.</p>
             </div>
         </div>
     `;
-    throw new Error("⛔ Запрещён запуск вне Telegram Mini App");
+    throw new Error("⛔ Блокировка запуска вне Telegram или из Telegram Web");
 }
+
 
 
 
