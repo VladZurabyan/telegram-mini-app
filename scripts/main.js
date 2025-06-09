@@ -1,25 +1,24 @@
-const initDataExists = window.Telegram?.WebApp?.initData;
-const isRealTelegram = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
+(function () {
+    const initDataExists = !!window.Telegram?.WebApp?.initData;
+    const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-// Распознавание Telegram Web (web.telegram.org)
-const isWebTelegram =
-    navigator.userAgent.includes("Mozilla") &&
-    !navigator.userAgent.includes("Android") &&
-    !navigator.userAgent.includes("iPhone") &&
-    location.hostname.includes("web.telegram.org");
+    const ua = navigator.userAgent;
+    const isMobileTelegram = /Android|iPhone|iPad|iOS/i.test(ua);
+    const isDesktopTelegram = /TelegramBot/.test(ua);
+    const isWebTelegram = !isMobileTelegram && !isDesktopTelegram;
 
-if (!initDataExists || !isRealTelegram || isWebTelegram) {
-    document.body.innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
-            <div>
-                <h2>⛔ Доступ запрещён</h2>
-                <p>Пожалуйста, откройте игру только из Telegram на телефоне.</p>
+    if (!initDataExists || !isUserValid || isWebTelegram) {
+        document.body.innerHTML = `
+            <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
+                <div>
+                    <h2>⛔ Доступ запрещён</h2>
+                    <p>Откройте игру из Telegram Mini App на телефоне или через Telegram Desktop.</p>
+                </div>
             </div>
-        </div>
-    `;
-    throw new Error("⛔ Блокировка запуска вне Telegram или из Telegram Web");
-}
-
+        `;
+        throw new Error("⛔ Запрещён запуск вне Telegram-клиента");
+    }
+})();
 
 
 
