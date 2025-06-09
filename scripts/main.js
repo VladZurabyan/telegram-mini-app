@@ -1,3 +1,68 @@
+async function checkBackendConnection() {
+    const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!user) return;
+
+    try {
+        const res = await fetch(`${apiUrl}/init`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: user.id, username: user.username || "unknown" }),
+        });
+
+        if (!res.ok) throw new Error("Ошибка ответа от сервера");
+
+        const data = await res.json();
+        // ✅ Успешно — продолжаем
+        window.fakeBalance = { ton: data.ton, usdt: data.usdt };
+        updateBalanceUI();
+        startBalanceListener();
+    } catch (err) {
+        showDatabaseErrorOverlay();
+    }
+}
+
+function showDatabaseErrorOverlay() {
+    document.body.innerHTML = `
+        <div style="
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 99999;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            text-align: center;
+        ">
+            <div style="
+                padding: 30px;
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(255,255,255,0.2);
+                border-radius: 16px;
+            ">
+                <h2 style="color: #ff4e4e; margin-bottom: 12px;">⛔ Ошибка подключения</h2>
+                <p style="margin-bottom: 20px;">Не удалось подключиться к серверу.<br>Попробуйте позже или нажмите кнопку ниже.</p>
+                <button style="
+                    padding: 10px 20px;
+                    background: #4caf50;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    cursor: pointer;
+                " onclick="window.location.reload()">🔄 Повторить</button>
+            </div>
+        </div>
+    `;
+}
+
+
+
+
+
+
 (function () {
     const initDataExists = !!window.Telegram?.WebApp?.initData;
     const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -133,9 +198,24 @@ const activeGames = {
 
 const tg = window.Telegram.WebApp;
 tg.ready();
+checkBackendConnection(); // 👈 здесь
 tg.expand();
 tg.requestFullscreen(); // ← ВАЖНО: вызываем сразу
  window.Telegram.WebApp.disableVerticalSwipes()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const fakeBalance = {
         ton: 0,
         usdt: 0
