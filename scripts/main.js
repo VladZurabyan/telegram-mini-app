@@ -31,15 +31,27 @@
         e.preventDefault();
     });
 
-    // 🔒 Проверка изменения размеров (включён DevTools)
-    setInterval(() => {
-        if (
-            window.outerHeight - window.innerHeight > 160 ||
-            window.outerWidth - window.innerWidth > 160
-        ) {
-            document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ DevTools запрещены</h1>";
+    // 🛡️ Проверка на открытие DevTools через изменение размера
+let devtoolsTriggered = false;
+
+setInterval(() => {
+    const isDevToolsOpen =
+        window.outerHeight - window.innerHeight > 160 ||
+        window.outerWidth - window.innerWidth > 160;
+
+    if (isDevToolsOpen && !devtoolsTriggered) {
+        devtoolsTriggered = true;
+
+        // Показываем предупреждение, но не блокируем всё
+        showCustomAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
+        if (typeof Player_action === 'function') {
+            Player_action("Security", "DevTools", "DevTools замечены через resize");
         }
-    }, 1000);
+
+       
+    }
+}, 1000);
+
 
     // 🔒 Обнаружение через debugger
     setInterval(() => {
