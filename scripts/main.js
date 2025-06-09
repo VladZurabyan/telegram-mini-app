@@ -1,24 +1,19 @@
-(function checkTelegramApp() {
-    const userAgent = navigator.userAgent.toLowerCase();
-
-    const isDesktopTelegram = userAgent.includes("telegramdesktop");
-    const isMobileTelegram = userAgent.includes("telegram");
-    const isWebTelegram = userAgent.includes("telegramweb");
-
-    const hasTelegramInit = window.Telegram?.WebApp?.initData && window.Telegram.WebApp.initDataUnsafe?.user;
-
-    if (!hasTelegramInit || isWebTelegram || (!isDesktopTelegram && !isMobileTelegram)) {
-        document.body.innerHTML = `
-            <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
-                <div>
-                    <h2>⛔ Доступ запрещён</h2>
-                    <p>Пожалуйста, откройте игру через Telegram-приложение</p>
-                </div>
+if (
+    !window.Telegram ||
+    !window.Telegram.WebApp ||
+    !window.Telegram.WebApp.initData ||
+    !window.Telegram.WebApp.initDataUnsafe?.user
+) {
+    document.body.innerHTML = `
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;">
+            <div>
+                <h2>⛔ Эта игра доступна только через Telegram</h2>
+                <p>Пожалуйста, откройте её из Telegram Mini App</p>
             </div>
-        `;
-        throw new Error("⛔ Запуск из неподдерживаемой среды");
-    }
-})();
+        </div>
+    `;
+    throw new Error("⛔ Запрещён запуск вне Telegram Mini App");
+}
 
 
 
