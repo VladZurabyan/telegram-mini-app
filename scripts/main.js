@@ -1,6 +1,6 @@
 const apiUrl = "https://miniapp-backend.onrender.com";
 
-(async function () {
+/* (async function () {
     const initDataExists = !!window.Telegram?.WebApp?.initData;
     const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
 
@@ -60,7 +60,7 @@ const apiUrl = "https://miniapp-backend.onrender.com";
         if (end - start > 100) {
             document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ DevTools запрещены</h1>";
         }
-    }, 2000);
+    }, 2000); */
 
     function showDatabaseErrorOverlay() {
         document.body.innerHTML = `
