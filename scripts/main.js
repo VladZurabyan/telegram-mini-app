@@ -151,14 +151,19 @@ const activeGames = {
 
 
 const tg = window.Telegram.WebApp;
-tg.ready();
+    tg.ready();
 
-checkBackendHealth().then(() => {
-    checkBackendConnection(); // 👈 только если база доступна
-    tg.expand();
-    tg.requestFullscreen();
-    window.Telegram.WebApp.disableVerticalSwipes();
-});
+    try {
+        await checkBackendHealth(); // 🟢 проверяем БД
+        checkBackendConnection();   // ✅ только если всё ок
+        tg.expand();
+        tg.requestFullscreen();
+        tg.disableVerticalSwipes();
+    } catch (err) {
+        console.error(err.message);
+        // ❌ База недоступна — уже показали overlay
+    }
+})();
 
 
 
