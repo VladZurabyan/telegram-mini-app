@@ -1,30 +1,23 @@
 const apiUrl = "https://miniapp-backend.onrender.com";
+const tg = window.Telegram.WebApp;
+const user = tg.initDataUnsafe?.user;
+
+const fakeBalance = {
+        ton: 0,
+        usdt: 0
+};
+
+const winsCount = 2;
+const lossesCount = 10;
+const totalCount = winsCount + lossesCount;
 
 
+let lastActivityTime = Date.now();
+let isIdle = false;
+let isListening = false;
+let balanceAbortController = null;
 
-    function showDatabaseErrorOverlay() {
-        document.body.innerHTML = `
-            <div style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; z-index: 99999;">
-                <h2 style="font-size: 28px; color: #ff4e4e;">⛔ База данных недоступна</h2>
-                <p style="font-size: 18px; margin: 20px 0;">Попробуйте позже или нажмите кнопку ниже.</p>
-                <button onclick="location.reload()" style="padding: 12px 24px; font-size: 16px; border-radius: 8px; border: none; background: #4caf50; color: white; cursor: pointer;">🔄 Повторить</button>
-            </div>`;
-    }
-
-    async function checkBackendHealth() {
-        try {
-            const res = await fetch(`${apiUrl}/health`);
-            const data = await res.json();
-            if (data.status !== "ok") {
-                throw new Error("Database unavailable");
-            }
-        } catch (err) {
-            showDatabaseErrorOverlay();
-            throw new Error("⛔ Бэкенд не доступен");
-        }
-    }
-
-    const activeGames = {
+const activeGames = {
         'partners': true,
         'rules': true,
         'deposit': true,
@@ -41,15 +34,47 @@ const apiUrl = "https://miniapp-backend.onrender.com";
         'game-wheel': true
     };
 
-    const tg = window.Telegram.WebApp;
+
+
+
+
+    function showDatabaseErrorOverlay() {
+        document.body.innerHTML = `
+            <div style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; z-index: 99999;">
+                <h2 style="font-size: 28px; color: #ff4e4e;">⛔ База данных недоступна</h2>
+                <p style="font-size: 18px; margin: 20px 0;">Попробуйте позже или нажмите кнопку ниже.</p>
+                <button onclick="location.reload()" style="padding: 12px 24px; font-size: 16px; border-radius: 8px; border: none; background: #4caf50; color: white; cursor: pointer;">🔄 Повторить</button>
+            </div>`;
+    }
+
+    async function checkBackendHealth() {
+    try {
+        const res = await fetch(`${apiUrl}/health`);
+        const data = await res.json();
+        if (data.status !== "ok") {
+            throw new Error("Database unavailable");
+        }
+    } catch (err) {
+        showDatabaseErrorOverlay();
+        throw new Error("⛔ Бэкенд не доступен");
+    }
+}
+
+function checkBackendConnection() {
+    console.log("✅ Бэкенд успешно подключен.");
+}
+
+// 🔁 Главная инициализация
+(async function () {
     tg.ready();
     tg.expand();
-        tg.requestFullscreen();
-        tg.disableVerticalSwipes();
+    tg.requestFullscreen();
+    tg.disableVerticalSwipes();
+
     try {
-        await checkBackendHealth();      // ✅ теперь await допустим
-        checkBackendConnection();        // 🔄 продолжение инициализации
-        
+        await checkBackendHealth();      // ✅ проверка бэкенда
+        checkBackendConnection();        // ✅ лог успешного подключения
+        // здесь продолжай инициализацию
     } catch (err) {
         console.error(err.message);
     }
@@ -70,23 +95,10 @@ const apiUrl = "https://miniapp-backend.onrender.com";
 
 
 
-const fakeBalance = {
-        ton: 0,
-        usdt: 0
-};
-
-const winsCount = 2;
-const lossesCount = 10;
-const totalCount = winsCount + lossesCount;
 
 
-let lastActivityTime = Date.now();
-let isIdle = false;
-let isListening = false;
-let balanceAbortController = null;
 
 
-const user = tg.initDataUnsafe?.user;
 
 
 
