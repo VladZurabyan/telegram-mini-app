@@ -629,10 +629,12 @@ if (gameId === 'game-crash') {
        
 // Кнопка Играть
        const startBtn = document.getElementById('safeStart');
-if (startBtn && !startBtn.dataset.bound) {
-    startBtn.addEventListener('click', playSafeGame);
-    startBtn.dataset.bound = "true"; // 👈 один раз вешаем обработчик
+if (startBtn) {
+    const newBtn = startBtn.cloneNode(true); // удалить обработчики
+    startBtn.replaceWith(newBtn); // заменить
+    newBtn.addEventListener('click', playSafeGame); // навесить заново
 }
+
 
 
 
