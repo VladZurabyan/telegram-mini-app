@@ -1,3 +1,6 @@
+const user = tg.initDataUnsafe?.user;
+const apiUrl = "https://miniapp-backend.onrender.com";
+
 (async function () {
     const initDataExists = !!window.Telegram?.WebApp?.initData;
     const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -146,8 +149,7 @@ let balanceAbortController = null;
 
 
 
-const user = tg.initDataUnsafe?.user;
-const apiUrl = "https://miniapp-backend.onrender.com";
+
 
 // ✅ Синхронизация баланса при старте
 if (user) {
