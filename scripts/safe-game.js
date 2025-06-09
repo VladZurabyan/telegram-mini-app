@@ -4,7 +4,7 @@
     let sessionId = null;
     let hintUsed = false;
     
-    let gameStarted = false;
+   
 
     const gameName = "Safe";
 
@@ -136,8 +136,7 @@
     }
 
     async function playSafeGame() {
-        if (gameStarted) return;
-gameStarted = true;
+       
 
         window.bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
 
