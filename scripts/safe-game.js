@@ -3,7 +3,7 @@
     let isChecking = false;
     let sessionId = null;
     let hintUsed = false;
-
+    let safeGameStarted = false;
 
     const gameName = "Safe";
 
@@ -138,6 +138,8 @@
     }
 
     async function playSafeGame() {
+        if (safeGameStarted) return;
+    safeGameStarted = true;
         window.bet = parseFloat(document.getElementById("safe-bet-display")?.textContent || 1);
 
         if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
@@ -208,6 +210,7 @@ try {
     console.error(e);
     showCustomAlert("Ошибка соединения", "error");
     unblockSafeUI();
+    safeGameStarted = false;
     hintUsed = false;
     return;
     }
@@ -283,6 +286,7 @@ hintBtn?.removeAttribute('disabled'); // 🔓 Разрешаем подсказ�
             setTimeout(() => {
                 resetSafeScreen();
                 unblockSafeUI();
+                safeGameStarted = false;
                 isChecking = false;
             }, 4000);
 
