@@ -1,54 +1,3 @@
-function showDatabaseErrorOverlay() {
-    document.body.innerHTML = `
-        <div style="
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', sans-serif;
-            z-index: 99999;
-        ">
-            <h2 style="font-size: 28px; color: #ff4e4e;">⛔ База данных недоступна</h2>
-            <p style="font-size: 18px; margin: 20px 0;">Попробуйте позже или нажмите кнопку ниже.</p>
-            <button onclick="location.reload()" style="
-                padding: 12px 24px;
-                font-size: 16px;
-                border-radius: 8px;
-                border: none;
-                background: #4caf50;
-                color: white;
-                cursor: pointer;
-            ">🔄 Повторить</button>
-        </div>
-    `;
-}
-
-
-
-async function checkBackendHealth() {
-    try {
-        const res = await fetch(`${apiUrl}/health`);
-        const data = await res.json();
-        if (data.status !== "ok") {
-            throw new Error("Database unavailable");
-        }
-    } catch (err) {
-        showDatabaseErrorOverlay(); // показать блок с кнопкой "Повторить"
-        throw new Error("⛔ Бэкенд не доступен");
-    }
-}
-
-
-
-
-
-
-
 (function () {
     const initDataExists = !!window.Telegram?.WebApp?.initData;
     const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -160,7 +109,48 @@ setInterval(() => {
     }, 2000);
 })();
 
+function showDatabaseErrorOverlay() {
+    document.body.innerHTML = `
+        <div style="
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            z-index: 99999;
+        ">
+            <h2 style="font-size: 28px; color: #ff4e4e;">⛔ База данных недоступна</h2>
+            <p style="font-size: 18px; margin: 20px 0;">Попробуйте позже или нажмите кнопку ниже.</p>
+            <button onclick="location.reload()" style="
+                padding: 12px 24px;
+                font-size: 16px;
+                border-radius: 8px;
+                border: none;
+                background: #4caf50;
+                color: white;
+                cursor: pointer;
+            ">🔄 Повторить</button>
+        </div>
+    `;
+}
 
+async function checkBackendHealth() {
+    try {
+        const res = await fetch(`${apiUrl}/health`);
+        const data = await res.json();
+        if (data.status !== "ok") {
+            throw new Error("Database unavailable");
+        }
+    } catch (err) {
+        showDatabaseErrorOverlay();
+        throw new Error("⛔ Бэкенд не доступен");
+    }
+}
 
 const activeGames = {
     'partners': true,
@@ -174,28 +164,28 @@ const activeGames = {
     'game-chicken': true,
     'game-safe': true,
     'game-bombs': true,
-    'game-arrow': false,     // 🔴 отключена
+    'game-arrow': false,
     'game-21': true,
     'game-wheel': true
 };
 
 
 
-
-const tg = window.Telegram.WebApp;
+    const tg = window.Telegram.WebApp;
     tg.ready();
 
     try {
-        await checkBackendHealth(); // 🟢 проверяем БД
-        checkBackendConnection();   // ✅ только если всё ок
+        await checkBackendHealth();        // ✅ проверка здоровья backend
+        checkBackendConnection();          // 🎯 если ок — продолжаем
         tg.expand();
         tg.requestFullscreen();
         tg.disableVerticalSwipes();
     } catch (err) {
         console.error(err.message);
-        // ❌ База недоступна — уже показали overlay
     }
 })();
+
+
 
 
 
