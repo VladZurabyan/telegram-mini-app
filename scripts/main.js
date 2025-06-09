@@ -60,6 +60,25 @@ const activeGames = {
     }
 }
 
+let backendHealthy = true;
+
+function startBackendHealthMonitor() {
+    setInterval(async () => {
+        try {
+            const res = await fetch(`${apiUrl}/health`);
+            const data = await res.json();
+            if (data.status !== "ok") throw new Error();
+            backendHealthy = true;
+        } catch {
+            if (backendHealthy) {
+                backendHealthy = false;
+                showDatabaseErrorOverlay();
+            }
+        }
+    }, 10000); // проверка каждые 10 секунд
+}
+
+
 function checkBackendConnection() {
     console.log("✅ Бэкенд успешно подключен.");
 }
@@ -73,6 +92,7 @@ function checkBackendConnection() {
 
     try {
         await checkBackendHealth();      // ✅ проверка бэкенда
+            startBackendHealthMonitor();
         checkBackendConnection();        // ✅ лог успешного подключения
         // здесь продолжай инициализацию
     } catch (err) {
