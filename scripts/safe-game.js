@@ -44,23 +44,27 @@
     }
 
     function throwMoney(count = 15) {
-        for (let i = 0; i < count; i++) {
-            const money = document.createElement('img');
-            money.src = 'assets/money.png';
-            money.className = 'money';
-            money.style.position = 'fixed';
-            money.style.left = '50%';
-            money.style.top = '50%';
-            money.style.transform = 'translate(-50%, -50%)';
-            money.style.zIndex = '9999';
-            money.style.setProperty('--x', ${Math.random() * window.innerWidth - window.innerWidth / 2}px);
-            money.style.setProperty('--y', ${Math.random() * -window.innerHeight}px);
-            money.style.setProperty('--r', ${Math.random() * 720 - 360}deg);
-            money.style.setProperty('--s', ${Math.random() * 0.5 + 0.8});
-            document.body.appendChild(money);
-            setTimeout(() => money.remove(), 1600);
-        }
+    for (let i = 0; i < count; i++) {
+        const money = document.createElement('img');
+        money.src = 'assets/money.png';
+        money.className = 'money';
+        money.style.position = 'fixed';
+        money.style.left = '50%';
+        money.style.top = '50%';
+        money.style.transform = 'translate(-50%, -50%)';
+        money.style.zIndex = '9999';
+
+        // ✅ исправленные строки
+        money.style.setProperty('--x', `${Math.random() * window.innerWidth - window.innerWidth / 2}px`);
+        money.style.setProperty('--y', `${Math.random() * -window.innerHeight}px`);
+        money.style.setProperty('--r', `${Math.random() * 720 - 360}deg`);
+        money.style.setProperty('--s', `${Math.random() * 0.5 + 0.8}`);
+
+        document.body.appendChild(money);
+        setTimeout(() => money.remove(), 1600);
     }
+}
+
 
   async function showHint() {
     if (hintUsed) {
