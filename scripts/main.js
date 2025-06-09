@@ -1,4 +1,3 @@
-const user = tg.initDataUnsafe?.user;
 const apiUrl = "https://miniapp-backend.onrender.com";
 
 (async function () {
@@ -147,6 +146,7 @@ let isListening = false;
 let balanceAbortController = null;
 
 
+const user = tg.initDataUnsafe?.user;
 
 
 
