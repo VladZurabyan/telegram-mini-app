@@ -43,9 +43,27 @@ const activeGames = {
             <div style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; z-index: 99999;">
                 <h2 style="font-size: 28px; color: #ff4e4e;">⛔ База данных недоступна</h2>
                 <p style="font-size: 18px; margin: 20px 0;">Попробуйте позже или нажмите кнопку ниже.</p>
-                <button onclick="location.reload()" style="padding: 12px 24px; font-size: 16px; border-radius: 8px; border: none; background: #4caf50; color: white; cursor: pointer;">🔄 Повторить</button>
+                <button onclick="retryInit()" style="padding: 12px 24px; font-size: 16px; border-radius: 8px; border: none; background: #4caf50; color: white; cursor: pointer;">🔄 Повторить</button>
             </div>`;
     }
+
+async function retryInit() {
+    try {
+        const res = await fetch(`${apiUrl}/health`);
+        const data = await res.json();
+        if (data.status === "ok") {
+            // ✅ Удаляем overlay
+            document.body.innerHTML = "";
+            // 🔄 Повторный запуск приложения
+            window.location.reload(); // либо можно запустить инициализацию вручную
+        } else {
+            alert("⛔ Сервер всё ещё недоступен");
+        }
+    } catch {
+        alert("⛔ Не удалось подключиться к серверу");
+    }
+}
+
 
     async function checkBackendHealth() {
     try {
