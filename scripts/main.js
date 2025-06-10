@@ -1,3 +1,4 @@
+import { initApp } from './protection.js';
 const apiUrl = "https://miniapp-backend.onrender.com";
 const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe?.user;
@@ -181,7 +182,7 @@ function checkBackendConnection() {
     tg.disableVerticalSwipes();
 
         
-import {initApp} from './protection.js';
+
 initApp();  
 
     try {
