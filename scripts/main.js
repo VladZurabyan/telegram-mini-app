@@ -40,7 +40,7 @@ const activeGames = {
 
     function showDatabaseErrorOverlay() {
        document.body.innerHTML = `
-    <div style="
+    <div id="overlay" style="
         position: fixed;
         inset: 0;
         background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
