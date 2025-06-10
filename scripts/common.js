@@ -82,7 +82,6 @@ window.showCustomAlert = function(message, type = "") {
     let alert = document.getElementById("custom-alert");
     let messageSpan = document.getElementById("custom-alert-message");
 
-    // Если alert отсутствует — вставляем в DOM
     if (!alert) {
         document.body.insertAdjacentHTML("beforeend", `
             <div id="custom-alert" class="custom-alert hidden">
@@ -96,10 +95,9 @@ window.showCustomAlert = function(message, type = "") {
         messageSpan = document.getElementById("custom-alert-message");
     }
 
-    // Удаляем старые стили и классы
     alert.classList.remove("hidden", "success", "error");
     if (type) alert.classList.add(type);
-    messageSpan.innerText = message;
+    if (messageSpan) messageSpan.innerText = message;
 };
 
 window.closeCustomAlert = function () {
