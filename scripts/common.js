@@ -78,35 +78,7 @@ function forceBalance(delay = 500) {
 }
 
 
-window.showCustomAlert = function(message, type = "") {
-    let alert = document.getElementById("custom-alert");
-    let messageSpan = document.getElementById("custom-alert-message");
 
-    if (!alert) {
-        document.body.insertAdjacentHTML("beforeend", `
-            <div id="custom-alert" class="custom-alert hidden">
-                <div class="custom-alert-box">
-                    <p id="custom-alert-message"></p>
-                    <button onclick="closeCustomAlert()">OK</button>
-                </div>
-            </div>
-        `);
-        alert = document.getElementById("custom-alert");
-        messageSpan = document.getElementById("custom-alert-message");
-    }
-
-    alert.classList.remove("hidden", "success", "error");
-    if (type) alert.classList.add(type);
-    if (messageSpan) messageSpan.innerText = message;
-};
-
-window.closeCustomAlert = function () {
-    const alert = document.getElementById("custom-alert");
-    if (alert) {
-        alert.classList.add("hidden");
-        alert.classList.remove("success", "error");
-    }
-};
 
 
 
@@ -115,8 +87,6 @@ window.closeCustomAlert = function () {
 
 
 // Экспорт
-window.showCustomAlert = showCustomAlert;
-window.closeCustomAlert = closeCustomAlert;
 window.forceBalance = forceBalance;
 window.hideAll = hideAll;
 window.showMain = showMain;
