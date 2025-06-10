@@ -79,6 +79,7 @@ function forceBalance(delay = 500) {
 
 
 window.showCustomAlert = function(message, type = "") {
+     console.log("⚠️ showCustomAlert вызван:", message, type);
     let alert = document.getElementById("custom-alert");
     let messageSpan = document.getElementById("custom-alert-message");
 
