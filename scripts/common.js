@@ -82,43 +82,42 @@ window.showCustomAlert = function(message, type = "") {
     let alert = document.getElementById("custom-alert");
     let messageSpan = document.getElementById("custom-alert-message");
 
-    // ⛔ Если alert-блок отсутствует — создаём его
-    if (!alert || !messageSpan) {
+    // 🛠️ Если блок отсутствует — создаём вручную
+    if (!alert) {
         document.body.insertAdjacentHTML("beforeend", `
-            <div id="custom-alert" class="custom-alert hidden">
-                <div class="custom-alert-box" style="
-                    background: #2c2c2c;
-                    padding: 20px;
-                    border-radius: 12px;
-                    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-                    max-width: 90%;
-                    margin: 0 auto;
-                    text-align: center;
+            <div id="custom-alert" class="custom-alert hidden" style="
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #323232;
+                padding: 16px 24px;
+                color: white;
+                border-radius: 10px;
+                z-index: 10000;
+                font-family: 'Segoe UI', sans-serif;
+                box-shadow: 0 0 10px rgba(0,0,0,0.4);
+                max-width: 90%;
+                text-align: center;
+            ">
+                <span id="custom-alert-message" style="display: block; margin-bottom: 10px;"></span>
+                <button onclick="closeCustomAlert()" style="
+                    background: #00c853;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 6px;
                     color: white;
-                    font-family: 'Segoe UI', sans-serif;
-                ">
-                    <p id="custom-alert-message" style="margin-bottom: 16px;"></p>
-                    <button onclick="closeCustomAlert()" style="
-                        padding: 10px 20px;
-                        border: none;
-                        border-radius: 8px;
-                        background: #00c853;
-                        color: white;
-                        font-size: 14px;
-                        cursor: pointer;
-                    ">OK</button>
-                </div>
+                    cursor: pointer;
+                ">OK</button>
             </div>
         `);
-
         alert = document.getElementById("custom-alert");
         messageSpan = document.getElementById("custom-alert-message");
     }
 
     alert.classList.remove("success", "error", "hidden");
     if (type) alert.classList.add(type);
-
-    messageSpan.innerText = message;
+    if (messageSpan) messageSpan.innerText = message;
 };
 
 window.closeCustomAlert = function() {
@@ -128,6 +127,7 @@ window.closeCustomAlert = function() {
         alert.classList.remove("success", "error");
     }
 };
+
 
 
 
