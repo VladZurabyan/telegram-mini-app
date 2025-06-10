@@ -26,23 +26,7 @@ function unblockChickenUI() {
 }
 
     
-window.showCustomAlert = function(message, type = "") {
-    const alert = document.getElementById("custom-alert");
 
-    alert.classList.remove("success", "error");
-    if (type) {
-        alert.classList.add(type);
-    }
-
-    document.getElementById("custom-alert-message").innerText = message;
-    alert.classList.remove("hidden");
-};
-
-window.closeCustomAlert = function() {
-    const alert = document.getElementById("custom-alert");
-    alert.classList.add("hidden");
-    alert.classList.remove("success", "error");
-};
 
 
 
