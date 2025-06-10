@@ -109,7 +109,8 @@ async function retryInit() {
         const data = await res.json();
         if (data.status === "ok") {
             // ✅ Удаляем overlay
-            document.body.innerHTML = "";
+            document.getElementById("overlay")?.remove();
+
             // 🔄 Повторный запуск приложения
             window.location.reload(); // либо можно запустить инициализацию вручную
         } else {
