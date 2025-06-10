@@ -174,6 +174,11 @@ function checkBackendConnection() {
     console.log("✅ Бэкенд успешно подключен.");
 }
 
+if (!initApp()) {
+    console.warn("⛔ Mini App открыт вне Telegram. Приложение остановлено.");
+    return; // ⛔ Всё остальное не выполняется
+}
+
 // 🔁 Главная инициализация
 (async function () {
     tg.ready();
@@ -182,9 +187,6 @@ function checkBackendConnection() {
     tg.disableVerticalSwipes();
 
         
-
-initApp();  
-
     try {
         await checkBackendHealth();      // ✅ проверка бэкенда
             startBackendHealthMonitor();
