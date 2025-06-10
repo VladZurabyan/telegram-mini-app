@@ -34,7 +34,7 @@ const activeGames = {
         'game-wheel': true
     };
 
-(async function () {
+ function () {
     const initDataExists = !!window.Telegram?.WebApp?.initData;
     const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
 
@@ -273,7 +273,7 @@ if (user) {
         console.error(err.message);
     }
 })();
-})();
+
 
 
 
