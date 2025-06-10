@@ -180,9 +180,9 @@ function checkBackendConnection() {
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
 
-        // 🛡️ И вот здесь вызываем initApp
-import { initApp } from './protection.js';
-initApp();  // 🧠 Теперь Telegram точно готов
+        
+import {initApp} from './protection.js';
+initApp();  
 
     try {
         await checkBackendHealth();      // ✅ проверка бэкенда
