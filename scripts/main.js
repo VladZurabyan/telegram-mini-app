@@ -96,7 +96,7 @@ const activeGames = {
         }
     }, 2000);
 
-
+})();
 
 
 
