@@ -1,16 +1,17 @@
-function showCustomAlert(message, type = "") {
-    const alert = document.getElementById("custom-alert");
-    const msg = document.getElementById("custom-alert-message");
-
-    if (!alert || !msg) {
-        console.warn("⚠️ showCustomAlert: элемент #custom-alert не найден в DOM");
-        return;
+function safeAlert(message, type = "error") {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof showCustomAlert === "function") {
+                showCustomAlert(message, type);
+            }
+        });
+    } else {
+        if (typeof showCustomAlert === "function") {
+            showCustomAlert(message, type);
+        }
     }
-
-    alert.classList.remove("success", "error", "hidden");
-    if (type) alert.classList.add(type);
-    msg.innerText = message;
 }
+
 
 function closeCustomAlert() {
     const alert = document.getElementById("custom-alert");
@@ -75,12 +76,12 @@ function closeCustomAlert() {
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", () => {
                 if (typeof showCustomAlert === 'function') {
-                    showCustomAlert(message, type);
+                    safeAlert(message, type);
                 }
             });
         } else {
             if (typeof showCustomAlert === 'function') {
-                showCustomAlert(message, type);
+                safeAlert(message, type);
             }
         }
     }
