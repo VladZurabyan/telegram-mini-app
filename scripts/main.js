@@ -106,10 +106,12 @@ async function retryInit() {
     const msgEl = document.getElementById("overlay-message");
 
     try {
-        const res = await fetch(`${apiUrl}/health`);
-        
-        // если сервер вернул НЕ 2xx статус — будет ошибка при .json()
-        if (!res.ok) throw new Error("HTTP error");
+        const res = await fetch(`${apiUrl}/health`, { method: "GET" });
+
+        if (!res.ok) {
+            if (msgEl) msgEl.innerText = "⛔ Сервер отвечает с ошибкой. Попробуйте позже.";
+            return;
+        }
 
         const data = await res.json();
 
@@ -117,16 +119,23 @@ async function retryInit() {
             document.body.innerHTML = "";
             window.location.reload();
         } else {
-            if (msgEl) {
-                msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
-            }
+            if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
         }
+
     } catch (err) {
+        console.error("Ошибка при fetch:", err);
+
+        // Диагностика по сообщению ошибки (работает в Chrome/Firefox)
+        const isNetworkError = err instanceof TypeError;
+
         if (msgEl) {
-            msgEl.innerText = "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
+            msgEl.innerText = isNetworkError
+                ? "⛔ Нет ответа от сервера. Возможно, он выключен или перегружен."
+                : "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
         }
     }
 }
+
 
 
 
