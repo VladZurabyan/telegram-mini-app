@@ -39,7 +39,7 @@ const activeGames = {
 
 
     function showDatabaseErrorOverlay() {
-        document.body.innerHTML = `
+       document.body.innerHTML = `
     <div style="
         position: fixed;
         inset: 0;
@@ -47,41 +47,49 @@ const activeGames = {
         backdrop-filter: blur(14px);
         color: white;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         font-family: 'Segoe UI', sans-serif;
         z-index: 99999;
         animation: fadeIn 0.4s ease-out;
     ">
-        <h2 style="
-            font-size: 32px;
-            color: #ff4e4e;
-            margin-bottom: 12px;
-            text-shadow: 0 0 12px #ff4e4e;
-        ">⛔ База данных недоступна</h2>
-        
-        <p style="
-            font-size: 18px;
-            margin: 10px 0 30px;
-            color: #f1f1f1;
+        <div style="
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+            max-width: 420px;
+            width: 90%;
             text-align: center;
-            max-width: 90%;
-        ">Пожалуйста, подождите или нажмите кнопку ниже, чтобы попробовать ещё раз.</p>
-        
-        <button onclick="retryInit()" style="
-            padding: 14px 30px;
-            font-size: 16px;
-            border-radius: 10px;
-            border: none;
-            background: #00c853;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 0 12px #00c853;
-            transition: background 0.3s, transform 0.2s;
-        " onmouseover="this.style.background='#00e676'" onmouseout="this.style.background='#00c853'">
-            🔄 Повторить
-        </button>
+            border: 1px solid rgba(255,255,255,0.1);
+        ">
+            <h2 style="
+                font-size: 32px;
+                color: #ff4e4e;
+                margin-bottom: 12px;
+                text-shadow: 0 0 12px #ff4e4e;
+            ">⛔ База данных недоступна</h2>
+            
+            <p style="
+                font-size: 18px;
+                margin: 10px 0 30px;
+                color: #f1f1f1;
+            ">Пожалуйста, подождите или нажмите кнопку ниже, чтобы попробовать ещё раз.</p>
+            
+            <button onclick="retryInit()" style="
+                padding: 14px 30px;
+                font-size: 16px;
+                border-radius: 10px;
+                border: none;
+                background: #00c853;
+                color: white;
+                cursor: pointer;
+                box-shadow: 0 0 12px #00c853;
+                transition: background 0.3s, transform 0.2s;
+            " onmouseover="this.style.background='#00e676'" onmouseout="this.style.background='#00c853'">
+                🔄 Повторить
+            </button>
+        </div>
     </div>
 
     <style>
@@ -91,6 +99,7 @@ const activeGames = {
         }
     </style>
 `;
+
 
     }
 
@@ -104,10 +113,10 @@ async function retryInit() {
             // 🔄 Повторный запуск приложения
             window.location.reload(); // либо можно запустить инициализацию вручную
         } else {
-            alert("⛔ Сервер всё ещё недоступен");
+            showCustomAlert("⛔ Сервер всё ещё недоступен", "error");
         }
     } catch {
-        alert("⛔ Не удалось подключиться к серверу");
+        showCustomAlert("⛔ Не удалось подключиться к серверу", "error");
     }
 }
 
