@@ -103,25 +103,31 @@ const activeGames = {
 
 
 async function retryInit() {
+    const msgEl = document.getElementById("overlay-message");
+
     try {
         const res = await fetch(`${apiUrl}/health`);
+        
+        // если сервер вернул НЕ 2xx статус — будет ошибка при .json()
+        if (!res.ok) throw new Error("HTTP error");
+
         const data = await res.json();
+
         if (data.status === "ok") {
             document.body.innerHTML = "";
             window.location.reload();
         } else {
-            const msgEl = document.getElementById("overlay-message");
             if (msgEl) {
                 msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
             }
         }
-    } catch {
-        const msgEl = document.getElementById("overlay-message");
+    } catch (err) {
         if (msgEl) {
             msgEl.innerText = "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
         }
     }
 }
+
 
 
 
