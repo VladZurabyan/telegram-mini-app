@@ -96,7 +96,7 @@ const activeGames = {
         }
     }, 2000);
 
-})();
+
 
 
 
@@ -273,7 +273,7 @@ if (user) {
         console.error(err.message);
     }
 })();
-
+})();
 
 
 
