@@ -1,7 +1,8 @@
 import { initApp } from './protection.js';
 
 const apiUrl = "https://miniapp-backend.onrender.com";
-
+const tg = window.Telegram.WebApp;
+const user = tg.initDataUnsafe?.user;
 
 const fakeBalance = {
         ton: 0,
@@ -181,8 +182,7 @@ function checkBackendConnection() {
 
    const accessAllowed = initApp();
     if (!accessAllowed) return;
-    const tg = window.Telegram.WebApp;
-const user = tg.initDataUnsafe?.user;
+    
     tg.ready();
     tg.expand();
     tg.requestFullscreen();
