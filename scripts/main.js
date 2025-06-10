@@ -59,7 +59,7 @@ const activeGames = {
             padding: 40px 30px;
             box-shadow: 0 0 20px rgba(0,0,0,0.4);
             max-width: 420px;
-            width: 90%;
+            width: 70%;
             text-align: center;
             border: 1px solid rgba(255,255,255,0.1);
         ">
