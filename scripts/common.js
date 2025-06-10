@@ -133,6 +133,7 @@ window.closeCustomAlert = function() {
 
 
 // Экспорт
+window.showCustomAlert = showCustomAlert;
 window.closeCustomAlert = closeCustomAlert;
 window.forceBalance = forceBalance;
 window.hideAll = hideAll;
