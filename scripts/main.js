@@ -1,4 +1,10 @@
 import { initApp } from './protection.js';
+
+if (!initApp()) {
+    console.warn("⛔ Mini App открыт вне Telegram. Приложение остановлено.");
+    return; // ⛔ Всё остальное не выполняется
+}
+
 const apiUrl = "https://miniapp-backend.onrender.com";
 const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe?.user;
@@ -183,10 +189,7 @@ function checkBackendConnection() {
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
 
-        if (!initApp()) {
-    console.warn("⛔ Mini App открыт вне Telegram. Приложение остановлено.");
-    return; // ⛔ Всё остальное не выполняется
-}
+        
         
     try {
         await checkBackendHealth();      // ✅ проверка бэкенда
