@@ -46,7 +46,21 @@
 
 // 🛡️ DevTools защита
 (function () {
-    // Блокировка F12, Ctrl+Shift+I/J/C, Ctrl+U
+    function safeAlert(message, type = "error") {
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", () => {
+                if (typeof showCustomAlert === 'function') {
+                    showCustomAlert(message, type);
+                }
+            });
+        } else {
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert(message, type);
+            }
+        }
+    }
+
+    // Блокировка клавиш
     document.addEventListener("keydown", function (e) {
         if (
             e.key === "F12" ||
@@ -54,11 +68,7 @@
             (e.ctrlKey && e.key === "U")
         ) {
             e.preventDefault();
-            document.addEventListener("DOMContentLoaded", () => {
-            if (typeof showCustomAlert === 'function') {
-                showCustomAlert("⛔ DevTools запрещены", "error");
-            }
-                });
+            safeAlert("⛔ DevTools запрещены", "error");
             return false;
         }
     });
@@ -68,7 +78,7 @@
         e.preventDefault();
     });
 
-    // Проверка на DevTools через размеры
+    // Проверка на размеры
     let devtoolsTriggered = false;
     setInterval(() => {
         const isDevToolsOpen =
@@ -77,11 +87,7 @@
 
         if (isDevToolsOpen && !devtoolsTriggered) {
             devtoolsTriggered = true;
-             document.addEventListener("DOMContentLoaded", () => {
-            if (typeof showCustomAlert === 'function') {
-                showCustomAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
-            }
-                 });
+            safeAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
             if (typeof Player_action === 'function') {
                 Player_action("Security", "DevTools", "DevTools замечены через resize");
             }
