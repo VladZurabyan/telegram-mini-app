@@ -1,29 +1,3 @@
-function safeAlert(message, type = "error") {
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof showCustomAlert === "function") {
-                showCustomAlert(message, type);
-            }
-        });
-    } else {
-        if (typeof showCustomAlert === "function") {
-            showCustomAlert(message, type);
-        }
-    }
-}
-
-
-function closeCustomAlert() {
-    const alert = document.getElementById("custom-alert");
-    if (!alert) return;
-    alert.classList.add("hidden");
-    alert.classList.remove("success", "error");
-}
-
-
-
-
-
 // 🔐 Блокировка запуска вне Telegram WebApp (надёжно)
 (function () {
     const ua = navigator.userAgent;
@@ -1293,9 +1267,8 @@ window.maxBet = 100;
 if (document.querySelectorAll(".balance span").length >= 2) {
     updateBalanceUI();
 }
-// Зарегистрируем глобально, чтобы работало в других скриптах
-window.showCustomAlert = showCustomAlert;
-window.closeCustomAlert = closeCustomAlert;
+
+
 window.backToMain = backToMain;
 window.fakeBalance = fakeBalance;
 window.bet = 1;
