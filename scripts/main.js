@@ -40,11 +40,58 @@ const activeGames = {
 
     function showDatabaseErrorOverlay() {
         document.body.innerHTML = `
-            <div style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; z-index: 99999;">
-                <h2 style="font-size: 28px; color: #ff4e4e;">⛔ База данных недоступна</h2>
-                <p style="font-size: 18px; margin: 20px 0;">Попробуйте позже или нажмите кнопку ниже.</p>
-                <button onclick="retryInit()" style="padding: 12px 24px; font-size: 16px; border-radius: 8px; border: none; background: #4caf50; color: white; cursor: pointer;">🔄 Повторить</button>
-            </div>`;
+    <div style="
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        backdrop-filter: blur(14px);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', sans-serif;
+        z-index: 99999;
+        animation: fadeIn 0.4s ease-out;
+    ">
+        <h2 style="
+            font-size: 32px;
+            color: #ff4e4e;
+            margin-bottom: 12px;
+            text-shadow: 0 0 12px #ff4e4e;
+        ">⛔ База данных недоступна</h2>
+        
+        <p style="
+            font-size: 18px;
+            margin: 10px 0 30px;
+            color: #f1f1f1;
+            text-align: center;
+            max-width: 90%;
+        ">Пожалуйста, подождите или нажмите кнопку ниже, чтобы попробовать ещё раз.</p>
+        
+        <button onclick="retryInit()" style="
+            padding: 14px 30px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            background: #00c853;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 12px #00c853;
+            transition: background 0.3s, transform 0.2s;
+        " onmouseover="this.style.background='#00e676'" onmouseout="this.style.background='#00c853'">
+            🔄 Повторить
+        </button>
+    </div>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+`;
+
     }
 
 async function retryInit() {
