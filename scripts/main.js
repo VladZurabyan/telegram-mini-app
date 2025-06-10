@@ -1,3 +1,19 @@
+(function ensureCustomAlertExists() {
+    if (!document.getElementById("custom-alert")) {
+        const div = document.createElement("div");
+        div.id = "custom-alert";
+        div.className = "custom-alert hidden";
+        div.innerHTML = `
+            <div class="custom-alert-box">
+                <p id="custom-alert-message"></p>
+                <button onclick="closeCustomAlert()">OK</button>
+            </div>
+        `;
+        document.body.appendChild(div);
+    }
+})();
+
+
 // 🔐 Блокировка запуска вне Telegram WebApp (надёжно)
 (function () {
     const ua = navigator.userAgent;
@@ -79,7 +95,9 @@
             devtoolsTriggered = true;
 
            document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ Обнаружено возможное открытие DevTools. Это запрещено.</h1>";
-              
+               if (typeof showCustomAlert === 'function') {
+                showCustomAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
+            }
              
             if (typeof Player_action === 'function') {
                 Player_action("Security", "DevTools", "DevTools замечены через resize");
