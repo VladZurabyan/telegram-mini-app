@@ -7,6 +7,7 @@ export function initApp() {
     const isDesktopTelegram = /TelegramBot/.test(ua);
     const isWebTelegram = !isMobileTelegram && !isDesktopTelegram;
 
+    // ❌ Запрет запуска вне Telegram Mini App
     if (!initDataExists || !isUserValid || isWebTelegram) {
         document.body.innerHTML = `
         <div style="position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(10px); z-index: 99999; font-family: 'Segoe UI', sans-serif; color: #fff;">
@@ -21,10 +22,10 @@ export function initApp() {
                 to { opacity: 1; transform: scale(1); }
             }
         </style>`;
-        throw new Error("⛔ Запрещён запуск вне Telegram-клиента");
+        return; // ✅ Просто выходим, не мешая загрузке остальных файлов
     }
 
-    // Защита от клавиш и DevTools
+    // 🛡️ Блокировка клавиш DevTools
     document.addEventListener("keydown", function (e) {
         if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) || (e.ctrlKey && e.key === "U")) {
             e.preventDefault();
@@ -35,8 +36,10 @@ export function initApp() {
         }
     });
 
+    // 🛡️ Блокировка правой кнопки мыши
     document.addEventListener("contextmenu", e => e.preventDefault());
 
+    // 🕵️ Обнаружение открытых DevTools через разницу размеров окна
     let devtoolsTriggered = false;
     setInterval(() => {
         const isDevToolsOpen = window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160;
@@ -51,6 +54,7 @@ export function initApp() {
         }
     }, 1000);
 
+    // 🎯 Проверка времени выполнения debugger
     setInterval(() => {
         const start = performance.now();
         debugger;
@@ -60,3 +64,4 @@ export function initApp() {
         }
     }, 2000);
 }
+
