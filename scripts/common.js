@@ -79,22 +79,56 @@ function forceBalance(delay = 500) {
 
 
 window.showCustomAlert = function(message, type = "") {
-    const alert = document.getElementById("custom-alert");
+    let alert = document.getElementById("custom-alert");
+    let messageSpan = document.getElementById("custom-alert-message");
 
-    alert.classList.remove("success", "error");
-    if (type) {
-        alert.classList.add(type);
+    // ⛔ Если alert-блок отсутствует — создаём его
+    if (!alert || !messageSpan) {
+        document.body.insertAdjacentHTML("beforeend", `
+            <div id="custom-alert" class="custom-alert hidden">
+                <div class="custom-alert-box" style="
+                    background: #2c2c2c;
+                    padding: 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+                    max-width: 90%;
+                    margin: 0 auto;
+                    text-align: center;
+                    color: white;
+                    font-family: 'Segoe UI', sans-serif;
+                ">
+                    <p id="custom-alert-message" style="margin-bottom: 16px;"></p>
+                    <button onclick="closeCustomAlert()" style="
+                        padding: 10px 20px;
+                        border: none;
+                        border-radius: 8px;
+                        background: #00c853;
+                        color: white;
+                        font-size: 14px;
+                        cursor: pointer;
+                    ">OK</button>
+                </div>
+            </div>
+        `);
+
+        alert = document.getElementById("custom-alert");
+        messageSpan = document.getElementById("custom-alert-message");
     }
 
-    document.getElementById("custom-alert-message").innerText = message;
-    alert.classList.remove("hidden");
+    alert.classList.remove("success", "error", "hidden");
+    if (type) alert.classList.add(type);
+
+    messageSpan.innerText = message;
 };
 
 window.closeCustomAlert = function() {
     const alert = document.getElementById("custom-alert");
-    alert.classList.add("hidden");
-    alert.classList.remove("success", "error");
+    if (alert) {
+        alert.classList.add("hidden");
+        alert.classList.remove("success", "error");
+    }
 };
+
 
 
 
