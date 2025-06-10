@@ -1,36 +1,14 @@
-// 🔐 Блокировка запуска вне Telegram WebApp
+// 🔐 Блокировка запуска вне Telegram WebApp (надёжно)
 (function () {
-    const initDataExists = !!window.Telegram?.WebApp?.initData;
-    const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
-
     const ua = navigator.userAgent;
     const isMobileTelegram = /Android|iPhone|iPad|iOS/i.test(ua);
     const isDesktopTelegram = /TelegramBot|Telegram Desktop|Electron/.test(ua);
     const isWebTelegram = !isMobileTelegram && !isDesktopTelegram;
 
-    if (!initDataExists || !isUserValid || isWebTelegram) {
+    function denyAccess() {
         document.body.innerHTML = `
-            <div style="
-                position: fixed;
-                inset: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: rgba(15, 15, 15, 0.85);
-                backdrop-filter: blur(10px);
-                z-index: 99999;
-                font-family: 'Segoe UI', sans-serif;
-                color: #fff;
-            ">
-                <div style="
-                    background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    border-radius: 16px;
-                    padding: 30px 40px;
-                    text-align: center;
-                    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-                    animation: fadeIn 0.5s ease-out;
-                ">
+            <div style="position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(10px); z-index: 99999; font-family: 'Segoe UI', sans-serif; color: #fff;">
+                <div style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); animation: fadeIn 0.5s ease-out;">
                     <h2 style="font-size: 28px; margin-bottom: 16px; color: #ff4e4e;">⛔ Доступ запрещён</h2>
                     <p style="font-size: 18px; line-height: 1.5;">
                         Откройте игру из <b>Telegram Mini App</b><br>
@@ -45,9 +23,26 @@
                 }
             </style>
         `;
-        throw new Error("⛔ Запрещён запуск вне Telegram-клиента");
+        throw new Error("⛔ Запрещён запуск вне Telegram");
+    }
+
+    // Ждём загрузки Telegram WebApp SDK
+    if (window.Telegram?.WebApp) {
+        Telegram.WebApp.ready();
+
+        setTimeout(() => {
+            const initDataExists = !!Telegram.WebApp.initData;
+            const isUserValid = !!Telegram.WebApp.initDataUnsafe?.user;
+
+            if (!initDataExists || !isUserValid || isWebTelegram) {
+                denyAccess();
+            }
+        }, 200); // можно увеличить до 300–400 мс если лаги
+    } else {
+        denyAccess();
     }
 })();
+
 
 // 🛡️ DevTools защита
 (function () {
