@@ -54,9 +54,11 @@
             (e.ctrlKey && e.key === "U")
         ) {
             e.preventDefault();
+            document.addEventListener("DOMContentLoaded", () => {
             if (typeof showCustomAlert === 'function') {
                 showCustomAlert("⛔ DevTools запрещены", "error");
             }
+                });
             return false;
         }
     });
@@ -75,10 +77,11 @@
 
         if (isDevToolsOpen && !devtoolsTriggered) {
             devtoolsTriggered = true;
-
+             document.addEventListener("DOMContentLoaded", () => {
             if (typeof showCustomAlert === 'function') {
                 showCustomAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
             }
+                 });
             if (typeof Player_action === 'function') {
                 Player_action("Security", "DevTools", "DevTools замечены через resize");
             }
