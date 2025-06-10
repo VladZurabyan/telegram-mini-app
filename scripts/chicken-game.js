@@ -26,7 +26,7 @@ function unblockChickenUI() {
 }
 
     
-/* window.showCustomAlert = function(message, type = "") {
+ window.showCustomAlert = function(message, type = "") {
     const alert = document.getElementById("custom-alert");
 
     alert.classList.remove("success", "error");
@@ -43,7 +43,7 @@ window.closeCustomAlert = function() {
     const alert = document.getElementById("custom-alert");
     alert.classList.add("hidden");
     alert.classList.remove("success", "error");
-}; */
+}; 
 
 
 
@@ -428,8 +428,8 @@ function checkCollision() {
     
     
 
-/*window.showCustomAlert = showCustomAlert;  
-window.closeCustomAlert = closeCustomAlert;*/
+window.showCustomAlert = showCustomAlert;  
+window.closeCustomAlert = closeCustomAlert;
 window.resetChickenScreen = resetChickenScreen;
 window.playChickenGame = playChickenGame;
 })();
