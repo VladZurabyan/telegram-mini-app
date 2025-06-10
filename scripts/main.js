@@ -1,4 +1,3 @@
-import { initApp } from './protection.js';
 const apiUrl = "https://miniapp-backend.onrender.com";
 const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe?.user;
@@ -177,10 +176,13 @@ function checkBackendConnection() {
 // 🔁 Главная инициализация
 (async function () {
     tg.ready();
-        initApp();
     tg.expand();
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
+
+        // 🛡️ И вот здесь вызываем initApp
+import { initApp } from './protection.js';
+initApp();  // 🧠 Теперь Telegram точно готов
 
     try {
         await checkBackendHealth();      // ✅ проверка бэкенда
