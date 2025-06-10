@@ -55,8 +55,8 @@
         ) {
             e.preventDefault();
             
-           
-                alert("⛔ DevTools запрещены");
+           document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ DevTools запрещены.</h1>";
+             
             
               
             return false;
@@ -78,8 +78,8 @@
         if (isDevToolsOpen && !devtoolsTriggered) {
             devtoolsTriggered = true;
 
-           
-                alert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.");
+           document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ Обнаружено возможное открытие DevTools. Это запрещено.</h1>";
+              
              
             if (typeof Player_action === 'function') {
                 Player_action("Security", "DevTools", "DevTools замечены через resize");
