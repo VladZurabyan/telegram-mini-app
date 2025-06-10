@@ -1,4 +1,4 @@
-
+(async function () {
     const initDataExists = !!window.Telegram?.WebApp?.initData;
     const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
 
