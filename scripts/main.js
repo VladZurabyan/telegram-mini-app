@@ -112,6 +112,25 @@ function checkBackendConnection() {
         await checkBackendHealth();      // ✅ проверка бэкенда
             startBackendHealthMonitor();
         checkBackendConnection();        // ✅ лог успешного подключения
+
+
+            // ✅ Синхронизация баланса при старте
+if (user) {
+    fetch(`${apiUrl}/init`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+    })
+    .then(r => r.json())
+    .then(d => {
+        window.fakeBalance.ton = d.ton;
+        window.fakeBalance.usdt = d.usdt;
+        updateBalanceUI();
+     // ⏳ Сразу обновим баланс, чтобы он был точным
+        startBalanceListener();
+       
+    });
+}
         // здесь продолжай инициализацию
     } catch (err) {
         console.error(err.message);
@@ -141,23 +160,7 @@ function checkBackendConnection() {
 
 
 
-// ✅ Синхронизация баланса при старте
-if (user) {
-    fetch(`${apiUrl}/init`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
-    })
-    .then(r => r.json())
-    .then(d => {
-        window.fakeBalance.ton = d.ton;
-        window.fakeBalance.usdt = d.usdt;
-        updateBalanceUI();
-     // ⏳ Сразу обновим баланс, чтобы он был точным
-        startBalanceListener();
-       
-    });
-}
+
 
 
 function openDeposit() {
