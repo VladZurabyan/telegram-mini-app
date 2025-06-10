@@ -68,7 +68,7 @@ const activeGames = {
                 color: #ff4e4e;
                 margin-bottom: 12px;
                 text-shadow: 0 0 12px #ff4e4e;
-            ">⛔ База данных недоступна</h2>
+            ">База данных недоступна</h2>
             
             <p id="overlay-message" style="
                 font-size: 18px;
