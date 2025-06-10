@@ -1,4 +1,4 @@
-(async function () {
+
     const initDataExists = !!window.Telegram?.WebApp?.initData;
     const isUserValid = !!window.Telegram?.WebApp?.initDataUnsafe?.user;
 
@@ -245,7 +245,7 @@ function checkBackendConnection() {
 
 
 // 🔁 Главная инициализация
-    
+  (async function () {  
     tg.ready();
     tg.expand();
     tg.requestFullscreen();
