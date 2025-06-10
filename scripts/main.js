@@ -1,3 +1,4 @@
+import { initApp } from './protection.js';
 const apiUrl = "https://miniapp-backend.onrender.com";
 const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe?.user;
@@ -179,7 +180,7 @@ function checkBackendConnection() {
     tg.expand();
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
-
+initApp();
     try {
         await checkBackendHealth();      // ✅ проверка бэкенда
             startBackendHealthMonitor();
