@@ -177,10 +177,11 @@ function checkBackendConnection() {
 // 🔁 Главная инициализация
 (async function () {
     tg.ready();
+        initApp();
     tg.expand();
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
-initApp();
+
     try {
         await checkBackendHealth();      // ✅ проверка бэкенда
             startBackendHealthMonitor();
