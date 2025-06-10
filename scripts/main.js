@@ -39,8 +39,8 @@ const activeGames = {
 
 
     function showDatabaseErrorOverlay() {
-       document.body.innerHTML = `
-    <div style="
+    document.body.innerHTML = `
+    <div id="overlay" style="
         position: fixed;
         inset: 0;
         background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -70,7 +70,7 @@ const activeGames = {
                 text-shadow: 0 0 12px #ff4e4e;
             ">⛔ База данных недоступна</h2>
             
-            <p style="
+            <p id="overlay-message" style="
                 font-size: 18px;
                 margin: 10px 0 30px;
                 color: #f1f1f1;
@@ -98,28 +98,31 @@ const activeGames = {
             to { opacity: 1; transform: scale(1); }
         }
     </style>
-`;
+    `;
+}
 
-
-    }
 
 async function retryInit() {
     try {
         const res = await fetch(`${apiUrl}/health`);
         const data = await res.json();
         if (data.status === "ok") {
-            // ✅ Удаляем overlay
-           document.body.innerHTML = "";
-
-            // 🔄 Повторный запуск приложения
-            window.location.reload(); // либо можно запустить инициализацию вручную
+            document.body.innerHTML = "";
+            window.location.reload();
         } else {
-            showCustomAlert("⛔ Сервер всё ещё недоступен", "error");
+            const msgEl = document.getElementById("overlay-message");
+            if (msgEl) {
+                msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
+            }
         }
     } catch {
-        showCustomAlert("⛔ Не удалось подключиться к серверу", "error");
+        const msgEl = document.getElementById("overlay-message");
+        if (msgEl) {
+            msgEl.innerText = "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
+        }
     }
 }
+
 
 
     async function checkBackendHealth() {
