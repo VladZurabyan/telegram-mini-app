@@ -46,21 +46,7 @@
 
 // 🛡️ DevTools защита
 (function () {
-    function safeAlert(message, type = "error") {
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", () => {
-                if (typeof showCustomAlert === 'function') {
-                    safeAlert(message, type);
-                }
-            });
-        } else {
-            if (typeof showCustomAlert === 'function') {
-                safeAlert(message, type);
-            }
-        }
-    }
-
-    // Блокировка клавиш
+    // Блокировка F12, Ctrl+Shift+I/J/C, Ctrl+U
     document.addEventListener("keydown", function (e) {
         if (
             e.key === "F12" ||
@@ -68,7 +54,11 @@
             (e.ctrlKey && e.key === "U")
         ) {
             e.preventDefault();
-            safeAlert("⛔ DevTools запрещены", "error");
+            
+           
+                alert("⛔ DevTools запрещены");
+            
+              
             return false;
         }
     });
@@ -78,7 +68,7 @@
         e.preventDefault();
     });
 
-    // Проверка на размеры
+    // Проверка на DevTools через размеры
     let devtoolsTriggered = false;
     setInterval(() => {
         const isDevToolsOpen =
@@ -87,7 +77,10 @@
 
         if (isDevToolsOpen && !devtoolsTriggered) {
             devtoolsTriggered = true;
-            safeAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
+
+           
+                alert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.");
+             
             if (typeof Player_action === 'function') {
                 Player_action("Security", "DevTools", "DevTools замечены через resize");
             }
