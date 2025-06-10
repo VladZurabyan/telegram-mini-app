@@ -82,49 +82,36 @@ window.showCustomAlert = function(message, type = "") {
     let alert = document.getElementById("custom-alert");
     let messageSpan = document.getElementById("custom-alert-message");
 
-    if (!alert || !messageSpan) {
+    // Если alert отсутствует — вставляем в DOM
+    if (!alert) {
         document.body.insertAdjacentHTML("beforeend", `
-            <div id="custom-alert" class="custom-alert" style="
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 99999;
-                background: #323232;
-                color: white;
-                padding: 16px 24px;
-                border-radius: 10px;
-                font-family: 'Segoe UI', sans-serif;
-                box-shadow: 0 0 10px rgba(0,0,0,0.4);
-                max-width: 90%;
-                text-align: center;
-            ">
-                <span id="custom-alert-message" style="display: block; margin-bottom: 10px;"></span>
-                <button onclick="closeCustomAlert()" style="
-                    background: #00c853;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 6px;
-                    color: white;
-                    cursor: pointer;
-                ">OK</button>
+            <div id="custom-alert" class="custom-alert hidden">
+                <div class="custom-alert-box">
+                    <p id="custom-alert-message"></p>
+                    <button onclick="closeCustomAlert()">OK</button>
+                </div>
             </div>
         `);
         alert = document.getElementById("custom-alert");
         messageSpan = document.getElementById("custom-alert-message");
     }
 
-    alert.classList.remove("success", "error", "hidden");
+    // Удаляем старые стили и классы
+    alert.classList.remove("hidden", "success", "error");
     if (type) alert.classList.add(type);
-    if (messageSpan) messageSpan.innerText = message;
+    messageSpan.innerText = message;
 };
 
-
-window.closeCustomAlert = function() {
+window.closeCustomAlert = function () {
     const alert = document.getElementById("custom-alert");
-    alert.classList.add("hidden");
-    alert.classList.remove("success", "error");
+    if (alert) {
+        alert.classList.add("hidden");
+        alert.classList.remove("success", "error");
+    }
 };
+
+
+
 
 
 
