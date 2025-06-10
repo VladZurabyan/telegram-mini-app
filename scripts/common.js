@@ -79,23 +79,21 @@ function forceBalance(delay = 500) {
 
 
 window.showCustomAlert = function(message, type = "") {
-     console.log("⚠️ showCustomAlert вызван:", message, type);
     let alert = document.getElementById("custom-alert");
     let messageSpan = document.getElementById("custom-alert-message");
 
-    // 🛠️ Если блок отсутствует — создаём вручную
-    if (!alert) {
+    if (!alert || !messageSpan) {
         document.body.insertAdjacentHTML("beforeend", `
-            <div id="custom-alert" class="custom-alert hidden" style="
+            <div id="custom-alert" class="custom-alert" style="
                 position: fixed;
                 top: 20px;
                 left: 50%;
                 transform: translateX(-50%);
+                z-index: 99999;
                 background: #323232;
-                padding: 16px 24px;
                 color: white;
+                padding: 16px 24px;
                 border-radius: 10px;
-                z-index: 10000;
                 font-family: 'Segoe UI', sans-serif;
                 box-shadow: 0 0 10px rgba(0,0,0,0.4);
                 max-width: 90%;
@@ -120,6 +118,7 @@ window.showCustomAlert = function(message, type = "") {
     if (type) alert.classList.add(type);
     if (messageSpan) messageSpan.innerText = message;
 };
+
 
 window.closeCustomAlert = function() {
     const alert = document.getElementById("custom-alert");
