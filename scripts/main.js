@@ -180,10 +180,8 @@ function checkBackendConnection() {
 // 🔁 Главная инициализация
 (async function () {
 
-    if (!initApp()) {
-    console.warn("⛔ Mini App открыт вне Telegram. Приложение остановлено.");
-    return; // ⛔ Всё остальное не выполняется
-}
+   const accessAllowed = initApp();
+    if (!accessAllowed) return;
     
     tg.ready();
     tg.expand();
