@@ -40,7 +40,7 @@ const activeGames = {
 
     function showDatabaseErrorOverlay() {
        document.body.innerHTML = `
-    <div id="overlay" style="
+    <div style="
         position: fixed;
         inset: 0;
         background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -109,7 +109,7 @@ async function retryInit() {
         const data = await res.json();
         if (data.status === "ok") {
             // ✅ Удаляем overlay
-            document.getElementById("overlay")?.remove();
+           document.body.innerHTML = "";
 
             // 🔄 Повторный запуск приложения
             window.location.reload(); // либо можно запустить инициализацию вручную
