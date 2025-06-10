@@ -54,7 +54,7 @@
             (e.ctrlKey && e.key === "U")
         ) {
             e.preventDefault();
-            if (typeof showCustomAlert === 'function') {
+            if (typeof window.showCustomAlert === 'function') {
                 showCustomAlert("⛔ DevTools запрещены", "error");
             }
             return false;
@@ -76,7 +76,7 @@
         if (isDevToolsOpen && !devtoolsTriggered) {
             devtoolsTriggered = true;
 
-            if (typeof showCustomAlert === 'function') {
+            if (typeof window.showCustomAlert === 'function') {
                 showCustomAlert("⛔ Обнаружено возможное открытие DevTools. Это запрещено.", "error");
             }
             if (typeof Player_action === 'function') {
