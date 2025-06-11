@@ -1,3 +1,6 @@
+let tg;
+let user;
+
 // 🔐 Блокировка запуска вне Telegram WebApp (надёжно)
 (function () {
     const ua = navigator.userAgent;
@@ -111,8 +114,7 @@
 
 
 const apiUrl = "https://miniapp-backend.onrender.com";
-const tg = window.Telegram.WebApp;
-const user = tg.initDataUnsafe?.user;
+
 
 const fakeBalance = {
         ton: 0,
