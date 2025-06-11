@@ -49,9 +49,6 @@ let user;
     }
 }, 100);
 
-    } else {
-        denyAccess();
-    }
 })();
 
 
