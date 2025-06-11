@@ -306,7 +306,7 @@ function checkBackendConnection() {
 
 // 🔁 Главная инициализация
   (async function startApp() {  
-    tg.ready();
+   //tg.ready();
     tg.expand();
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
