@@ -213,40 +213,36 @@ const activeGames = {
 
 async function retryInit(retries = 2) {
     const msgEl = document.getElementById("overlay-message");
-    let showOverlayTimer = setTimeout(() => {
-        showDatabaseErrorOverlay();
-    }, 800); // Показать только если долго нет ответа
 
     try {
         const res = await fetch(`${apiUrl}/health`, {
             method: "GET",
-            cache: "no-store"
+            cache: "no-store" // ⚠️ запретить кэш
         });
 
         if (!res.ok) {
-            clearTimeout(showOverlayTimer);
             if (msgEl) msgEl.innerText = "⛔ Сервер отвечает с ошибкой. Попробуйте позже.";
             return;
         }
 
         const data = await res.json();
-        clearTimeout(showOverlayTimer);
 
         if (data.status === "ok") {
-            document.body.innerHTML = "";
-            window.location.reload(); // ✅ сброс и перезапуск
+           // Добавим затемнённый фон
+document.body.style.background = "radial-gradient(ellipse at center, #1c1c1c 0%, #0a0a0a 100%)";
+document.body.style.transition = "background 0.5s ease";
+
         } else {
             if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
         }
 
     } catch (err) {
-        clearTimeout(showOverlayTimer);
         console.error("Ошибка при fetch:", err);
 
         const isNetworkError = err instanceof TypeError;
 
         if (retries > 0) {
-            setTimeout(() => retryInit(retries - 1), 1500);
+            setTimeout(() => retryInit(retries - 1), 1500); // 🔁 Повтор
         } else {
             if (msgEl) {
                 msgEl.innerText = isNetworkError
@@ -262,31 +258,35 @@ async function retryInit(retries = 2) {
 
 
 
-
     async function checkBackendHealth() {
     try {
-        const res = await fetch(`${apiUrl}/health`, { cache: "no-store" });
+        const res = await fetch(`${apiUrl}/health`);
         const data = await res.json();
-        return data.status === "ok";
+        if (data.status !== "ok") {
+            throw new Error("Database unavailable");
+        }
     } catch (err) {
-        console.warn("⛔ Ошибка проверки /health:", err);
-        return false;
+        showDatabaseErrorOverlay();
+        throw new Error("⛔ Бэкенд не доступен");
     }
 }
-
 
 let backendHealthy = true;
 
 function startBackendHealthMonitor() {
     setInterval(async () => {
-        const isOk = await checkBackendHealth();
-        if (!isOk && backendHealthy) {
-            backendHealthy = false;
-            showDatabaseErrorOverlay(); // только при первом падении
-        } else if (isOk) {
+        try {
+            const res = await fetch(`${apiUrl}/health`);
+            const data = await res.json();
+            if (data.status !== "ok") throw new Error();
             backendHealthy = true;
+        } catch {
+            if (backendHealthy) {
+                backendHealthy = false;
+                showDatabaseErrorOverlay();
+            }
         }
-    }, 10000);
+    }, 10000); // проверка каждые 10 секунд
 }
 
 
@@ -344,6 +344,9 @@ if (user) {
         console.error(err.message);
     }
 })();
+
+
+
 
 
 
