@@ -30,21 +30,25 @@ let user;
     }
 
     // Ждём загрузки Telegram WebApp SDK
-   if (window.Telegram?.WebApp) {
-        tg = window.Telegram.WebApp;
+   let interval = setInterval(() => {
+    if (!window.Telegram?.WebApp) return;
 
-        setTimeout(() => {
-            const initDataExists = !!tg.initData;
-            const isUserValid = !!tg.initDataUnsafe?.user;
+    tg = window.Telegram.WebApp;
 
-            if (!initDataExists || !isUserValid || isWebTelegram) {
-                denyAccess();
-            } else {
-                tg.ready();
-                user = tg.initDataUnsafe?.user;
-                startApp(); // ← запускаем только после проверки
-            }
-        }, 300);
+    const initDataExists = !!tg.initData;
+    const isUserValid = !!tg.initDataUnsafe?.user;
+
+    if (!initDataExists || !isUserValid || isWebTelegram) {
+        clearInterval(interval);
+        denyAccess();
+    } else {
+        clearInterval(interval);
+        tg.ready();
+        user = tg.initDataUnsafe?.user;
+        startApp();
+    }
+}, 100);
+
     } else {
         denyAccess();
     }
@@ -292,7 +296,6 @@ function startBackendHealthMonitor() {
         }
     }, 10000);
 }
-
 
 
 function checkBackendConnection() {
