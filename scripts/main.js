@@ -217,7 +217,7 @@ async function retryInit(retries = 2) {
     try {
         const res = await fetch(`${apiUrl}/health`, {
             method: "GET",
-            cache: "no-store" // ⚠️ запретить кэш
+            cache: "no-store"
         });
 
         if (!res.ok) {
@@ -228,24 +228,38 @@ async function retryInit(retries = 2) {
         const data = await res.json();
 
         if (data.status === "ok") {
-            document.body.innerHTML = "";
-            window.location.reload(); // ✅ сброс и перезапуск
+            // 🟢 Сервер доступен — скрыть overlay если он есть
+            const overlay = document.getElementById("overlay");
+            if (overlay) overlay.remove();
+
+            // 🔁 Обновить баланс
+            if (user) {
+                const r = await fetch(`${apiUrl}/init`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+                });
+
+                const d = await r.json();
+                window.fakeBalance.ton = d.ton;
+                window.fakeBalance.usdt = d.usdt;
+                updateBalanceUI?.(); // безопасный вызов
+            }
+
         } else {
-            if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
+            // 🟥 Сервер отвечает, но с ошибкой
+            showDatabaseErrorOverlay();
         }
 
     } catch (err) {
         console.error("Ошибка при fetch:", err);
 
-        const isNetworkError = err instanceof TypeError;
-
         if (retries > 0) {
-            setTimeout(() => retryInit(retries - 1), 1500); // 🔁 Повтор
+            setTimeout(() => retryInit(retries - 1), 1500);
         } else {
+            showDatabaseErrorOverlay();
             if (msgEl) {
-                msgEl.innerText = isNetworkError
-                    ? "⛔ Нет ответа от сервера. Возможно, он выключен или перегружен."
-                    : "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
+                msgEl.innerText = "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
             }
         }
     }
