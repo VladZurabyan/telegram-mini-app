@@ -1,112 +1,223 @@
-let tg;
-let user;
-const apiUrl = "https://miniapp-backend.onrender.com";
+// 🔐 Блокировка запуска вне Telegram WebApp (надёжно)
+(function () {
+    const ua = navigator.userAgent;
+    const isMobileTelegram = /Android|iPhone|iPad|iOS/i.test(ua);
+    const isDesktopTelegram = /TelegramBot|Telegram Desktop|Electron/.test(ua);
+    const isWebTelegram = !isMobileTelegram && !isDesktopTelegram;
 
-const fakeBalance = {
-    ton: 0,
-    usdt: 0
-};
-
-const activeGames = {
-    'partners': true,
-    'rules': true,
-    'deposit': true,
-    'withdraw': true,
-    'game-coin': true,
-    'game-crash': true,
-    'game-boxes': true,
-    'game-dice': true,
-    'game-chicken': true,
-    'game-safe': true,
-    'game-bombs': true,
-    'game-arrow': false,
-    'game-21': true,
-    'game-wheel': true
-};
-
-// 🌐 Определение среды запуска
-const ua = navigator.userAgent;
-const isMobileTelegram = /Android|iPhone|iPad|iOS/i.test(ua);
-const isDesktopTelegram = /TelegramBot|Telegram Desktop|Electron/.test(ua);
-const isWebTelegram = !isMobileTelegram && !isDesktopTelegram;
-
-// 🚫 Запрет запуска вне Telegram
-function denyAccess() {
-    document.body.innerHTML = `
-        <div style="position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(10px); z-index: 99999; font-family: 'Segoe UI', sans-serif; color: #fff;">
-            <div style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); animation: fadeIn 0.5s ease-out;">
-                <h2 style="font-size: 28px; margin-bottom: 16px; color: #ff4e4e;">⛔ Доступ запрещён</h2>
-                <p style="font-size: 18px; line-height: 1.5;">
-                    Откройте игру из <b>Telegram Mini App</b><br>
-                    на телефоне или через Telegram Desktop.
-                </p>
+    function denyAccess() {
+        document.body.innerHTML = `
+            <div style="position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(10px); z-index: 99999; font-family: 'Segoe UI', sans-serif; color: #fff;">
+                <div style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); animation: fadeIn 0.5s ease-out;">
+                    <h2 style="font-size: 28px; margin-bottom: 16px; color: #ff4e4e;">⛔ Доступ запрещён</h2>
+                    <p style="font-size: 18px; line-height: 1.5;">
+                        Откройте игру из <b>Telegram Mini App</b><br>
+                        на телефоне или через Telegram Desktop.
+                    </p>
+                </div>
             </div>
-        </div>
-        <style>
-            @keyframes fadeIn {
-                from { opacity: 0; transform: scale(0.95); }
-                to { opacity: 1; transform: scale(1); }
-            }
-        </style>
-    `;
-    throw new Error("⛔ Запрещён запуск вне Telegram");
-}
-
-// 🧱 Overlay при недоступности БД
-function showDatabaseErrorOverlay() {
-    document.body.innerHTML = `
-        <div id="overlay" style="position: fixed; inset: 0; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); backdrop-filter: blur(14px); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; z-index: 99999; animation: fadeIn 0.4s ease-out;">
-            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 40px 30px; box-shadow: 0 0 20px rgba(0,0,0,0.4); max-width: 420px; width: 70%; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-                <h2 style="font-size: 32px; color: #ff4e4e; margin-bottom: 12px; text-shadow: 0 0 12px #ff4e4e;">База данных недоступна</h2>
-                <p id="overlay-message" style="font-size: 18px; margin: 10px 0 30px; color: #f1f1f1;">Пожалуйста, подождите или нажмите кнопку ниже, чтобы попробовать ещё раз.</p>
-                <button onclick="retryInit()" style="padding: 14px 30px; font-size: 16px; border-radius: 10px; border: none; background: #00c853; color: white; cursor: pointer; box-shadow: 0 0 12px #00c853;">🔄 Повторить</button>
-            </div>
-        </div>
-        <style>
-            @keyframes fadeIn {
-                from { opacity: 0; transform: scale(0.95); }
-                to { opacity: 1; transform: scale(1); }
-            }
-        </style>
-    `;
-}
-
-// 🔁 Проверка доступности backend
-async function checkBackendHealth() {
-    try {
-        const res = await fetch(`${apiUrl}/health`, { cache: "no-store" });
-        const data = await res.json();
-        if (data.status !== "ok") throw new Error();
-        return true;
-    } catch (err) {
-        showDatabaseErrorOverlay();
-        throw new Error("⛔ Бэкенд не доступен");
+            <style>
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: scale(0.95); }
+                    to { opacity: 1; transform: scale(1); }
+                }
+            </style>
+        `;
+        throw new Error("⛔ Запрещён запуск вне Telegram");
     }
-}
 
-let backendHealthy = true;
-function startBackendHealthMonitor() {
-    setInterval(async () => {
-        try {
-            const res = await fetch(`${apiUrl}/health`, { cache: "no-store" });
-            const data = await res.json();
-            if (data.status !== "ok") throw new Error();
-            backendHealthy = true;
-        } catch (e) {
-            if (backendHealthy) {
-                backendHealthy = false;
-                showDatabaseErrorOverlay();
+    // Ждём загрузки Telegram WebApp SDK
+    if (window.Telegram?.WebApp) {
+        Telegram.WebApp.ready();
+
+        setTimeout(() => {
+            const initDataExists = !!Telegram.WebApp.initData;
+            const isUserValid = !!Telegram.WebApp.initDataUnsafe?.user;
+
+            if (!initDataExists || !isUserValid || isWebTelegram) {
+                denyAccess();
+            }
+        }, 200); // можно увеличить до 300–400 мс если лаги
+    } else {
+        denyAccess();
+    }
+})();
+
+
+// 🛡️ DevTools защита
+(function () {
+    // Блокировка F12, Ctrl+Shift+I/J/C, Ctrl+U
+    document.addEventListener("keydown", function (e) {
+        if (
+            e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+            (e.ctrlKey && e.key === "U")
+        ) {
+            e.preventDefault();
+            
+           document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ DevTools запрещены.</h1>";
+             
+            
+              
+            return false;
+        }
+    });
+
+    // Блокировка ПКМ
+    document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+    });
+
+    // Проверка на DevTools через размеры
+    let devtoolsTriggered = false;
+    setInterval(() => {
+        const isDevToolsOpen =
+            window.outerHeight - window.innerHeight > 160 ||
+            window.outerWidth - window.innerWidth > 160;
+
+        if (isDevToolsOpen && !devtoolsTriggered) {
+            devtoolsTriggered = true;
+
+           document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ Обнаружено возможное открытие DevTools. Это запрещено.</h1>";
+             
+
+             
+            if (typeof Player_action === 'function') {
+                Player_action("Security", "DevTools", "DevTools замечены через resize");
             }
         }
-    }, 10000);
+    }, 1000);
+
+    // Проверка через debugger
+    setInterval(() => {
+        const start = performance.now();
+        debugger;
+        const end = performance.now();
+        if (end - start > 100) {
+            document.body.innerHTML = "<h1 style='color:red; text-align:center;'>⛔ DevTools запрещены</h1>";
+        }
+    }, 2000);
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+const apiUrl = "https://miniapp-backend.onrender.com";
+const tg = window.Telegram.WebApp;
+const user = tg.initDataUnsafe?.user;
+
+const fakeBalance = {
+        ton: 0,
+        usdt: 0
+};
+
+const winsCount = 2;
+const lossesCount = 10;
+const totalCount = winsCount + lossesCount;
+
+
+let lastActivityTime = Date.now();
+let isIdle = false;
+let isListening = false;
+let balanceAbortController = null;
+
+const activeGames = {
+        'partners': true,
+        'rules': true,
+        'deposit': true,
+        'withdraw': true,
+        'game-coin': true,
+        'game-crash': true,
+        'game-boxes': true,
+        'game-dice': true,
+        'game-chicken': true,
+        'game-safe': true,
+        'game-bombs': true,
+        'game-arrow': false,
+        'game-21': true,
+        'game-wheel': true
+    };
+
+ 
+    function showDatabaseErrorOverlay() {
+    document.body.innerHTML = `
+    <div id="overlay" style="
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        backdrop-filter: blur(14px);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', sans-serif;
+        z-index: 99999;
+        animation: fadeIn 0.4s ease-out;
+    ">
+        <div style="
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+            max-width: 420px;
+            width: 70%;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        ">
+            <h2 style="
+                font-size: 32px;
+                color: #ff4e4e;
+                margin-bottom: 12px;
+                text-shadow: 0 0 12px #ff4e4e;
+            ">База данных недоступна</h2>
+            
+            <p id="overlay-message" style="
+                font-size: 18px;
+                margin: 10px 0 30px;
+                color: #f1f1f1;
+            ">Пожалуйста, подождите или нажмите кнопку ниже, чтобы попробовать ещё раз.</p>
+            
+            <button onclick="retryInit()" style="
+                padding: 14px 30px;
+                font-size: 16px;
+                border-radius: 10px;
+                border: none;
+                background: #00c853;
+                color: white;
+                cursor: pointer;
+                box-shadow: 0 0 12px #00c853;
+                transition: background 0.3s, transform 0.2s;
+            " onmouseover="this.style.background='#00e676'" onmouseout="this.style.background='#00c853'">
+                🔄 Повторить
+            </button>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+    `;
 }
+
 
 async function retryInit(retries = 2) {
     const msgEl = document.getElementById("overlay-message");
+
     try {
         const res = await fetch(`${apiUrl}/health`, {
             method: "GET",
-            cache: "no-store"
+            cache: "no-store" // ⚠️ запретить кэш
         });
 
         if (!res.ok) {
@@ -115,91 +226,122 @@ async function retryInit(retries = 2) {
         }
 
         const data = await res.json();
+
         if (data.status === "ok") {
             document.body.innerHTML = "";
-            window.location.reload();
+            window.location.reload(); // ✅ сброс и перезапуск
         } else {
             if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
         }
 
     } catch (err) {
+        console.error("Ошибка при fetch:", err);
+
+        const isNetworkError = err instanceof TypeError;
+
         if (retries > 0) {
-            setTimeout(() => retryInit(retries - 1), 1500);
-        } else if (msgEl) {
-            msgEl.innerText = "⛔ Нет ответа от сервера. Возможно, он выключен или перегружен.";
+            setTimeout(() => retryInit(retries - 1), 1500); // 🔁 Повтор
+        } else {
+            if (msgEl) {
+                msgEl.innerText = isNetworkError
+                    ? "⛔ Нет ответа от сервера. Возможно, он выключен или перегружен."
+                    : "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
+            }
         }
     }
 }
+
+
+
+
+
+
+    async function checkBackendHealth() {
+    try {
+        const res = await fetch(`${apiUrl}/health`);
+        const data = await res.json();
+        if (data.status !== "ok") {
+            throw new Error("Database unavailable");
+        }
+    } catch (err) {
+        showDatabaseErrorOverlay();
+        throw new Error("⛔ Бэкенд не доступен");
+    }
+}
+
+let backendHealthy = true;
+
+function startBackendHealthMonitor() {
+    setInterval(async () => {
+        try {
+            const res = await fetch(`${apiUrl}/health`);
+            const data = await res.json();
+            if (data.status !== "ok") throw new Error();
+            backendHealthy = true;
+        } catch {
+            if (backendHealthy) {
+                backendHealthy = false;
+                showDatabaseErrorOverlay();
+            }
+        }
+    }, 10000); // проверка каждые 10 секунд
+}
+
 
 function checkBackendConnection() {
     console.log("✅ Бэкенд успешно подключен.");
 }
 
-// 🚀 Главная инициализация
-async function startApp() {
-    tg = window.Telegram.WebApp;
-    user = tg.initDataUnsafe?.user;
 
-    tg?.ready?.();
-    tg?.expand?.();
-    tg?.requestFullscreen?.();
-    tg?.disableVerticalSwipes?.();
 
+// 🔁 Главная инициализация
+  (async function () {  
+    tg.ready();
+    tg.expand();
+    tg.requestFullscreen();
+    tg.disableVerticalSwipes();
+
+        
+        
     try {
-        const backendIsReady = await checkBackendHealth();
-        if (backendIsReady) {
+        await checkBackendHealth();      // ✅ проверка бэкенда
             startBackendHealthMonitor();
-            checkBackendConnection();
+        checkBackendConnection();        // ✅ лог успешного подключения
 
-            // Повторная проверка при возврате в Telegram
-            document.addEventListener("visibilitychange", () => {
-                if (document.visibilityState === "visible") {
-                    retryInit();
-                }
-            });
+        // 🔁 Повторная проверка при возврате в Telegram
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        retryInit(); // проверка при возврате
+    }
+});
 
-            window.addEventListener("focus", () => {
-                retryInit();
-            });
+window.addEventListener("focus", () => {
+    retryInit(); // дубль, на всякий случай
+});
 
-            // Инициализация баланса
-            if (user) {
-                fetch(`${apiUrl}/init`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
-                })
-                    .then(r => r.json())
-                    .then(d => {
-                        window.fakeBalance.ton = d.ton;
-                        window.fakeBalance.usdt = d.usdt;
-                        updateBalanceUI?.();
-                        startBalanceListener?.();
-                    });
-            }
 
-            // 👇 Здесь можно продолжить инициализацию игры
-        }
+            // ✅ Синхронизация баланса при старте
+if (user) {
+    fetch(`${apiUrl}/init`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+    })
+    .then(r => r.json())
+    .then(d => {
+        window.fakeBalance.ton = d.ton;
+        window.fakeBalance.usdt = d.usdt;
+        updateBalanceUI();
+     // ⏳ Сразу обновим баланс, чтобы он был точным
+        startBalanceListener();
+       
+    });
+}
+        // здесь продолжай инициализацию
     } catch (err) {
         console.error(err.message);
     }
-}
-
-// ⏳ Ожидаем появления Telegram.WebApp
-let waitInterval = setInterval(() => {
-    if (!window.Telegram?.WebApp) return;
-
-    clearInterval(waitInterval);
-    tg = window.Telegram.WebApp;
-    const initDataExists = !!tg.initData;
-    const isUserValid = !!tg.initDataUnsafe?.user;
-
-    if (!initDataExists || !isUserValid || isWebTelegram) {
-        denyAccess();
-    } else {
-        startApp();
-    }
-}, 100);
+})();
 
 
 
