@@ -256,25 +256,25 @@ async function retryInit(retries = 2) {
 
 
 
-    async function checkBackendHealth() {
+   async function checkBackendHealth() {
     try {
-        const res = await fetch(`${apiUrl}/health`);
+        const res = await fetch(`${apiUrl}/health`, { cache: "no-store" });
         const data = await res.json();
-        if (data.status !== "ok") {
-            throw new Error("Database unavailable");
-        }
+        if (data.status !== "ok") throw new Error();
+        return true; // ✅
     } catch (err) {
         showDatabaseErrorOverlay();
         throw new Error("⛔ Бэкенд не доступен");
     }
 }
 
+
 let backendHealthy = true;
 
 function startBackendHealthMonitor() {
     setInterval(async () => {
         try {
-            const res = await fetch(`${apiUrl}/health`);
+            const res = await fetch(`${apiUrl}/health`, { cache: "no-store" });
             const data = await res.json();
             if (data.status !== "ok") throw new Error();
             backendHealthy = true;
@@ -304,9 +304,10 @@ function checkBackendConnection() {
         
         
     try {
-        await checkBackendHealth();      // ✅ проверка бэкенда
-            startBackendHealthMonitor();
-        checkBackendConnection();        // ✅ лог успешного подключения
+        const backendIsReady = await checkBackendHealth();
+if (backendIsReady) {
+    startBackendHealthMonitor();
+    checkBackendConnection();
 
         // 🔁 Повторная проверка при возврате в Telegram
 document.addEventListener("visibilitychange", () => {
