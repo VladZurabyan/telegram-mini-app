@@ -213,19 +213,24 @@ const activeGames = {
 
 async function retryInit(retries = 2) {
     const msgEl = document.getElementById("overlay-message");
+    let showOverlayTimer = setTimeout(() => {
+        showDatabaseErrorOverlay();
+    }, 800); // Показать только если долго нет ответа
 
     try {
         const res = await fetch(`${apiUrl}/health`, {
             method: "GET",
-            cache: "no-store" // ⚠️ запретить кэш
+            cache: "no-store"
         });
 
         if (!res.ok) {
+            clearTimeout(showOverlayTimer);
             if (msgEl) msgEl.innerText = "⛔ Сервер отвечает с ошибкой. Попробуйте позже.";
             return;
         }
 
         const data = await res.json();
+        clearTimeout(showOverlayTimer);
 
         if (data.status === "ok") {
             document.body.innerHTML = "";
@@ -235,12 +240,13 @@ async function retryInit(retries = 2) {
         }
 
     } catch (err) {
+        clearTimeout(showOverlayTimer);
         console.error("Ошибка при fetch:", err);
 
         const isNetworkError = err instanceof TypeError;
 
         if (retries > 0) {
-            setTimeout(() => retryInit(retries - 1), 1500); // 🔁 Повтор
+            setTimeout(() => retryInit(retries - 1), 1500);
         } else {
             if (msgEl) {
                 msgEl.innerText = isNetworkError
@@ -250,6 +256,7 @@ async function retryInit(retries = 2) {
         }
     }
 }
+
 
 
 
