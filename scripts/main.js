@@ -212,8 +212,6 @@ const activeGames = {
 
 
 async function retryInit(retries = 2) {
-    const msgEl = document.getElementById("overlay-message");
-
     try {
         const res = await fetch(`${apiUrl}/health`, {
             method: "GET",
@@ -221,49 +219,45 @@ async function retryInit(retries = 2) {
         });
 
         if (!res.ok) {
-            if (msgEl) msgEl.innerText = "⛔ Сервер отвечает с ошибкой. Попробуйте позже.";
+            showDatabaseErrorOverlay(); // 🟥 показываем только если реально ошибка
             return;
         }
 
         const data = await res.json();
-
-        if (data.status === "ok") {
-            // 🟢 Сервер доступен — скрыть overlay если он есть
-            const overlay = document.getElementById("overlay");
-            if (overlay) overlay.remove();
-
-            // 🔁 Обновить баланс
-            if (user) {
-                const r = await fetch(`${apiUrl}/init`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
-                });
-
-                const d = await r.json();
-                window.fakeBalance.ton = d.ton;
-                window.fakeBalance.usdt = d.usdt;
-                updateBalanceUI?.(); // безопасный вызов
-            }
-
-        } else {
-            // 🟥 Сервер отвечает, но с ошибкой
+        if (data.status !== "ok") {
             showDatabaseErrorOverlay();
+            return;
+        }
+
+        // ✅ Сервер работает — убрать overlay, если он остался
+        const overlay = document.getElementById("overlay");
+        if (overlay) overlay.remove();
+
+        // 🔁 Обновим баланс
+        if (user) {
+            const r = await fetch(`${apiUrl}/init`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+            });
+
+            const d = await r.json();
+            window.fakeBalance.ton = d.ton;
+            window.fakeBalance.usdt = d.usdt;
+            if (typeof updateBalanceUI === "function") updateBalanceUI();
         }
 
     } catch (err) {
-        console.error("Ошибка при fetch:", err);
+        console.error("Ошибка retryInit:", err);
 
         if (retries > 0) {
-            setTimeout(() => retryInit(retries - 1), 1500);
+            setTimeout(() => retryInit(retries - 1), 1000); // 🔁 повтор
         } else {
-            showDatabaseErrorOverlay();
-            if (msgEl) {
-                msgEl.innerText = "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
-            }
+            showDatabaseErrorOverlay(); // ❌ показать только после всех попыток
         }
     }
 }
+
 
 
 
