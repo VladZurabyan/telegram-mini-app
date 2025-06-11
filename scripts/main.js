@@ -29,28 +29,7 @@ let user;
         throw new Error("⛔ Запрещён запуск вне Telegram");
     }
 
-    // Ждём загрузки Telegram WebApp SDK
-   let interval = setInterval(() => {
-    if (!window.Telegram?.WebApp) return;
-
-    tg = window.Telegram.WebApp;
-
-    const initDataExists = !!tg.initData;
-    const isUserValid = !!tg.initDataUnsafe?.user;
-
-    if (!initDataExists || !isUserValid || isWebTelegram) {
-        clearInterval(interval);
-        denyAccess();
-    } else {
-        clearInterval(interval);
-        tg.ready();
-        user = tg.initDataUnsafe?.user;
-        startApp();
-    }
-}, 100);
-
-})();
-
+    
 
 // 🛡️ DevTools защита
 (function () {
@@ -350,6 +329,27 @@ function checkBackendConnection() {
 }
 })();
 
+// Ждём загрузки Telegram WebApp SDK
+   let interval = setInterval(() => {
+    if (!window.Telegram?.WebApp) return;
+
+    tg = window.Telegram.WebApp;
+
+    const initDataExists = !!tg.initData;
+    const isUserValid = !!tg.initDataUnsafe?.user;
+
+    if (!initDataExists || !isUserValid || isWebTelegram) {
+        clearInterval(interval);
+        denyAccess();
+    } else {
+        clearInterval(interval);
+        tg.ready();
+        user = tg.initDataUnsafe?.user;
+        startApp();
+    }
+}, 100);
+
+})();
 
 
 
