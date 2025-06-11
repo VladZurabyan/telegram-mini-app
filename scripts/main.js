@@ -210,7 +210,7 @@ const activeGames = {
     `;
 }
 
-let isReloading = false;
+
 
 async function retryInit(retries = 2) {
     const msgEl = document.getElementById("overlay-message");
@@ -229,10 +229,6 @@ async function retryInit(retries = 2) {
         const data = await res.json();
 
         if (data.status === "ok") {
-            if (isReloading) return; // 🛡️ защита от повторов
-
-            isReloading = true;
-            
           // 👇 Показываем блюренный лоадер сразу
     const loader = document.createElement("div");
     loader.innerHTML = `
@@ -270,22 +266,9 @@ async function retryInit(retries = 2) {
 
     // ⏳ Параллельно сразу начинается reload — пока крутится спиннер
 
-      setTimeout(() => {
-                if (document.visibilityState === "visible" && document.hasFocus()) {
+      
                     window.location.reload();
-                } else {
-                    const onFocusOrVisible = () => {
-                        if (document.visibilityState === "visible" && document.hasFocus()) {
-                            window.removeEventListener("visibilitychange", onFocusOrVisible);
-                            window.removeEventListener("focus", onFocusOrVisible);
-                            window.location.reload();
-                        }
-                    };
-
-                    window.addEventListener("visibilitychange", onFocusOrVisible);
-                    window.addEventListener("focus", onFocusOrVisible);
-                }
-            }, 800);
+      
   
 
         } else {
