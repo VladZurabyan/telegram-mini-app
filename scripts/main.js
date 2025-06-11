@@ -228,13 +228,14 @@ async function retryInit(retries = 2) {
         const data = await res.json();
 
         if (data.status === "ok") {
-          // 👇 Добавляем плавный лоадинг
+          // 👇 Показываем блюренный лоадер сразу
     const loader = document.createElement("div");
     loader.innerHTML = `
         <div id="reloading-overlay" style="
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -251,6 +252,7 @@ async function retryInit(retries = 2) {
                 border-top-color: transparent;
                 border-radius: 50%;
                 animation: spin 0.8s linear infinite;
+                box-shadow: 0 0 20px #00c85380;
             }
 
             @keyframes spin {
@@ -261,7 +263,7 @@ async function retryInit(retries = 2) {
 
     document.body.appendChild(loader);
 
-    // ⏳ Плавная пауза перед reload
+    // ⏳ Параллельно сразу начинается reload — пока крутится спиннер
     setTimeout(() => {
         window.location.reload();
     }, 800);
