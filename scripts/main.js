@@ -298,7 +298,7 @@ function checkBackendConnection() {
             startApp(); // вызываем когда всё готово
         }
     }, 100);
-})();
+
 
     
 
