@@ -256,7 +256,6 @@ async function retryInit(retries = 2) {
 
 
 
-
     async function checkBackendHealth() {
     try {
         const res = await fetch(`${apiUrl}/health`);
@@ -343,6 +342,11 @@ if (user) {
         console.error(err.message);
     }
 })();
+
+
+
+
+
 
 
 
