@@ -30,8 +30,11 @@ let user;
     }
 
     // Ждём загрузки Telegram WebApp SDK
-    if (window.Telegram?.WebApp) {
-        Telegram.WebApp.ready();
+   if (window.Telegram?.WebApp) {
+    tg = window.Telegram.WebApp;
+    tg.ready(); // теперь работает
+    user = tg.initDataUnsafe?.user;
+
 
         setTimeout(() => {
             const initDataExists = !!Telegram.WebApp.initData;
