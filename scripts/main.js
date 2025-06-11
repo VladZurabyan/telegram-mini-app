@@ -264,9 +264,9 @@ async function retryInit(retries = 2) {
     document.body.appendChild(loader);
 
     // ⏳ Параллельно сразу начинается reload — пока крутится спиннер
-    setTimeout(() => {
+
         window.location.reload();
-    }, 800);
+  
 
         } else {
             if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
