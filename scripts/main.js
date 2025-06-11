@@ -31,19 +31,20 @@ let user;
 
     // Ждём загрузки Telegram WebApp SDK
    if (window.Telegram?.WebApp) {
-    tg = window.Telegram.WebApp;
-    tg.ready(); // теперь работает
-    user = tg.initDataUnsafe?.user;
-
+        tg = window.Telegram.WebApp;
 
         setTimeout(() => {
-            const initDataExists = !!Telegram.WebApp.initData;
-            const isUserValid = !!Telegram.WebApp.initDataUnsafe?.user;
+            const initDataExists = !!tg.initData;
+            const isUserValid = !!tg.initDataUnsafe?.user;
 
             if (!initDataExists || !isUserValid || isWebTelegram) {
                 denyAccess();
+            } else {
+                tg.ready();
+                user = tg.initDataUnsafe?.user;
+                startApp(); // ← запускаем только после проверки
             }
-        }, 200); // можно увеличить до 300–400 мс если лаги
+        }, 300);
     } else {
         denyAccess();
     }
@@ -300,8 +301,8 @@ function checkBackendConnection() {
 
 
 // 🔁 Главная инициализация
-  (async function () {  
-    tg.ready();
+  (async function startApp() {  
+    //tg.ready();
     tg.expand();
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
