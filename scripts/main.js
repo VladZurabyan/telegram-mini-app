@@ -280,6 +280,30 @@ function checkBackendConnection() {
 
 
 
+  // Ждём загрузки Telegram WebApp SDK
+    let interval = setInterval(() => {
+        if (!window.Telegram?.WebApp) return;
+
+        tg = window.Telegram.WebApp;
+        const initDataExists = !!tg.initData;
+        const isUserValid = !!tg.initDataUnsafe?.user;
+
+        if (!initDataExists || !isUserValid || isWebTelegram) {
+            clearInterval(interval);
+            denyAccess();
+        } else {
+            clearInterval(interval);
+            tg.ready();
+            user = tg.initDataUnsafe?.user;
+            startApp(); // вызываем когда всё готово
+        }
+    }, 100);
+})();
+
+    
+
+    
+
 // 🔁 Главная инициализация
   (async function startApp() {  
     tg.ready();
@@ -329,27 +353,6 @@ function checkBackendConnection() {
 }
 })();
 
-// Ждём загрузки Telegram WebApp SDK
-   let interval = setInterval(() => {
-    if (!window.Telegram?.WebApp) return;
-
-    tg = window.Telegram.WebApp;
-
-    const initDataExists = !!tg.initData;
-    const isUserValid = !!tg.initDataUnsafe?.user;
-
-    if (!initDataExists || !isUserValid || isWebTelegram) {
-        clearInterval(interval);
-        denyAccess();
-    } else {
-        clearInterval(interval);
-        tg.ready();
-        user = tg.initDataUnsafe?.user;
-        startApp();
-    }
-}, 100);
-
-})();
 
 
 
