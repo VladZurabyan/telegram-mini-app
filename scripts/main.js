@@ -258,33 +258,28 @@ async function retryInit(retries = 2) {
 
     async function checkBackendHealth() {
     try {
-        const res = await fetch(`${apiUrl}/health`);
+        const res = await fetch(`${apiUrl}/health`, { cache: "no-store" });
         const data = await res.json();
-        if (data.status !== "ok") {
-            throw new Error("Database unavailable");
-        }
+        return data.status === "ok";
     } catch (err) {
-        showDatabaseErrorOverlay();
-        throw new Error("⛔ Бэкенд не доступен");
+        console.warn("⛔ Ошибка проверки /health:", err);
+        return false;
     }
 }
+
 
 let backendHealthy = true;
 
 function startBackendHealthMonitor() {
     setInterval(async () => {
-        try {
-            const res = await fetch(`${apiUrl}/health`);
-            const data = await res.json();
-            if (data.status !== "ok") throw new Error();
+        const isOk = await checkBackendHealth();
+        if (!isOk && backendHealthy) {
+            backendHealthy = false;
+            showDatabaseErrorOverlay(); // только при первом падении
+        } else if (isOk) {
             backendHealthy = true;
-        } catch {
-            if (backendHealthy) {
-                backendHealthy = false;
-                showDatabaseErrorOverlay();
-            }
         }
-    }, 10000); // проверка каждые 10 секунд
+    }, 10000);
 }
 
 
