@@ -284,15 +284,15 @@ function startBackendHealthMonitor() {
             const data = await res.json();
             if (data.status !== "ok") throw new Error();
             backendHealthy = true;
-        }         } catch (e) {
+        } catch (e) {
             if (backendHealthy) {
                 backendHealthy = false;
                 showDatabaseErrorOverlay();
             }
         }
-
-    }, 10000); // проверка каждые 10 секунд
+    }, 10000);
 }
+
 
 
 function checkBackendConnection() {
@@ -303,7 +303,7 @@ function checkBackendConnection() {
 
 // 🔁 Главная инициализация
   (async function startApp() {  
-    //tg.ready();
+    tg.ready();
     tg.expand();
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
