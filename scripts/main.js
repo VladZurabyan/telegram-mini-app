@@ -212,48 +212,41 @@ const activeGames = {
 
 
 async function retryInit(retries = 2) {
+    const msgEl = document.getElementById("overlay-message");
+
     try {
         const res = await fetch(`${apiUrl}/health`, {
             method: "GET",
-            cache: "no-store"
+            cache: "no-store" // ⚠️ запретить кэш
         });
 
         if (!res.ok) {
-            showDatabaseErrorOverlay(); // 🟥 показываем только если реально ошибка
+            if (msgEl) msgEl.innerText = "⛔ Сервер отвечает с ошибкой. Попробуйте позже.";
             return;
         }
 
         const data = await res.json();
-        if (data.status !== "ok") {
-            showDatabaseErrorOverlay();
-            return;
-        }
 
-        // ✅ Сервер работает — убрать overlay, если он остался
-        const overlay = document.getElementById("overlay");
-        if (overlay) overlay.remove();
-
-        // 🔁 Обновим баланс
-        if (user) {
-            const r = await fetch(`${apiUrl}/init`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
-            });
-
-            const d = await r.json();
-            window.fakeBalance.ton = d.ton;
-            window.fakeBalance.usdt = d.usdt;
-            if (typeof updateBalanceUI === "function") updateBalanceUI();
+        if (data.status === "ok") {
+            document.body.innerHTML = "";
+            window.location.reload(); // ✅ сброс и перезапуск
+        } else {
+            if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
         }
 
     } catch (err) {
-        console.error("Ошибка retryInit:", err);
+        console.error("Ошибка при fetch:", err);
+
+        const isNetworkError = err instanceof TypeError;
 
         if (retries > 0) {
-            setTimeout(() => retryInit(retries - 1), 1000); // 🔁 повтор
+            setTimeout(() => retryInit(retries - 1), 1500); // 🔁 Повтор
         } else {
-            showDatabaseErrorOverlay(); // ❌ показать только после всех попыток
+            if (msgEl) {
+                msgEl.innerText = isNetworkError
+                    ? "⛔ Нет ответа от сервера. Возможно, он выключен или перегружен."
+                    : "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
+            }
         }
     }
 }
