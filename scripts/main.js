@@ -228,9 +228,43 @@ async function retryInit(retries = 2) {
         const data = await res.json();
 
         if (data.status === "ok") {
-           // Добавим затемнённый фон
-document.body.style.background = "radial-gradient(ellipse at center, #1c1c1c 0%, #0a0a0a 100%)";
-document.body.style.transition = "background 0.5s ease";
+          // 👇 Добавляем плавный лоадинг
+    const loader = document.createElement("div");
+    loader.innerHTML = `
+        <div id="reloading-overlay" style="
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+        ">
+            <div class="spinner"></div>
+        </div>
+
+        <style>
+            .spinner {
+                width: 60px;
+                height: 60px;
+                border: 6px solid #00c853;
+                border-top-color: transparent;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        </style>
+    `;
+
+    document.body.appendChild(loader);
+
+    // ⏳ Плавная пауза перед reload
+    setTimeout(() => {
+        window.location.reload();
+    }, 800);
 
         } else {
             if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
