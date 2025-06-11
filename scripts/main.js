@@ -211,11 +211,14 @@ const activeGames = {
 }
 
 
-async function retryInit() {
+async function retryInit(retries = 2) {
     const msgEl = document.getElementById("overlay-message");
 
     try {
-        const res = await fetch(`${apiUrl}/health`, { method: "GET" });
+        const res = await fetch(`${apiUrl}/health`, {
+            method: "GET",
+            cache: "no-store" // ⚠️ запретить кэш
+        });
 
         if (!res.ok) {
             if (msgEl) msgEl.innerText = "⛔ Сервер отвечает с ошибкой. Попробуйте позже.";
@@ -226,7 +229,7 @@ async function retryInit() {
 
         if (data.status === "ok") {
             document.body.innerHTML = "";
-            window.location.reload();
+            window.location.reload(); // ✅ сброс и перезапуск
         } else {
             if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
         }
@@ -234,16 +237,20 @@ async function retryInit() {
     } catch (err) {
         console.error("Ошибка при fetch:", err);
 
-        // Диагностика по сообщению ошибки (работает в Chrome/Firefox)
         const isNetworkError = err instanceof TypeError;
 
-        if (msgEl) {
-            msgEl.innerText = isNetworkError
-                ? "⛔ Нет ответа от сервера. Возможно, он выключен или перегружен."
-                : "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
+        if (retries > 0) {
+            setTimeout(() => retryInit(retries - 1), 1500); // 🔁 Повтор
+        } else {
+            if (msgEl) {
+                msgEl.innerText = isNetworkError
+                    ? "⛔ Нет ответа от сервера. Возможно, он выключен или перегружен."
+                    : "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
+            }
         }
     }
 }
+
 
 
 
@@ -300,6 +307,17 @@ function checkBackendConnection() {
         await checkBackendHealth();      // ✅ проверка бэкенда
             startBackendHealthMonitor();
         checkBackendConnection();        // ✅ лог успешного подключения
+
+        // 🔁 Повторная проверка при возврате в Telegram
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        retryInit(); // проверка при возврате
+    }
+});
+
+window.addEventListener("focus", () => {
+    retryInit(); // дубль, на всякий случай
+});
 
 
             // ✅ Синхронизация баланса при старте
