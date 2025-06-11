@@ -310,46 +310,46 @@ function checkBackendConnection() {
 
         
         
-    try {
-        const backendIsReady = await checkBackendHealth();
-if (backendIsReady) {
-    startBackendHealthMonitor();
-    checkBackendConnection();
+   try {
+    const backendIsReady = await checkBackendHealth();
+    if (backendIsReady) {
+        startBackendHealthMonitor();
+        checkBackendConnection();
 
         // 🔁 Повторная проверка при возврате в Telegram
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-        retryInit(); // проверка при возврате
-    }
-});
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                retryInit();
+            }
+        });
 
-window.addEventListener("focus", () => {
-    retryInit(); // дубль, на всякий случай
-});
+        window.addEventListener("focus", () => {
+            retryInit();
+        });
 
+        // ✅ Синхронизация баланса при старте
+        if (user) {
+            fetch(`${apiUrl}/init`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+            })
+            .then(r => r.json())
+            .then(d => {
+                window.fakeBalance.ton = d.ton;
+                window.fakeBalance.usdt = d.usdt;
+                updateBalanceUI();
+                startBalanceListener();
+            });
+        }
 
-            // ✅ Синхронизация баланса при старте
-if (user) {
-    fetch(`${apiUrl}/init`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
-    })
-    .then(r => r.json())
-    .then(d => {
-        window.fakeBalance.ton = d.ton;
-        window.fakeBalance.usdt = d.usdt;
-        updateBalanceUI();
-     // ⏳ Сразу обновим баланс, чтобы он был точным
-        startBalanceListener();
-       
-    });
-}
         // здесь продолжай инициализацию
-    } catch (err) {
-        console.error(err.message);
     }
+} catch (err) {
+    console.error(err.message);
+}
 })();
+
 
 
 
