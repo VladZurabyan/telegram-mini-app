@@ -1,6 +1,6 @@
 let tg;
 let user;
-
+/*
 // 🔐 Блокировка запуска вне Telegram WebApp (надёжно)
 (function () {
     const ua = navigator.userAgent;
@@ -86,7 +86,7 @@ let user;
     }, 2000);
 })();
 
-
+*/
 
 
 
