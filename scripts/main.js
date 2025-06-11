@@ -265,7 +265,24 @@ async function retryInit(retries = 2) {
 
     // ⏳ Параллельно сразу начинается reload — пока крутится спиннер
 
-        window.location.reload();
+       // ⏳ Ждём 800мс, потом перезагружаем
+    setTimeout(() => {
+        if (document.visibilityState === "visible" && document.hasFocus()) {
+            window.location.reload();
+        } else {
+            // Ждём пока Telegram снова станет активным
+            const onFocusOrVisible = () => {
+                if (document.visibilityState === "visible" && document.hasFocus()) {
+                    window.removeEventListener("visibilitychange", onFocusOrVisible);
+                    window.removeEventListener("focus", onFocusOrVisible);
+                    window.location.reload();
+                }
+            };
+
+            window.addEventListener("visibilitychange", onFocusOrVisible);
+            window.addEventListener("focus", onFocusOrVisible);
+        }
+    }, 800);
   
 
         } else {
