@@ -335,12 +335,7 @@ function startBalanceListener() {
             startBalanceListener?.(); // если определена
         }
 
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                retryInit();
-            }
-        });
-
+       
         window.addEventListener("focus", () => {
             retryInit();
         });
