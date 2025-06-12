@@ -108,8 +108,27 @@ const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe?.user;
 
 // 🟢 Добавлены переменные для избежания ReferenceError
-let isListening = false;
+let lastActivityTime = Date.now();
 let isIdle = false;
+let isListening = false;
+let balanceAbortController = null;
+
+const activeGames = {
+        'partners': true,
+        'rules': true,
+        'deposit': true,
+        'withdraw': true,
+        'game-coin': true,
+        'game-crash': true,
+        'game-boxes': true,
+        'game-dice': true,
+        'game-chicken': true,
+        'game-safe': true,
+        'game-bombs': true,
+        'game-arrow': false,
+        'game-21': true,
+        'game-wheel': true
+    };
 
 const fakeBalance = {
     ton: 0,
