@@ -115,41 +115,62 @@ const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe?.user;
 
 const fakeBalance = {
-        ton: 0,
-        usdt: 0
+    ton: 0,
+    usdt: 0
 };
 
 const winsCount = 2;
 const lossesCount = 10;
 const totalCount = winsCount + lossesCount;
 
+let backendHealthy = true;
+let fetchInProgress = false;
 
-let lastActivityTime = Date.now();
-let isIdle = false;
-let isListening = false;
-let balanceAbortController = null;
+// === ⛑ Плавное обновление данных без reload ===
+async function softUpdateData() {
+    if (!user) return;
+    try {
+        const res = await fetch(`${apiUrl}/init`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
+        });
+        const d = await res.json();
+        fakeBalance.ton = d.ton;
+        fakeBalance.usdt = d.usdt;
+        updateBalanceUI();
+        saveCachedBalance();
+    } catch (e) {
+        console.warn("Ошибка при обновлении данных:", e);
+    }
+}
 
-const activeGames = {
-        'partners': true,
-        'rules': true,
-        'deposit': true,
-        'withdraw': true,
-        'game-coin': true,
-        'game-crash': true,
-        'game-boxes': true,
-        'game-dice': true,
-        'game-chicken': true,
-        'game-safe': true,
-        'game-bombs': true,
-        'game-arrow': false,
-        'game-21': true,
-        'game-wheel': true
-    };
+// === 🧠 Кэширование баланса ===
+function loadCachedBalance() {
+    const cached = sessionStorage.getItem("cachedBalance");
+    if (cached) {
+        try {
+            const data = JSON.parse(cached);
+            fakeBalance.ton = data.ton;
+            fakeBalance.usdt = data.usdt;
+            updateBalanceUI();
+        } catch {}
+    }
+}
 
- 
-    function showDatabaseErrorOverlay() {
-    document.body.innerHTML = `
-    <div id="overlay" style="
+function saveCachedBalance() {
+    sessionStorage.setItem("cachedBalance", JSON.stringify(fakeBalance));
+}
+
+window.addEventListener("beforeunload", saveCachedBalance);
+
+// === 🚨 Overlay без удаления body ===
+function showDatabaseErrorOverlay() {
+    if (document.getElementById("overlay")) return;
+
+    const overlay = document.createElement("div");
+    overlay.id = "overlay";
+    overlay.style = `
         position: fixed;
         inset: 0;
         background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -161,156 +182,108 @@ const activeGames = {
         font-family: 'Segoe UI', sans-serif;
         z-index: 99999;
         animation: fadeIn 0.4s ease-out;
-    ">
-        <div style="
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 40px 30px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4);
-            max-width: 420px;
-            width: 70%;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-        ">
-            <h2 style="
-                font-size: 32px;
-                color: #ff4e4e;
-                margin-bottom: 12px;
-                text-shadow: 0 0 12px #ff4e4e;
-            ">База данных недоступна</h2>
-            
-            <p id="overlay-message" style="
-                font-size: 18px;
-                margin: 10px 0 30px;
-                color: #f1f1f1;
-            ">Пожалуйста, подождите или нажмите кнопку ниже, чтобы попробовать ещё раз.</p>
-            
-            <button onclick="retryInit()" style="
-                padding: 14px 30px;
-                font-size: 16px;
-                border-radius: 10px;
-                border: none;
-                background: #00c853;
-                color: white;
-                cursor: pointer;
-                box-shadow: 0 0 12px #00c853;
-                transition: background 0.3s, transform 0.2s;
-            " onmouseover="this.style.background='#00e676'" onmouseout="this.style.background='#00c853'">
+    `;
+    overlay.innerHTML = `
+        <div style="background: rgba(255,255,255,0.05); border-radius: 20px; padding: 40px 30px; box-shadow: 0 0 20px rgba(0,0,0,0.4); max-width: 420px; width: 70%; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+            <h2 style="font-size: 32px; color: #ff4e4e; margin-bottom: 12px; text-shadow: 0 0 12px #ff4e4e;">База данных недоступна</h2>
+            <p id="overlay-message" style="font-size: 18px; margin: 10px 0 30px; color: #f1f1f1;">Пожалуйста, подождите или нажмите кнопку ниже, чтобы попробовать ещё раз.</p>
+            <button onclick="retryInit()" style="padding: 14px 30px; font-size: 16px; border-radius: 10px; border: none; background: #00c853; color: white; cursor: pointer; box-shadow: 0 0 12px #00c853; transition: background 0.3s, transform 0.2s;" onmouseover="this.style.background='#00e676'" onmouseout="this.style.background='#00c853'">
                 🔄 Повторить
             </button>
         </div>
-    </div>
-
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-    </style>
-    `;
-}
-
-
-
-async function retryInit(retries = 2) {
-    const msgEl = document.getElementById("overlay-message");
-
-    try {
-        const res = await fetch(`${apiUrl}/health`, {
-            method: "GET",
-            cache: "no-store" // ⚠️ запретить кэш
-        });
-
-        if (!res.ok) {
-            if (msgEl) msgEl.innerText = "⛔ Сервер отвечает с ошибкой. Попробуйте позже.";
-            return;
-        }
-
-        const data = await res.json();
-
-        if (data.status === "ok") {
-          // 👇 Показываем блюренный лоадер сразу
-    const loader = document.createElement("div");
-    loader.innerHTML = `
-        <div id="reloading-overlay" style="
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-        ">
-            <div class="spinner"></div>
-        </div>
-
         <style>
-            .spinner {
-                width: 60px;
-                height: 60px;
-                border: 6px solid #00c853;
-                border-top-color: transparent;
-                border-radius: 50%;
-                animation: spin 0.8s linear infinite;
-                box-shadow: 0 0 20px #00c85380;
-            }
-
-            @keyframes spin {
-                to { transform: rotate(360deg); }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: scale(0.95); }
+                to { opacity: 1; transform: scale(1); }
             }
         </style>
     `;
+    document.body.appendChild(overlay);
+}
 
-    document.body.appendChild(loader);
+function showReconnectedToast() {
+    const toast = document.createElement("div");
+    toast.innerText = "🔌 Подключение восстановлено";
+    toast.style = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #00c853;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        z-index: 9999;
+        font-size: 14px;
+        animation: fadeInOut 3s ease-in-out;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 
-    // ⏳ Параллельно сразу начинается reload — пока крутится спиннер
+async function retryInit(retries = 2) {
+    if (fetchInProgress || !user) return;
+    fetchInProgress = true;
 
-      
-                    window.location.reload();
-      
-  
+    const msgEl = document.getElementById("overlay-message");
 
+    if (!navigator.onLine) {
+        msgEl && (msgEl.innerText = "⛔ Нет подключения к интернету.");
+        fetchInProgress = false;
+        return;
+    }
+
+    try {
+        const res = await fetch(`${apiUrl}/health`, { method: "GET", cache: "no-store" });
+        const data = await res.json();
+
+        if (data.status === "ok") {
+            backendHealthy = true;
+            document.getElementById("overlay")?.remove();
+            showReconnectedToast();
+            await softUpdateData();
         } else {
-            if (msgEl) msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.";
+            msgEl && (msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.");
         }
-
     } catch (err) {
         console.error("Ошибка при fetch:", err);
-
-        const isNetworkError = err instanceof TypeError;
-
         if (retries > 0) {
-            setTimeout(() => retryInit(retries - 1), 1500); // 🔁 Повтор
+            setTimeout(() => retryInit(retries - 1), 1500);
         } else {
-            if (msgEl) {
-                msgEl.innerText = isNetworkError
-                    ? "⛔ Нет ответа от сервера. Возможно, он выключен или перегружен."
-                    : "⛔ Не удалось подключиться к серверу. Проверьте интернет.";
-            }
+            msgEl && (msgEl.innerText = "⛔ Не удалось подключиться. Проверьте интернет.");
         }
+    } finally {
+        fetchInProgress = false;
     }
 }
 
+// === 🧪 Первая проверка при запуске ===
+async function checkBackendHealth() {
+    return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+            showDatabaseErrorOverlay();
+            reject(new Error("⛔ Сервер не отвечает"));
+        }, 1500);
 
-
-
-
-
-    async function checkBackendHealth() {
-    try {
-        const res = await fetch(`${apiUrl}/health`);
-        const data = await res.json();
-        if (data.status !== "ok") {
-            throw new Error("Database unavailable");
-        }
-    } catch (err) {
-        showDatabaseErrorOverlay();
-        throw new Error("⛔ Бэкенд не доступен");
-    }
+        fetch(`${apiUrl}/health`)
+            .then(res => res.json())
+            .then(data => {
+                clearTimeout(timeout);
+                if (data.status === "ok") {
+                    resolve();
+                } else {
+                    showDatabaseErrorOverlay();
+                    reject(new Error("⛔ Сервер ответил с ошибкой"));
+                }
+            })
+            .catch(() => {
+                clearTimeout(timeout);
+                showDatabaseErrorOverlay();
+                reject(new Error("⛔ Ошибка подключения"));
+            });
+    });
 }
-
-let backendHealthy = true;
 
 function startBackendHealthMonitor() {
     setInterval(async () => {
@@ -318,74 +291,51 @@ function startBackendHealthMonitor() {
             const res = await fetch(`${apiUrl}/health`);
             const data = await res.json();
             if (data.status !== "ok") throw new Error();
-            backendHealthy = true;
+            if (!backendHealthy) {
+                backendHealthy = true;
+                document.getElementById("overlay")?.remove();
+                showReconnectedToast();
+            }
         } catch {
             if (backendHealthy) {
                 backendHealthy = false;
                 showDatabaseErrorOverlay();
             }
         }
-    }, 10000); // проверка каждые 10 секунд
+    }, 10000);
 }
 
-
-function checkBackendConnection() {
-    console.log("✅ Бэкенд успешно подключен.");
-}
-
-
-
-// 🔁 Главная инициализация
-  (async function () {  
+// === 🔁 Инициализация приложения ===
+(async function () {
     tg.ready();
     tg.expand();
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
 
-        
-        
+    loadCachedBalance();
+
     try {
-        await checkBackendHealth();      // ✅ проверка бэкенда
-            startBackendHealthMonitor();
-        checkBackendConnection();        // ✅ лог успешного подключения
+        await checkBackendHealth();
+        startBackendHealthMonitor();
+        console.log("✅ Бэкенд успешно подключен.");
 
-        // 🔁 Повторная проверка при возврате в Telegram
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-        retryInit(); // проверка при возврате
-    }
-});
+        if (user) {
+            await softUpdateData();
+            startBalanceListener?.();
+        }
 
-window.addEventListener("focus", () => {
-    retryInit(); // дубль, на всякий случай
-});
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") retryInit();
+        });
 
+        window.addEventListener("focus", () => {
+            retryInit();
+        });
 
-            // ✅ Синхронизация баланса при старте
-if (user) {
-    fetch(`${apiUrl}/init`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: user.id, username: user.username || "unknown" })
-    })
-    .then(r => r.json())
-    .then(d => {
-        window.fakeBalance.ton = d.ton;
-        window.fakeBalance.usdt = d.usdt;
-        updateBalanceUI();
-     // ⏳ Сразу обновим баланс, чтобы он был точным
-        startBalanceListener();
-       
-    });
-}
-        // здесь продолжай инициализацию
     } catch (err) {
         console.error(err.message);
     }
 })();
-
-
-
 
 
 
