@@ -215,6 +215,27 @@ function showDatabaseErrorOverlay() {
     document.body.appendChild(overlay);
 }
 
+function showReconnectedToast() {
+    const toast = document.createElement("div");
+    toast.innerText = "🔌 Подключение восстановлено";
+    toast.style = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #00c853;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        z-index: 9999;
+        font-size: 14px;
+        animation: fadeInOut 3s ease-in-out;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
 async function retryInit(retries = 2) {
     const msgEl = document.getElementById("overlay-message");
     try {
@@ -224,6 +245,7 @@ async function retryInit(retries = 2) {
         if (data.status === "ok") {
             backendHealthy = true;
             document.getElementById("overlay")?.remove();
+            showReconnectedToast();
             softUpdateData(); // ⬅️ мягкая загрузка без reload
         } else {
             msgEl && (msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.");
