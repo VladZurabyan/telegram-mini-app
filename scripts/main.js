@@ -103,17 +103,13 @@
 */
 
 
-
-
-
-
-
-
-
-
 const apiUrl = "https://miniapp-backend.onrender.com";
 const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe?.user;
+
+// 🟢 Добавлены переменные для избежания ReferenceError
+let isListening = false;
+let isIdle = false;
 
 const fakeBalance = {
     ton: 0,
@@ -125,7 +121,6 @@ const lossesCount = 10;
 const totalCount = winsCount + lossesCount;
 
 let backendHealthy = true;
-let fetchInProgress = false;
 
 // === ⛑ Плавное обновление данных без reload ===
 async function softUpdateData() {
@@ -140,7 +135,6 @@ async function softUpdateData() {
         fakeBalance.ton = d.ton;
         fakeBalance.usdt = d.usdt;
         updateBalanceUI();
-        saveCachedBalance();
     } catch (e) {
         console.warn("Ошибка при обновлении данных:", e);
     }
@@ -202,39 +196,8 @@ function showDatabaseErrorOverlay() {
     document.body.appendChild(overlay);
 }
 
-function showReconnectedToast() {
-    const toast = document.createElement("div");
-    toast.innerText = "🔌 Подключение восстановлено";
-    toast.style = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #00c853;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
-        z-index: 9999;
-        font-size: 14px;
-        animation: fadeInOut 3s ease-in-out;
-    `;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
 async function retryInit(retries = 2) {
-    if (fetchInProgress || !user) return;
-    fetchInProgress = true;
-
     const msgEl = document.getElementById("overlay-message");
-
-    if (!navigator.onLine) {
-        msgEl && (msgEl.innerText = "⛔ Нет подключения к интернету.");
-        fetchInProgress = false;
-        return;
-    }
-
     try {
         const res = await fetch(`${apiUrl}/health`, { method: "GET", cache: "no-store" });
         const data = await res.json();
@@ -242,8 +205,7 @@ async function retryInit(retries = 2) {
         if (data.status === "ok") {
             backendHealthy = true;
             document.getElementById("overlay")?.remove();
-            showReconnectedToast();
-            await softUpdateData();
+            softUpdateData(); // ⬅️ мягкая загрузка без reload
         } else {
             msgEl && (msgEl.innerText = "⛔ Сервер всё ещё недоступен. Попробуйте позже.");
         }
@@ -254,36 +216,19 @@ async function retryInit(retries = 2) {
         } else {
             msgEl && (msgEl.innerText = "⛔ Не удалось подключиться. Проверьте интернет.");
         }
-    } finally {
-        fetchInProgress = false;
     }
 }
 
 // === 🧪 Первая проверка при запуске ===
 async function checkBackendHealth() {
-    return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-            showDatabaseErrorOverlay();
-            reject(new Error("⛔ Сервер не отвечает"));
-        }, 1500);
-
-        fetch(`${apiUrl}/health`)
-            .then(res => res.json())
-            .then(data => {
-                clearTimeout(timeout);
-                if (data.status === "ok") {
-                    resolve();
-                } else {
-                    showDatabaseErrorOverlay();
-                    reject(new Error("⛔ Сервер ответил с ошибкой"));
-                }
-            })
-            .catch(() => {
-                clearTimeout(timeout);
-                showDatabaseErrorOverlay();
-                reject(new Error("⛔ Ошибка подключения"));
-            });
-    });
+    try {
+        const res = await fetch(`${apiUrl}/health`);
+        const data = await res.json();
+        if (data.status !== "ok") throw new Error();
+    } catch {
+        showDatabaseErrorOverlay();
+        throw new Error("⛔ Бэкенд не доступен");
+    }
 }
 
 function startBackendHealthMonitor() {
@@ -295,7 +240,6 @@ function startBackendHealthMonitor() {
             if (!backendHealthy) {
                 backendHealthy = true;
                 document.getElementById("overlay")?.remove();
-                showReconnectedToast();
             }
         } catch {
             if (backendHealthy) {
@@ -304,6 +248,31 @@ function startBackendHealthMonitor() {
             }
         }
     }, 10000);
+}
+
+// === 👂 Отслеживание активности пользователя (примерный шаблон) ===
+function startBalanceListener() {
+    if (isListening) return;
+    isListening = true;
+
+    let idleTimer;
+
+    const resetIdleTimer = () => {
+        if (isIdle) {
+            isIdle = false;
+            softUpdateData(); // Обновляем, если пользователь "проснулся"
+        }
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+            isIdle = true;
+        }, 60000); // 1 минута бездействия = idle
+    };
+
+    document.addEventListener("mousemove", resetIdleTimer);
+    document.addEventListener("keydown", resetIdleTimer);
+    document.addEventListener("touchstart", resetIdleTimer);
+
+    resetIdleTimer();
 }
 
 // === 🔁 Инициализация приложения ===
@@ -322,11 +291,13 @@ function startBackendHealthMonitor() {
 
         if (user) {
             await softUpdateData();
-            startBalanceListener?.();
+            startBalanceListener?.(); // если определена
         }
 
         document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") retryInit();
+            if (document.visibilityState === "visible") {
+                retryInit();
+            }
         });
 
         window.addEventListener("focus", () => {
@@ -337,6 +308,16 @@ function startBackendHealthMonitor() {
         console.error(err.message);
     }
 })();
+
+
+
+
+
+
+
+ 
+
+ 
 
 
 
