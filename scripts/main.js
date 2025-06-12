@@ -323,6 +323,8 @@ function startBalanceListener() {
     tg.requestFullscreen();
     tg.disableVerticalSwipes();
 
+    let firstInit = true;
+
     loadCachedBalance();
 
     try {
@@ -335,8 +337,17 @@ function startBalanceListener() {
             startBalanceListener?.(); // если определена
         }
 
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                retryInit();
+            }
+        });
        
         window.addEventListener("focus", () => {
+            if (firstInit) {
+                firstInit = false;
+                return;
+            }
             retryInit();
         });
 
