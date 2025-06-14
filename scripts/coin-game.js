@@ -120,6 +120,19 @@
             const isWin = data.win;
             const winAmount = data.prize;
 
+            // ✅ Логируем игру (после получения данных)
+    if (typeof recordGame === 'function') {
+        recordGame(
+            "coin",
+            window.bet,
+            isWin ? "win" : "lose",
+            isWin,
+            window.selectedCurrency,
+            winAmount,
+            true
+        );
+    }
+
             const img = document.getElementById('coinImageMain');
             const animClass = result === 'heads' ? 'flip-head' : 'flip-tail';
 
