@@ -120,20 +120,7 @@
             const isWin = data.win;
             const winAmount = data.prize;
 
-            /*
-            // ✅ Логируем игру (после получения данных)
-    if (typeof recordGame === 'function') {
-        recordGame(
-            "coin",
-            window.bet,
-            isWin ? "win" : "lose",
-            isWin,
-            window.selectedCurrency,
-            winAmount,
-            false
-        );
-    }
-*/
+            
             const img = document.getElementById('coinImageMain');
             const animClass = result === 'heads' ? 'flip-head' : 'flip-tail';
 
@@ -170,6 +157,22 @@
                         `${resultString} | ${betString} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`
                     );
                 }
+
+
+if (typeof recordGame === 'function') {
+    recordGame(
+        "coin",
+        window.bet,
+        isWin ? "win" : "lose",
+        isWin,
+        window.selectedCurrency,
+        winAmount,
+        true // ⚠️ именно true — чтобы бэкенд не начислял второй раз, а просто записал
+    );
+}
+
+
+                
 
                 if (typeof forceBalance === "function") {
                     forceBalance(0).then(() => {
