@@ -6,8 +6,6 @@
         if (boxInProgress) return;
         boxInProgress = true;
 
-        choice = parseInt(choice);
-
         // ✅ Проверка ставки
         if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
             Player_action?.(gameName, "Ошибка", `Некорректная ставка: ${window.bet}`);
@@ -43,9 +41,10 @@
             return;
         }
 
+        // 🔒 Блокируем UI
         boxImgs.forEach(img => {
             img.style.pointerEvents = 'none';
-            img.classList.remove('selected-box');
+            img.classList.remove('selected-box', 'prize-box');
         });
 
         document.querySelector('#game-boxes .currency-selector')?.classList.add('disabled');
@@ -53,6 +52,7 @@
         document.querySelector('#game-boxes .back-btn')?.setAttribute('disabled', 'true');
         document.getElementById('btn-box-replay')?.style.setProperty('display', 'none');
 
+        // 📡 Запрос к серверу
         fetch(`${apiUrl}/boxes/start`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -61,30 +61,30 @@
                 username: window.Telegram.WebApp.initDataUnsafe?.user?.username || "unknown",
                 currency: window.selectedCurrency,
                 bet: window.bet,
-                choice: choice + 1 // ⚠️ Бэкенд использует 1-2-3
+                choice: choice + 1  // бэкенд ждёт от 1 до 3
             })
         })
-        .then(r => r.json())
+        .then(res => res.json())
         .then(data => {
             const isWin = data.win;
-            const winningBox = data.winningBox - 1; // ⚠️ Приводим к индексу
+            const winningBox = data.winningBox - 1; // сервер возвращает от 1 до 3
             const prizeAmount = data.prize;
 
-            // 🎉 UI анимация
             boxImgs[choice]?.classList.add('selected-box');
 
             setTimeout(() => {
-                boxImgs.forEach((img, index) => {
-                    if (index === winningBox) {
+                boxImgs.forEach((img, i) => {
+                    if (i === winningBox) {
                         img.classList.add('prize-box');
                         setTimeout(() => {
-                            img.src = `assets/box${index + 1}-open.png`;
+                            img.src = `assets/box${i + 1}-open.png`;
                         }, 400);
                     } else {
-                        img.src = `assets/box${index + 1}.png`;
+                        img.src = `assets/box${i + 1}.png`;
                     }
                 });
 
+                // 🧾 Показ результата
                 const resultEl = document.getElementById('boxResult');
                 if (resultEl) {
                     resultEl.className = '';
@@ -101,18 +101,18 @@
                         : '';
                 }
 
-                const detail = `Открыл коробку ${choice + 1}, приз был в ${winningBox + 1} — ${isWin ? 'Победа' : 'Промах'}`;
-                Player_action?.(gameName, "Результат", detail);
+                Player_action?.(gameName, "Результат", `Открыл коробку ${choice + 1}, приз был в ${winningBox + 1} — ${isWin ? 'Победа' : 'Промах'}`);
 
                 const resultStr = isWin
                     ? `Победа, выиграл ${formatAmount(prizeAmount)} ${window.selectedCurrency.toUpperCase()}`
                     : "Проигрыш";
                 const betStr = `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`;
-
                 Player_leave?.(gameName, `${resultStr} | ${betStr} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
 
+                // 💾 recordGame
                 recordGame?.("boxes", window.bet, isWin ? "win" : "lose", isWin, window.selectedCurrency, prizeAmount, true);
 
+                // 🔁 Баланс
                 forceBalance?.(0).then(() => {
                     document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
                     document.querySelector('#game-boxes .back-btn')?.removeAttribute('disabled');
@@ -121,13 +121,12 @@
             }, 1000);
         })
         .catch(err => {
-            showCustomAlert("❌ Ошибка: " + err.message, "error");
-            boxInProgress = false;
-
+            showCustomAlert("❌ Ошибка сервера: " + err.message, "error");
             boxImgs.forEach(img => img.style.pointerEvents = 'auto');
             document.querySelector('#game-boxes .currency-selector')?.classList.remove('disabled');
             document.querySelector('#game-boxes .bet-box')?.classList.remove('disabled');
             document.querySelector('#game-boxes .back-btn')?.removeAttribute('disabled');
+            boxInProgress = false;
         });
     }
 
