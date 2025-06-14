@@ -105,7 +105,7 @@
             Player_action?.(gameName, "Результат", `Открыл коробку ${choice + 1}, приз был в ${winningBox + 1} — ${isWin ? 'Победа' : 'Промах'}`);
             Player_leave?.(gameName, `${isWin ? 'Победа' : 'Проигрыш'}, Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}, Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
 
-            recordGame?.("boxes", window.bet, isWin ? "win" : "lose", isWin, window.selectedCurrency, prize, true);
+            
 
             forceBalance?.(0).then(() => {
                 document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
