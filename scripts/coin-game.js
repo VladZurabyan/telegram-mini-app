@@ -159,20 +159,7 @@
                 }
 
 
-if (typeof recordGame === 'function') {
-    recordGame(
-        "coin",
-        window.bet,
-        isWin ? "win" : "lose",
-        isWin,
-        window.selectedCurrency,
-        winAmount,
-        true // ⚠️ именно true — чтобы бэкенд не начислял второй раз, а просто записал
-    );
-}
-
-
-                
+             
 
                 if (typeof forceBalance === "function") {
                     forceBalance(0).then(() => {
