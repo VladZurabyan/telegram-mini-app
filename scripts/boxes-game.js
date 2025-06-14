@@ -2,6 +2,8 @@
     let boxInProgress = false;
 
     function selectBox(choice) {
+        choice = parseInt(choice); // 🔐 Приводим к числу
+
         const gameName = "Boxes";
         if (boxInProgress) return;
         boxInProgress = true;
