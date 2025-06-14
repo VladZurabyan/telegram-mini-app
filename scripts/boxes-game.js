@@ -32,7 +32,7 @@
             return;
         }
 
-        recordGame?.("boxes", window.bet, "pending", false, window.selectedCurrency, 0, false);
+        
         Player_join?.(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
 
         const boxImgs = document.querySelectorAll('#game-boxes .boxes img');
