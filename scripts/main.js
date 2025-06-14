@@ -135,9 +135,6 @@ const fakeBalance = {
     usdt: 0
 };
 
-const winsCount = 2;
-const lossesCount = 10;
-const totalCount = winsCount + lossesCount;
 
 let backendHealthy = true;
 
