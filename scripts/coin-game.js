@@ -129,7 +129,7 @@
             isWin,
             window.selectedCurrency,
             winAmount,
-            true
+            false
         );
     }
 
