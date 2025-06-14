@@ -32,19 +32,20 @@
             return;
         }
 
+        recordGame?.("boxes", window.bet, "pending", false, window.selectedCurrency, 0, false);
         Player_join?.(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
 
         const boxImgs = document.querySelectorAll('#game-boxes .boxes img');
         if (boxImgs.length !== 3) {
-            console.error("Не найдено 3 коробки");
+            console.error("❌ Не найдено 3 коробки");
             boxInProgress = false;
             return;
         }
 
-        // 🔒 Блокируем UI
+        // 🔒 UI блокировка
         boxImgs.forEach(img => {
             img.style.pointerEvents = 'none';
-            img.classList.remove('selected-box', 'prize-box');
+            img.classList.remove('selected-box');
         });
 
         document.querySelector('#game-boxes .currency-selector')?.classList.add('disabled');
@@ -52,81 +53,73 @@
         document.querySelector('#game-boxes .back-btn')?.setAttribute('disabled', 'true');
         document.getElementById('btn-box-replay')?.style.setProperty('display', 'none');
 
-        // 📡 Запрос к серверу
+        document.getElementById('boxResult')?.classList.remove('win', 'lose');
+        document.getElementById('boxResult').innerText = '';
+
+        boxImgs[choice]?.classList.add('selected-box');
+
+        // 📡 Запрос на backend
         fetch(`${apiUrl}/boxes/start`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                user_id: window.Telegram.WebApp.initDataUnsafe?.user?.id,
-                username: window.Telegram.WebApp.initDataUnsafe?.user?.username || "unknown",
+                user_id: Telegram.WebApp.initDataUnsafe?.user?.id,
+                username: Telegram.WebApp.initDataUnsafe?.user?.username || "unknown",
                 currency: window.selectedCurrency,
                 bet: window.bet,
-                choice: choice + 1  // бэкенд ждёт от 1 до 3
+                choice: choice + 1 // ⚠️ сервер ожидает от 1 до 3
             })
         })
         .then(res => res.json())
         .then(data => {
             const isWin = data.win;
-            const winningBox = data.winningBox - 1; // сервер возвращает от 1 до 3
-            const prizeAmount = data.prize;
+            const prize = data.prize;
+            const winningBox = data.winningBox - 1; // ⚠️ приведение к 0-индексу
 
-            boxImgs[choice]?.classList.add('selected-box');
-
-            setTimeout(() => {
-                boxImgs.forEach((img, i) => {
-                    if (i === winningBox) {
-                        img.classList.add('prize-box');
-                        setTimeout(() => {
-                            img.src = `assets/box${i + 1}-open.png`;
-                        }, 400);
-                    } else {
-                        img.src = `assets/box${i + 1}.png`;
-                    }
-                });
-
-                // 🧾 Показ результата
-                const resultEl = document.getElementById('boxResult');
-                if (resultEl) {
-                    resultEl.className = '';
-                    resultEl.classList.add(isWin ? 'win' : 'lose');
-                    resultEl.innerText = isWin
-                        ? 'Приз найден! Победа! 🎉'
-                        : `😔 Пусто. Приз был в коробке ${winningBox + 1}`;
+            boxImgs.forEach((img, index) => {
+                if (index === winningBox) {
+                    img.classList.add('prize-box');
+                    setTimeout(() => {
+                        img.src = `assets/box${index + 1}-open.png`;
+                    }, 400);
+                } else {
+                    img.src = `assets/box${index + 1}.png`;
                 }
+            });
 
-                const prizeEl = document.getElementById('boxPrize');
-                if (prizeEl) {
-                    prizeEl.innerText = isWin
-                        ? `Вы выиграли: ${formatAmount(prizeAmount)} ${window.selectedCurrency.toUpperCase()}`
-                        : '';
-                }
+            const resultEl = document.getElementById('boxResult');
+            if (resultEl) {
+                resultEl.classList.add(isWin ? 'win' : 'lose');
+                resultEl.innerText = isWin
+                    ? 'Приз найден! Победа! 🎉'
+                    : `😔 Пусто. Приз был в коробке ${winningBox + 1}`;
+            }
 
-                Player_action?.(gameName, "Результат", `Открыл коробку ${choice + 1}, приз был в ${winningBox + 1} — ${isWin ? 'Победа' : 'Промах'}`);
+            const prizeEl = document.getElementById('boxPrize');
+            if (prizeEl) {
+                prizeEl.innerText = isWin
+                    ? `Вы выиграли: ${formatAmount(prize)} ${window.selectedCurrency.toUpperCase()}`
+                    : '';
+            }
 
-                const resultStr = isWin
-                    ? `Победа, выиграл ${formatAmount(prizeAmount)} ${window.selectedCurrency.toUpperCase()}`
-                    : "Проигрыш";
-                const betStr = `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}`;
-                Player_leave?.(gameName, `${resultStr} | ${betStr} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
+            Player_action?.(gameName, "Результат", `Открыл коробку ${choice + 1}, приз был в ${winningBox + 1} — ${isWin ? 'Победа' : 'Промах'}`);
+            Player_leave?.(gameName, `${isWin ? 'Победа' : 'Проигрыш'}, Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()}, Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`);
 
-                // 💾 recordGame
-                recordGame?.("boxes", window.bet, isWin ? "win" : "lose", isWin, window.selectedCurrency, prizeAmount, true);
+            recordGame?.("boxes", window.bet, isWin ? "win" : "lose", isWin, window.selectedCurrency, prize, true);
 
-                // 🔁 Баланс
-                forceBalance?.(0).then(() => {
-                    document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
-                    document.querySelector('#game-boxes .back-btn')?.removeAttribute('disabled');
-                    boxInProgress = false;
-                });
-            }, 1000);
+            forceBalance?.(0).then(() => {
+                document.getElementById('btn-box-replay')?.style.setProperty('display', 'block');
+                document.querySelector('#game-boxes .back-btn')?.removeAttribute('disabled');
+                boxInProgress = false;
+            });
         })
         .catch(err => {
             showCustomAlert("❌ Ошибка сервера: " + err.message, "error");
+            boxInProgress = false;
             boxImgs.forEach(img => img.style.pointerEvents = 'auto');
             document.querySelector('#game-boxes .currency-selector')?.classList.remove('disabled');
             document.querySelector('#game-boxes .bet-box')?.classList.remove('disabled');
             document.querySelector('#game-boxes .back-btn')?.removeAttribute('disabled');
-            boxInProgress = false;
         });
     }
 
@@ -139,9 +132,10 @@
         });
 
         document.getElementById('boxResult')?.classList.remove('win', 'lose');
-        document.getElementById('boxResult')?.innerText = '';
-        document.getElementById('boxPrize')?.innerText = '';
+        document.getElementById('boxResult').innerText = '';
+        document.getElementById('boxPrize').innerText = '';
         document.getElementById('btn-box-replay')?.style.setProperty('display', 'none');
+
         document.querySelector('#game-boxes .currency-selector')?.classList.remove('disabled');
         document.querySelector('#game-boxes .bet-box')?.classList.remove('disabled');
         document.querySelector('#game-boxes .back-btn')?.removeAttribute('disabled');
