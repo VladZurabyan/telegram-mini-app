@@ -90,19 +90,7 @@
             Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
         }
 
-        // ✅ Запись pending
-        if (typeof recordGame === 'function') {
-            recordGame(
-                "coin",
-                window.bet,
-                "pending",
-                false,
-                window.selectedCurrency,
-                0,
-                false
-            );
-        }
-
+        
         const allBtns = [
             btn,
             document.getElementById('btn-back-coin'),
