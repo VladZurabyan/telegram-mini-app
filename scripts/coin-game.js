@@ -90,7 +90,6 @@
             Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
         }
 
-        
         const allBtns = [
             btn,
             document.getElementById('btn-back-coin'),
@@ -104,7 +103,6 @@
         document.querySelector('#game-coin .currency-selector')?.classList.add('disabled');
         document.querySelector('#game-coin .bet-box')?.classList.add('disabled');
 
-        // 📡 Отправка на сервер
         fetch(`${apiUrl}/coin/start`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -159,41 +157,18 @@
                     );
                 }
 
-                const unlockUI = () => {
+                if (typeof forceBalance === "function") {
+                    forceBalance(0).then(() => {
+                        allBtns.forEach(el => el.disabled = false);
+                        document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
+                        document.querySelector('#game-coin .bet-box')?.classList.remove('disabled');
+                        coinInProgress = false;
+                    });
+                } else {
                     allBtns.forEach(el => el.disabled = false);
                     document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
                     document.querySelector('#game-coin .bet-box')?.classList.remove('disabled');
                     coinInProgress = false;
-                };
-
-                if (typeof recordGame === 'function') {
-                    const result = recordGame(
-                        "coin",
-                        window.bet,
-                        isWin ? "win" : "lose",
-                        isWin,
-                        window.selectedCurrency,
-                        winAmount,
-                        true
-                    );
-
-                    if (result instanceof Promise) {
-                        result.then(() => {
-                            if (typeof forceBalance === "function") {
-                                forceBalance(0).then(unlockUI);
-                            } else {
-                                unlockUI();
-                            }
-                        });
-                    } else {
-                        if (typeof forceBalance === "function") {
-                            forceBalance(0).then(unlockUI);
-                        } else {
-                            unlockUI();
-                        }
-                    }
-                } else {
-                    unlockUI();
                 }
             }, { once: true });
         })
