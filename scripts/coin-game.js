@@ -30,14 +30,14 @@
     function playCoin(btn) {
         const gameName = "Coin";
         const resultBox = document.getElementById('coinResult');
-    const prizeBox = document.getElementById('coinPrize');
+        const prizeBox = document.getElementById('coinPrize');
 
-    if (resultBox) resultBox.innerText = '';
-    if (prizeBox) prizeBox.innerText = '';
+        if (resultBox) resultBox.innerText = '';
+        if (prizeBox) prizeBox.innerText = '';
         if (coinInProgress) return;
         coinInProgress = true;
-        
 
+        // 🔒 Проверки ставки
         if (!window.bet || isNaN(window.bet) || window.bet <= 0) {
             if (typeof Player_action === 'function') {
                 Player_action(gameName, "Ошибка", `Некорректная ставка: ${window.bet}`);
@@ -56,10 +56,10 @@
                 Player_action(
                     gameName,
                     "Ошибка",
-                    `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} > Баланс: ${balanceAvailable} ${window.selectedCurrency.toUpperCase()}`
+                    `Ставка: ${window.bet} > Баланс: ${balanceAvailable}`
                 );
             }
-            showCustomAlert(`Недостаточно средств (${window.selectedCurrency.toUpperCase()})`, "error" );
+            showCustomAlert(`Недостаточно средств (${window.selectedCurrency.toUpperCase()})`, "error");
             coinInProgress = false;
             return;
         }
@@ -69,7 +69,7 @@
                 Player_action(
                     gameName,
                     "Ошибка",
-                    `Ставка: ${window.bet} ${window.selectedCurrency.toUpperCase()} < Минимум: ${window.minBet} ${window.selectedCurrency.toUpperCase()}`
+                    `Ставка: ${window.bet} < Минимум: ${window.minBet}`
                 );
             }
             showCustomAlert(`Минимум ${window.minBet} ${window.selectedCurrency.toUpperCase()}`, "error");
@@ -90,21 +90,18 @@
             Player_join(gameName, `TON: ${window.fakeBalance.ton} | USDT: ${window.fakeBalance.usdt}`);
         }
 
-              
-
-        // ✅ Отправляем на сервер, чтобы зафиксировать списание
-if (typeof recordGame === 'function') {
-    recordGame(
-        "coin",
-        window.bet,
-        "pending",
-        false,
-        window.selectedCurrency,
-        0,
-        false
-    );
-}
-
+        // ✅ Запись pending
+        if (typeof recordGame === 'function') {
+            recordGame(
+                "coin",
+                window.bet,
+                "pending",
+                false,
+                window.selectedCurrency,
+                0,
+                false
+            );
+        }
 
         const allBtns = [
             btn,
@@ -119,94 +116,107 @@ if (typeof recordGame === 'function') {
         document.querySelector('#game-coin .currency-selector')?.classList.add('disabled');
         document.querySelector('#game-coin .bet-box')?.classList.add('disabled');
 
-        const isWin = Math.random() * totalCount < winsCount;
-        const result = isWin ? playerChoice : (playerChoice === 'heads' ? 'tails' : 'heads');
-        const img = document.getElementById('coinImageMain');
-        const animClass = result === 'heads' ? 'flip-head' : 'flip-tail';
+        // 📡 Отправка на сервер
+        fetch(`${apiUrl}/coin/start`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                user_id: window.Telegram.WebApp.initDataUnsafe?.user?.id,
+                username: window.Telegram.WebApp.initDataUnsafe?.user?.username || "unknown",
+                currency: window.selectedCurrency,
+                bet: window.bet,
+                choice: playerChoice
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const result = data.result;
+            const isWin = data.win;
+            const winAmount = data.prize;
 
-        img.classList.remove('flip-head', 'flip-tail');
-        void img.offsetWidth;
-        img.classList.add(animClass);
+            const img = document.getElementById('coinImageMain');
+            const animClass = result === 'heads' ? 'flip-head' : 'flip-tail';
 
-        setTimeout(() => {
-            img.src = `assets/coin-${result}.png`;
-        }, 600);
+            img.classList.remove('flip-head', 'flip-tail');
+            void img.offsetWidth;
+            img.classList.add(animClass);
 
-        img.addEventListener('animationend', function onFlipEnd() {
-    img.removeEventListener('animationend', onFlipEnd);
+            setTimeout(() => {
+                img.src = `assets/coin-${result}.png`;
+            }, 600);
 
-    const resultBox = document.getElementById('coinResult');
-    const prizeBox = document.getElementById('coinPrize');
-    const currencyLabel = window.selectedCurrency.toUpperCase();
+            img.addEventListener('animationend', function onFlipEnd() {
+                img.removeEventListener('animationend', onFlipEnd);
 
-    // ⏱ СРАЗУ показываем результат
-    resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
-    let winAmount = 0;
-    if (isWin) {
-        winAmount = parseFloat((window.bet * 2).toFixed(2));
-        prizeBox.innerText = `Вы выиграли: ${formatAmount(winAmount)} ${currencyLabel}`;
-    } else {
-        prizeBox.innerText = "Желаем дальнейших успехов";
-    }
+                const currencyLabel = window.selectedCurrency.toUpperCase();
+                resultBox.innerText = `Выпало: ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}\n${isWin ? 'Победа!' : 'Проигрыш'}`;
+                prizeBox.innerText = isWin
+                    ? `Вы выиграли: ${formatAmount(winAmount)} ${currencyLabel}`
+                    : "Желаем дальнейших успехов";
 
-    const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
-    if (typeof Player_action === 'function') {
-        Player_action(gameName, "Результат", detail);
-    }
+                const detail = `Выбрал ${playerChoice === 'heads' ? 'ОРЁЛ' : 'РЕШКА'}, выпало ${result === 'heads' ? 'ОРЁЛ' : 'РЕШКА'} — ${isWin ? 'Победа' : 'Проигрыш'}`;
+                if (typeof Player_action === 'function') {
+                    Player_action(gameName, "Результат", detail);
+                }
 
-    const resultString = isWin
-        ? `Победа, выиграл ${formatAmount(winAmount)} ${currencyLabel}`
-        : "Проигрыш";
-    const betString = `Ставка: ${window.bet} ${currencyLabel}`;
+                const resultString = isWin
+                    ? `Победа, выиграл ${formatAmount(winAmount)} ${currencyLabel}`
+                    : "Проигрыш";
+                const betString = `Ставка: ${window.bet} ${currencyLabel}`;
 
-    if (typeof Player_leave === 'function') {
-        Player_leave(
-            gameName,
-            `${resultString} | ${betString} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`
-        );
-    }
+                if (typeof Player_leave === 'function') {
+                    Player_leave(
+                        gameName,
+                        `${resultString} | ${betString} | Баланс: TON ${window.fakeBalance.ton}, USDT ${window.fakeBalance.usdt}`
+                    );
+                }
 
-    const unlockUI = () => {
-        allBtns.forEach(el => el.disabled = false);
-        document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
-        document.querySelector('#game-coin .bet-box')?.classList.remove('disabled');
-        coinInProgress = false;
-    };
+                const unlockUI = () => {
+                    allBtns.forEach(el => el.disabled = false);
+                    document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
+                    document.querySelector('#game-coin .bet-box')?.classList.remove('disabled');
+                    coinInProgress = false;
+                };
 
-    // ⏳ Сначала запись, потом баланс, потом UI
-    if (typeof recordGame === 'function') {
-        const result = recordGame(
-            "coin",
-            window.bet,
-            isWin ? "win" : "lose",
-            isWin,
-            window.selectedCurrency,
-            winAmount,
-            true
-        );
+                if (typeof recordGame === 'function') {
+                    const result = recordGame(
+                        "coin",
+                        window.bet,
+                        isWin ? "win" : "lose",
+                        isWin,
+                        window.selectedCurrency,
+                        winAmount,
+                        true
+                    );
 
-        if (result instanceof Promise) {
-            result.then(() => {
-                if (typeof forceBalance === "function") {
-                    forceBalance(0).then(unlockUI);
+                    if (result instanceof Promise) {
+                        result.then(() => {
+                            if (typeof forceBalance === "function") {
+                                forceBalance(0).then(unlockUI);
+                            } else {
+                                unlockUI();
+                            }
+                        });
+                    } else {
+                        if (typeof forceBalance === "function") {
+                            forceBalance(0).then(unlockUI);
+                        } else {
+                            unlockUI();
+                        }
+                    }
                 } else {
                     unlockUI();
                 }
-            });
-        } else {
-            if (typeof forceBalance === "function") {
-                forceBalance(0).then(unlockUI);
-            } else {
-                unlockUI();
-            }
-        }
-    } else {
-        unlockUI();
+            }, { once: true });
+        })
+        .catch(err => {
+            showCustomAlert("❌ Ошибка сервера: " + err.message, "error");
+            coinInProgress = false;
+            allBtns.forEach(el => el.disabled = false);
+            document.querySelector('#game-coin .currency-selector')?.classList.remove('disabled');
+            document.querySelector('#game-coin .bet-box')?.classList.remove('disabled');
+        });
     }
-}, { once: true });
-
-
-}
 
     window.setCoinChoice = setCoinChoice;
     window.resetCoinScreen = resetCoinScreen;
