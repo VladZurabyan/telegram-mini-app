@@ -120,6 +120,7 @@
             const isWin = data.win;
             const winAmount = data.prize;
 
+            /*
             // ✅ Логируем игру (после получения данных)
     if (typeof recordGame === 'function') {
         recordGame(
@@ -132,7 +133,7 @@
             false
         );
     }
-
+*/
             const img = document.getElementById('coinImageMain');
             const animClass = result === 'heads' ? 'flip-head' : 'flip-tail';
 
