@@ -1,6 +1,10 @@
 (function () {
     let boxInProgress = false;
 
+    // 🪄 Сразу делаем функции глобальными
+    window.selectBox = selectBox;
+    window.resetBoxesScreen = resetBoxesScreen;
+
     function selectBox(choice) {
         choice = parseInt(choice); // 🔐 Приводим к числу
 
@@ -153,7 +157,4 @@
         document.querySelectorAll('.prize-explosion')?.forEach(el => el.remove());
         boxInProgress = false;
     }
-
-    window.selectBox = selectBox;
-    window.resetBoxesScreen = resetBoxesScreen;
 })();
